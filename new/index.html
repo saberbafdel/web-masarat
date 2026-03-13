@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام إدارة المستخدمين</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body dir="rtl">
+    <section id="login-page">
+        <div class="login-card">
+            <div class="text-center mb-4">
+                <i class="bi bi-shield-lock-fill" style="font-size: 3rem; color: var(--primary-green);"></i>
+                <h3 class="mt-2">تسجيل الدخول</h3>
+            </div>
+            <div>
+                <label class="form-label fw-bold text-muted">اسم المستخدم</label>
+                <input type="text" id="login-username" name="username" class="form-input" placeholder="Username">
+            </div>
+            <div>
+                <label class="form-label fw-bold text-muted">كلمة المرور</label>
+                <input type="password" id="login-password" name="password" class="form-input" placeholder="password">
+            </div>
+            <div id="login-error" class="error-message text-center">بيانات الدخول غير صحيحة</div>
+            <button onclick="login()" class="btn-login">دخول</button>
+        </div>
+    </section>
+
+    <div id="main-wrapper">
+
+        <aside class="sidebar">
+            <div class="part-top">
+                <div class="sidebar-item" onclick="showPage('sec-profile')" title="الملف الشخصي"><i
+                        class="bi bi-person-circle"></i></div>
+                <div class="sidebar-item" onclick="showPage('sec-home')" title="الرئيسية"><i class="bi bi-house"></i>
+                </div>
+                <div class="sidebar-item" onclick="showPage('sec-users')" title="المستخدمين"><i
+                        class="bi bi-people-fill"></i></div>
+                <div class="sidebar-item" onclick="showPage('sec-students')" title="الطلاب"><i
+                        class="bi bi-mortarboard"></i></div>
+                <div class="sidebar-item" onclick="showPage('sec-drivers')" title="السائقين"><i
+                        class="bi bi-train-front"></i></div>
+                <div class="sidebar-item" onclick="showPage('sec-trips')" title="الرحلات"><i class="bi bi-geo-alt"></i>
+                </div>
+                <div class="sidebar-item" onclick="showPage('sec-payments')" title="المدفوعات"><i
+                        class="bi bi-credit-card"></i></div>
+                <div class="sidebar-item" onclick="showPage('sec-reports')" title="التقارير"><i
+                        class="bi bi-clipboard-data"></i></div>
+                <div class="sidebar-item" onclick="showPage('sec-notifications')" title="الإشعارات"><i
+                        class="bi bi-bell"></i></div>
+            </div>
+            <div class="part-down">
+                <div class="sidebar-item"><i class="bi bi-info-circle"></i></div>
+                <div class="sidebar-item" onclick="showPage('sec-settings')"><i class="bi bi-gear"></i></div>
+                <div class="sidebar-item mt-auto" onclick="location.reload()" title="خروج"><i
+                        class="bi bi-box-arrow-left text-danger"></i></div>
+            </div>
+        </aside>
+
+        <div class="main-content">
+
+            <section id="sec-home" class="page-section active">
+                <div class="content-card content-card-home">
+
+                    <div class="home-layout">
+
+                        <div class="home-side">
+
+                        </div>
+
+                        <div class="home-map" id="map" style="height: 100%; border-radius: 20px;">
+                            <div class="searsh-bar">
+                                <input type="search" placeholder="البحث...">
+                            </div>
+
+                        </div>
+                    </div>
+
+            </section>
+
+
+
+            <section id="sec-users" class="page-section">
+                <div id="userDetailsContainer" class="ccim"></div>
+                <div class="content-card">
+
+                    <div class="user-mgmt-header">
+                        <h1 class="page-title mb-0">إدارة المستخدمين</h1>
+                        <div class="custom-tabs">
+                            <button class="tab-btn active-tab" onclick="openUserTab('tab-users-list', this)">
+                                القائمة
+                            </button>
+                            <button id="users-requests-conut" class="tab-btn"
+                                onclick="openUserTab('tab-users-requests', this)">
+                                الطلبات
+                            </button>
+                            <button class="tab-btn" onclick="openUserTab('tab-users-add', this)">
+                                إضافة
+                            </button>
+                            <button class="tab-btn" onclick="openUserTab('tab-blacklist', this)">
+                                القائمة السوداء
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="tab-users-list" class="tab-content active">
+                        <div class="tools-bar row g-3">
+                            <div class="col-md-8">
+                                <input type="text" id="search-input" class="search-box" placeholder="بحث..."
+                                    onkeyup="renderUsers()">
+                            </div>
+                            <div class="col-md-4">
+                                <select id="filter-role" class="filter-select" onchange="renderUsers()">
+                                    <option value="all">الكل</option>
+                                    <option value="1">مشرفين</option>
+                                    <option value="2">سائقين</option>
+                                    <option value="3">طلاب</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="custom-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>إسم المستخدم</th>
+                                        <th>الدور</th>
+                                        <th>الحالة</th>
+                                        <th>الإجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="users-table-body">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div id="tab-users-requests" class="tab-content">
+                        <div class="table-responsive">
+                            <table class="custom-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>إسم المستخدم</th>
+                                        <th>الدور</th>
+                                        <th>تاريخ الطلب</th>
+                                        <th>الحالة</th>
+                                        <th>إلاجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="requests-table-body">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="tab-users-rejected" class="tab-content">
+                        <div class="table-responsive">
+                            <table class="custom-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>إسم المستخدم</th>
+                                        <th>الدور</th>
+                                        <th>الحالة</th>
+                                        <th>إلاجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="rejectes-table-body">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div id="tab-users-add" class="tab-content">
+                        <div class="d-flex justify-content-center py-5">
+                            <div class="login-card">
+                                <h4 class="text-center mb-4">إضافة مشرف جديد</h4>
+                                <input type="text" id="new-admin" class="form-input" placeholder="اسم المستخدم">
+                                <input type="password" id="new-password" class="form-input" placeholder="كلمة المرور">
+                                <button onclick="addAdmin()" class="btn-login">حفظ</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="tab-blacklist" class="tab-content">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>اسم المستخدم</th>
+                                        <th>الدور</th>
+                                        <th>الحالة</th>
+                                        <th>الإجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="blacklist-table-body">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+            </section>
+
+            <section id="sec-profile" class="page-section">
+                <div class="content-card">
+                    <h1 class="page-title">الملف الشخصي</h1>
+                </div>
+            </section>
+            <section id="sec-students" class="page-section">
+
+                <div id="studentDetailsContainer" class="ccim"></div>
+
+                <div class="content-card">
+
+                    <div class="user-mgmt-header">
+                        <h1 class="page-title mb-0">إدارة الطلاب</h1>
+
+                        <div class="custom-tabs">
+                            <button class="tab-btn active-tab" onclick="openStudentTab('tab-students-list', this)">
+                                القائمة
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- ================= Students List ================= -->
+                    <div id="tab-students-list" class="tab-content active">
+
+                        <div class="tools-bar row g-3">
+                            <div class="col-md-6">
+                                <input type="text" id="student-search-input" class="search-box"
+                                    placeholder="بحث باسم الطالب أو الرقم الجامعي..." onkeyup="renderStudents()">
+                            </div>
+
+                            <div class="col-md-3">
+                                <select id="student-status-filter" class="filter-select" onchange="renderStudents()">
+                                    <option value="all">كل الحالات</option>
+                                    <option value="active">نشط</option>
+                                    <option value="inactive">غير نشط</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-3">
+                                <select id="student-gender-filter" class="filter-select" onchange="renderStudents()">
+                                    <option value="all">الجنس</option>
+                                    <option value="male">ذكر</option>
+                                    <option value="female">أنثى</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="custom-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>الاسم الكامل</th>
+                                        <th>رقم الجوال</th>
+                                        <th>الرقم الجامعي</th>
+                                        <th>المدينة</th>
+                                        <th>الجنس</th>
+                                        <th>الحالة</th>
+                                        <th>الجامعة</th>
+                                        <th>الإجراءات</th>
+                                    </tr>
+                                </thead>
+                                <button id="addStudentBtn">إضافة طالب جديد</button>
+                                <tbody id="students-table-body">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+                <div id="studentModal" class="modal">
+                    <div class="modal-content">
+                        <h3>إضافة طالب جديد</h3>
+
+                        <input type="text" id="full_name" placeholder="الاسم الكامل">
+                        <input type="text" id="phone" placeholder="رقم الهاتف">
+                        <input type="text" id="university_number" placeholder="الرقم الجامعي">
+                        <input type="text" id="city" placeholder="المدينة">
+
+                        <select id="gender">
+                            <option value="male">ذكر</option>
+                            <option value="female">أنثى</option>
+                        </select>
+
+                        <input type="text" id="university_name" placeholder="اسم الجامعة">
+                        <input type="text" id="college_name" placeholder="اسم الكلية">
+                        <input type="text" id="department_name" placeholder="اسم القسم">
+                        <input type="text" id="level" placeholder="المستوى">
+
+                        <button onclick="saveStudent()">حفظ</button>
+                        <button onclick="closeModal()">إلغاء</button>
+                    </div>
+                </div>
+            </section>
+            </section>
+            <section id="sec-drivers" class="page-section">
+                <div class="content-card">
+                    <h1 class="page-title">السائقين</h1>
+                </div>
+            </section>
+            <section id="sec-trips" class="page-section">
+                <div class="content-card">
+
+                    <div class="user-mgmt-header">
+                        <h1 class="page-title mb-0">إدارة الرحلات</h1>
+
+                        <div class="custom-tabs">
+                            <button class="tab-btn active-tab" onclick="openTripTab('tab-stations',this)">إدارة
+                                المحطات</button>
+                            <button class="tab-btn" onclick="openTripTab('tab-routes',this)">إدارة المسارات</button>
+                            <button class="tab-btn" onclick="openTripTab('tab-assign',this)">تعيين المحطات</button>
+                        </div>
+                    </div>
+
+                    <!-- ================= Stations ================= -->
+                    <div id="tab-stations" class="tab-content active">
+                        <div class="mb-3">
+                            <button class="btn btn-success btn-success-color" onclick="showStationForm()">إضافة
+                                محطة</button>
+                        </div>
+
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>اسم المحطة</th>
+                                    <th>الوصف</th>
+                                    <th>X</th>
+                                    <th>Y</th>
+                                    <th>إجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="stations-table"></tbody>
+                        </table>
+                    </div>
+
+
+
+                    <!-- ================= Routes ================= -->
+                    <div id="tab-routes" class="tab-content">
+
+                        <div class="mb-3">
+                            <button class="btn btn-success btn-success-color" onclick="showRouteForm()">إضافة
+                                مسار</button>
+                        </div>
+
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>اسم المسار</th>
+                                    <th>إجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="routes-table"></tbody>
+                        </table>
+                    </div>
+
+
+
+
+                    <!-- ================= Assign ================= -->
+                    <div id="tab-assign" class="tab-content">
+
+                        <div class="mb-3">
+                            <button class="btn btn-success btn-success-color" onclick="showAssignForm()">تعيين محطات
+                                لمسار</button>
+                        </div>
+
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>المسار</th>
+                                    <th>المحطات</th>
+                                    <th>إجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="assign-table"></tbody>
+                        </table>
+                    </div>
+
+                </div>
+
+
+                <div id="modal-route" class="custom-modal" style="display: none;">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3><i class="bi bi-signpost-split-fill"></i> إضافة مسار جديد</h3>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group mb-3">
+                                <label>اسم المسار:</label>
+                                <input type="text" id="rt-name" class="form-input"
+                                    placeholder="مثال: مسار الخط الدائري">
+                            </div>
+                        </div>
+                        <div class="modal-actions">
+                            <button onclick="saveRoute()" class="btn-save"><i class="bi bi-check-circle"></i> حفظ
+                                المسار</button>
+                            <button onclick="closeModal('modal-route')" class="btn-cancel">إلغاء</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="modal-assign" class="custom-modal" style="display: none;">
+                    <div class="modal-content" style="max-width: 600px;">
+                        <div class="modal-header">
+                            <h3><i class="bi bi-diagram-3-fill"></i> تعيين محطات للمسار</h3>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group mb-4">
+                                <label class="fw-bold text-success">1. اختر المسار الرئيسي:</label>
+                                <select id="assign-route-select" class="form-input"></select>
+                            </div>
+
+                            <label class="fw-bold text-success">2. حدد محطات المسار بالترتيب:</label>
+                            <div id="assign-stations-container">
+                            </div>
+
+                            <button onclick="addStationSelectRow()" class="btn-add-row mt-3">
+                                <i class="bi bi-plus-circle"></i> إضافة محطة إضافية لهذا المسار
+                            </button>
+                        </div>
+                        <div class="modal-actions mt-4">
+                            <button onclick="saveAssign()" class="btn-save"><i class="bi bi-hdd-fill"></i> حفظ
+                                التعيين</button>
+                            <button onclick="closeModal('modal-assign')" class="btn-cancel">إلغاء</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="modal-view-details" class="custom-modal" style="display: none;">
+                    <div class="modal-content detail-card">
+                        <div class="detail-header">
+                            <div class="header-info">
+                                <i class="bi bi-info-circle-fill text-success fs-3"></i>
+                                <div>
+                                    <h4 class="mb-0">تفاصيل خط الرحلة</h4>
+                                    <small class="text-muted" id="view-route-id"></small>
+                                </div>
+                            </div>
+                            <button onclick="closeModal('modal-view-details')" class="btn-close-modal">×</button>
+                        </div>
+
+                        <div class="detail-body">
+                            <div class="route-info-badge">
+                                <i class="bi bi-signpost-2"></i>
+                                <span id="view-route-name">اسم المسار</span>
+                            </div>
+
+                            <h6 class="mt-4 mb-3 text-secondary">محطات التوقف بالترتيب:</h6>
+                            <div id="timeline-container" class="timeline">
+                            </div>
+                        </div>
+
+                        <div class="modal-footer mt-3">
+                            <button onclick="closeModal('modal-view-details')" class="btn-login"
+                                style="width: 100%;">إغلاق العرض</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            </section>
+            <section id="sec-payments" class="page-section">
+                <div class="content-card">
+                    <h1 class="page-title">المدفوعات</h1>
+                </div>
+            </section>
+            <section id="sec-reports" class="page-section">
+                <div class="content-card">
+                    <h1 class="page-title">التقارير</h1>
+                </div>
+            </section>
+            <section id="sec-notifications" class="page-section">
+                <div class="content-card">
+                    <h1 class="page-title">الإشعارات</h1>
+                </div>
+            </section>
+            <section id="sec-settings" class="page-section">
+                <div class="content-card">
+                    <h1 class="page-title">الإعدادات</h1>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <!--================= User Details Modal ================= -->
+    <div id="userDetailsModal" class="user-modal">
+        <div class="user-modal-card" id="userDetailsContent"></div>
+    </div>
+    <!--================= station Details Modal ================= -->
+
+    <div id="stationModal" class="user-modal">
+        <div class="user-modal-card" id="stationModalContent"></div>
+    </div>
+
+    <script src="login.js"></script>
+    <script src="fetchAll.js"></script>
+    <script src="routes.js"></script>
+    <script src="users.js"></script>
+</body>
+
+</html>

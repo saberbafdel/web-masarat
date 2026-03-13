@@ -1,0 +1,1554 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>msaraty</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <meta name="description"
+        content="نظام شامل لإدارة نقل الطلاب الجامعيين، تتبع الرحلات، إدارة المحطات، وتسهيل التنقل داخل الحرم الجامعي بأمان وسهولة.">
+    <meta name="keywords" content="نقل طلاب, جامعات, إدارة الرحلات, محطات الصعود والنزول, متابعة الطلاب, الحرم الجامعي">
+    <meta name="author" content="اسم الجامعة أو الشركة المطورة">
+    <meta name="robots" content="index, follow">
+    <!-- Open Graph (Facebook, LinkedIn) -->
+    <meta property="og:title" content="نظام نقل الطلاب الجامعيين">
+    <meta property="og:description" content="تتبع الرحلات وإدارة المحطات بسهولة وأمان داخل الجامعات">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://example.com">
+    <meta property="og:image" content="https://example.com/assets/logo.png">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="نظام نقل الطلاب الجامعيين">
+    <meta name="twitter:description" content="تسهيل نقل الطلاب داخل الحرم الجامعي وإدارة الرحلات والمحطات بذكاء.">
+    <meta name="twitter:image" content="https://example.com/assets/logo.png">
+
+
+
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="styles.css">
+    <!-- <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" /> -->
+
+
+
+
+</head>
+<style>
+    /* body {
+    background-color:  #a3f1ff40;
+} */
+</style>
+
+<body>
+
+    <section id="login-page">
+        <div class="login-card">
+            <div class="text-center mb-4">
+                <i class="bi bi-shield-lock-fill" style="font-size: 3rem; color: var(--primary-green);"></i>
+                <h3 class="mt-2">تسجيل الدخول</h3>
+            </div>
+            <div>
+                <label class="form-label fw-bold text-muted">اسم المستخدم</label>
+                <input type="text" id="login-username" name="username" class="form-input" placeholder="Username">
+            </div>
+            <div>
+                <label class="form-label fw-bold text-muted">كلمة المرور</label>
+                <input type="password" id="login-password" name="password" class="form-input" placeholder="password">
+            </div>
+            <div id="login-error" class="error-message text-center">بيانات الدخول غير صحيحة</div>
+            <button onclick="login()" class="btn-login">دخول</button>
+        </div>
+    </section>
+
+    <div id="main-wrapper">
+        <div class="navBar">
+            <div class="nav-brand">
+                <i class="bi bi-bus-front-fill" style="color: #0d6efd; margin-left: 8px;"></i>
+                تنسيقية مساراتي
+            </div>
+
+            <div class="nav-actions">
+                <div class="nav-time">
+                    <i class="bi bi-clock"></i>
+                    <span id="live-time">00:00</span>
+                </div>
+
+                <div class="nav-account">
+                    <i class="bi bi-person-circle"></i>
+                    <span id="currentAcount">saber</span>
+
+                </div>
+            </div>
+        </div>
+
+        <aside class="sidebar">
+            <div class="part-top">
+                <div class="sidebar-item" onclick="showPage('sec-profile')" title="الملف الشخصي"><i
+                        class="bi bi-person-circle"></i></div>
+                <div class="sidebar-item" onclick="showPage('sec-home')" title="الرئيسية"><i class="bi bi-house"></i>
+                </div>
+                <div class="sidebar-item" onclick="showPage('sec-users')" title="المستخدمين"><i
+                        class="bi bi-people-fill"></i></div>
+                <div class="sidebar-item" onclick="showPage('sec-students')" title="الطلاب"><i
+                        class="bi bi-mortarboard"></i></div>
+                <div class="sidebar-item" onclick="showPage('sec-drivers')" title="السائقين"><i
+                        class="bi bi-train-front"></i></div>
+                <div class="sidebar-item" onclick="showPage('sec-trips')" title="الرحلات"><i class="bi bi-geo-alt"></i>
+                </div>
+                <div class="sidebar-item" onclick="showPage('sec-payments')" title="المدفوعات"><i
+                        class="bi bi-credit-card"></i></div>
+                <div class="sidebar-item" onclick="showPage('sec-reports')" title="التقارير"><i
+                        class="bi bi-clipboard-data"></i></div>
+                <div class="sidebar-item" onclick="showPage('sec-notifications')" title="الإشعارات"><i
+                        class="bi bi-bell"></i></div>
+            </div>
+            <div class="part-down">
+                <div class="sidebar-item"><i class="bi bi-info-circle"></i></div>
+                <div class="sidebar-item" onclick="showPage('sec-settings')"><i class="bi bi-gear"></i></div>
+                <div class="sidebar-item mt-auto" onclick="location.reload()" title="خروج"><i
+                        class="bi bi-box-arrow-left text-danger"></i></div>
+            </div>
+        </aside>
+
+        <div class="main-content">
+            <section id="sec-profile" class="page-section">
+                <div class="content-card">
+                    <h1 class="page-title tooltip44" title="rrrrrrrr">الملف الشخصي</h1>
+                </div>
+            </section>
+
+            <section id="sec-home" class="page-section active">
+                <div class="content-card content-card-home">
+
+                    <div class="home-layout">
+
+                        <!-- <div class="home-side" id="stations-cards44">
+                            <div class="station-card44"
+                                >
+
+                               
+
+                                
+                            </div>
+
+                        </div> -->
+                        <div class="home-side" id="notifications-cards-container">
+
+                        </div>
+                        <!-- <div class="home-side" id="drivers-cards-container44">
+
+                        </div>
+                        <div class="home-side" id="students-cards-container44">
+
+                        </div> -->
+
+                        <div class="home-map" id="map" style="height: 100%;">
+                            <div class="searsh-bar">
+                                <input type="search" placeholder="البحث...">
+                            </div>
+                        </div>
+                    </div>
+
+            </section>
+
+
+
+            <section id="sec-users" class="page-section">
+                <div id="userDetailsContainer" class="ccim"></div>
+                <div class="content-card">
+
+                    <div class="user-mgmt-header">
+                        <h1 class="page-title mb-0">إدارة المستخدمين</h1>
+                        <div class="custom-tabs">
+                            <button class="tab-btn active-tab" onclick="openUserTab('tab-users-list', this)">
+                                القائمة
+                            </button>
+                            <button id="users-requests-conut" class="tab-btn"
+                                onclick="openUserTab('tab-users-requests', this)">
+                                الطلبات
+                            </button>
+                            <button class="tab-btn" onclick="openUserTab('tab-users-add', this)">
+                                إضافة
+                            </button>
+                            <button class="tab-btn" onclick="openUserTab('tab-blacklist', this)">
+                                القائمة السوداء
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="tab-users-list" class="tab-content active">
+                        <div class="tools-bar row g-3">
+                            <div class="col-md-8">
+                                <input type="text" id="search-input" class="search-box" placeholder="بحث..."
+                                    onkeyup="renderUsers()">
+                            </div>
+                            <div class="col-md-4">
+                                <select id="filter-role" class="filter-select" onchange="renderUsers()">
+                                    <option value="all">الكل</option>
+                                    <option value="1">مشرفين</option>
+                                    <option value="2">سائقين</option>
+                                    <option value="3">طلاب</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="custom-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>إسم المستخدم</th>
+                                        <th>الدور</th>
+                                        <th>الحالة</th>
+                                        <th>الإجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="users-table-body">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div id="tab-users-requests" class="tab-content">
+                        <div class="table-responsive">
+                            <table class="custom-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>إسم المستخدم</th>
+                                        <th>الدور</th>
+                                        <th>تاريخ الطلب</th>
+                                        <th>الحالة</th>
+                                        <th>إلاجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="requests-table-body">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="tab-users-rejected" class="tab-content">
+                        <div class="table-responsive">
+                            <table class="custom-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>إسم المستخدم</th>
+                                        <th>الدور</th>
+                                        <th>الحالة</th>
+                                        <th>إلاجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="rejectes-table-body">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div id="tab-users-add" class="tab-content">
+                        <div class="d-flex justify-content-center py-5">
+                            <div class="login-card">
+                                <h4 class="text-center mb-4">إضافة مشرف جديد</h4>
+                                <input type="text" id="new-admin" class="form-input" placeholder="اسم المستخدم">
+                                <input type="password" id="new-password" class="form-input" placeholder="كلمة المرور">
+                                <button onclick="addAdmin()" class="btn-login">حفظ</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="tab-blacklist" class="tab-content">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>اسم المستخدم</th>
+                                        <th>الدور</th>
+                                        <th>الحالة</th>
+                                        <th>الإجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="blacklist-table-body">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <section id="sec-students" class="page-section">
+                <div class="content-card">
+
+                    <div class="user-mgmt-header">
+                        <h1 class="page-title mb-0">إدارة الطلاب</h1>
+
+                        <div class="custom-tabs">
+                            <button class="tab-btn active-tab" onclick="openStudentTab('tab-students-list', this)">
+                                قائمة الطلاب
+                            </button>
+                            <button class="tab-btn" onclick="openStudentTab('tab-students-data', this)">
+                                بيانات الجامعات
+                            </button>
+                        </div>
+
+
+                    </div>
+
+                    <!-- ================= Students List ================= -->
+                    <div id="tab-students-list" class="tab-content active">
+
+                        <div class="tools-bar row g-3">
+                            <div class="col-md-6">
+                                <input type="text" id="student-search-input" class="search-box" placeholder="بحث ..."
+                                    onkeyup="renderStudents()">
+                            </div>
+
+                            <div class="col-md-3">
+                                <select id="student-status-filter" class="filter-select" onchange="renderStudents()">
+                                    <option value="all">كل الحالات</option>
+                                    <option value="active">نشط</option>
+                                    <option value="inactive"> متوقف</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-3">
+                                <select id="student-gender-filter" class="filter-select" onchange="renderStudents()">
+                                    <option value="all">الجنس</option>
+                                    <option value="male">ذكر</option>
+                                    <option value="female">أنثى</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="custom-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>الاسم الكامل</th>
+                                        <th>رقم الجوال</th>
+                                        <th>المدينة</th>
+                                        <th>الجنس</th>
+                                        <th>الحالة</th>
+                                        <th>الجامعة</th>
+                                        <th>محطة الصعود</th>
+                                        <th>محطة النزول</th>
+                                        <th>الإجراءات</th>
+                                    </tr>
+                                </thead>
+                                <!-- زر إضافة طالب -->
+                                <button id="addStudentBtn" class="btn btn-success btn-success-color"
+                                    onclick="showAddStudentModal()">
+                                    إضافة طالب جديد
+                                </button>
+                                <tbody id="students-table-body">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="tab-students-data" class="tab-content">
+                        <button class="btn btn-success btn-success-color" onclick="showUnifiedAcademicForm()">
+                            اضافة وتعديل بيانات الجامعات
+                        </button>
+                        <div class="table-responsive">
+                            <table class="custom-table">
+                                <thead>
+                                    <tr>
+                                        <th>الجامعة</th>
+                                        <th>الكلية</th>
+                                        <th>القسم</th>
+                                        <th>عدد المستويات</th>
+                                        <th>الاجراءت</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="academic-structure-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- ===== Student Add Modal 111111===== -->
+                <div class="student-modal-overlay" id="studentAddModal">
+                    <div class="student-modal-card">
+                        <h3>اضافة طالب جديد</h3>
+
+                        <div class="account-section">
+                            <h4>بيانات حساب الطالب (تسجيل الدخول)</h4>
+                            <div class="form-grid">
+                                <input type="text" class="form-input" id="add-student-username"
+                                    placeholder="اسم المستخدم (Username)">
+                                <input type="password" class="form-input" id="add-student-password"
+                                    placeholder="كلمة المرور (Password)">
+                            </div>
+                        </div>
+
+                        <div class="form-grid">
+                            <input type="text" class="form-input" id="add-student-name" placeholder="الاسم الكامل">
+                            <input type="text" class="form-input" id="add-student-phone" placeholder="رقم الهاتف">
+                            <input type="text" class="form-input" id="add-student-university-number"
+                                placeholder="الرقم الجامعي">
+                            <input type="text" class="form-input" id="add-student-city" placeholder="المدينة">
+
+                            <select id="add-student-gender" class="form-input">
+                                <option value="">الجنس</option>
+                                <option value="ذكر">ذكر</option>
+                                <option value="أنثى">أنثى</option>
+                            </select>
+
+                            <select id="add-student-state" class="form-input">
+                                <option value="Active">نشط</option>
+                                <option value="Inactive">متوقف</option>
+                            </select>
+
+                            <select id="add-student-university" class="form-input"
+                                onchange="onUniversityChange(this.value)">
+                                <option value="">اختر الجامعة</option>
+                            </select>
+
+                            <select id="add-student-college" class="form-input" onchange="onCollegeChange(this.value)">
+                                <option value="">اختر الكلية</option>
+                            </select>
+
+                            <select id="add-student-department" class="form-input"
+                                onchange="onDepartmentChange(this.value)">
+                                <option value="">اختر القسم </option>
+                            </select>
+
+                            <select id="add-student-level" class="form-input">
+                                <option value="">اختر المستوى</option>
+                            </select>
+
+                            <select id="add-student-boarding-station" class="form-input">
+                                <option value="">اختر محطة الركوب</option>
+                            </select>
+
+                            <select id="add-student-alighting-station" class="form-input">
+                                <option value="">اختر محطة النزول</option>
+                            </select>
+                        </div>
+                        <div class="days-selection" id="add-student-days">
+                            <label>أيام الدوام</label>
+
+                            <div class="days-grid">
+                                <label><input type="checkbox" value="1"> السبت</label>
+                                <label><input type="checkbox" value="2"> الأحد</label>
+                                <label><input type="checkbox" value="3"> الإثنين</label>
+                                <label><input type="checkbox" value="4"> الثلاثاء</label>
+                                <label><input type="checkbox" value="5"> الأربعاء</label>
+                                <label><input type="checkbox" value="6"> الخميس</label>
+                            </div>
+                        </div>
+
+                        <div class="student-modal-actions">
+                            <button class="btn btn-success btn-success-color" onclick="saveStudent()">حفظ
+                                البيانات</button>
+                            <button class="btn-cancel-gray" onclick="closeStudentModal()">إلغاء</button>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <!-- modals for student data management -->
+
+                <div id="modal-unified-structure" class="modal-overlay" style="display: none;">
+                    <div class="modal-content academic-modal">
+                        <div class="modal-header">
+                            <h3>اضافة وتعديل بيانات الجامعات</h3>
+                            <button class="close-btn" onclick="closeModal('modal-unified-structure')">&times;</button>
+                        </div>
+
+                        <div class="modal-body">
+                            <div class="academic-section">
+                                <label><i class="bi bi-bank"></i> الجامعة</label>
+                                <select id="unified-uni-select" onchange="handleAcademicChange('uni')">
+                                    <option value="">-- اختر جامعة موجودة --</option>
+                                    <option value="NEW">+ إضافة جامعة جديدة</option>
+                                </select>
+                                <input type="text" id="new-uni-name" placeholder="اسم الجامعة الجديدة"
+                                    class="hidden-input" style="display:none;">
+                            </div>
+
+                            <hr>
+
+                            <div class="academic-section">
+                                <label><i class="bi bi-building"></i> الكلية</label>
+                                <select id="unified-college-select" onchange="handleAcademicChange('college')" disabled>
+                                    <option value="">-- اختر الكلية --</option>
+                                    <option value="NEW">+ إضافة كلية جديدة</option>
+                                </select>
+                                <input type="text" id="new-college-name" placeholder="اسم الكلية الجديدة"
+                                    class="hidden-input" style="display:none;">
+                            </div>
+
+                            <hr>
+
+                            <div class="academic-section">
+                                <label><i class="bi bi-diagram-3"></i> القسم</label>
+                                <select id="unified-dept-select" onchange="handleAcademicChange('dept')" disabled>
+                                    <option value="">-- اختر القسم --</option>
+                                    <option value="NEW">+ إضافة قسم جديد</option>
+                                </select>
+                                <input type="text" id="new-dept-name" placeholder="اسم القسم الجديد"
+                                    class="hidden-input" style="display:none;">
+                            </div>
+
+                            <hr>
+
+                            <div class="academic-section">
+                                <label><i class="bi bi-layers"></i> المستوى</label>
+                                <select id="unified-level-select" onchange="handleAcademicChange('level')" disabled>
+                                    <option value="">-- اختر المستوى --</option>
+                                    <option value="NEW">+ إضافة مستوى جديد</option>
+                                </select>
+                                <input type="text" id="new-level-name" placeholder="اسم المستوى الجديد"
+                                    class="hidden-input" style="display:none;">
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button class="btn btn-success btn-success-color" onclick="saveUnifiedStructure()">حفظ
+                                البيانات</button>
+                            <button class="btn-cancel" onclick="closeModal('modal-unified-structure')">إلغاء</button>
+                        </div>
+                    </div>
+                </div>
+
+
+            </section>
+            </section>
+
+            <section id="sec-drivers" class="page-section">
+                <div class="content-card">
+
+                    <div class="user-mgmt-header">
+                        <h1 class="page-title mb-0">إدارة السائقين</h1>
+                    </div>
+
+                    <div class="tools-bar row g-3">
+                        <div class="col-md-6">
+                            <input type="text" id="driver-search-input" class="search-box" placeholder="بحث ..."
+                                onkeyup="renderDriversAndBuses()">
+                        </div>
+
+                        <div class="col-md-3">
+                            <select id="driver-status-filter" class="filter-select" onchange="renderDriversAndBuses()">
+                                <option value="all">كل الحالات</option>
+                                <option value="Active">يعمل</option>
+                                <option value="Inactive">لا يعمل</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <select id="driver-fuel-filter" class="filter-select" onchange="renderDriversAndBuses()">
+                                <option value="all">كل</option>
+                                <option value="بترول">بترول</option>
+                                <option value="ديزل">ديزل</option>
+                                <option value="غاز">غاز</option>
+                            </select>
+                        </div>
+
+
+                    </div>
+
+                    <div class="table-responsive">
+                        <button id="addDriverBusBtn" class="btn btn-success btn-success-color"
+                            onclick="openDriverBusModal()">
+                            إضافة سائق
+                        </button>
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>ID السائق</th>
+                                    <th>اسم السائق</th>
+                                    <th>رقم الجوال</th>
+                                    <th>الحالة</th>
+                                    <!-- <th>رقم الباص</th> -->
+                                    <th>عدد الركاب</th>
+                                    <th>نوع الوقود</th>
+                                    <th>إجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="drivers-buses-table-body">
+                                <!-- هنا سيتم إدخال صفوف السائقين مع الباص المرتبط بهم -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </section>
+            <section id="sec-trips" class="page-section">
+                <div class="content-card">
+
+                    <div class="user-mgmt-header">
+                        <h1 class="page-title mb-0">إدارة الرحلات</h1>
+
+                        <div class="custom-tabs">
+                            <button class="tab-btn active-tab" onclick="openTripTab('tab-stations',this)">إدارة
+                                المحطات</button>
+                            <button class="tab-btn" onclick="openTripTab('tab-routes',this)">إدارة المسارات</button>
+                            <button class="tab-btn" onclick="openTripTab('tab-assign',this)">تعيين المحطات</button>
+                        </div>
+                    </div>
+
+                    <!-- ================= Stations ================= -->
+                    <div id="tab-stations" class="tab-content active">
+
+                        <div class="mb-3">
+                            <button class="btn btn-success btn-success-color" onclick="showStationForm()">إضافة
+                                محطة</button>
+                        </div>
+
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>اسم المحطة</th>
+                                    <th>الوصف</th>
+                                    <th>العرض</th>
+                                    <th>الطول</th>
+                                    <th>عدد الطلاب</th>
+                                    <th>إجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="stations-table"></tbody>
+                        </table>
+                    </div>
+
+                    <!-- ================= Routes ================= -->
+                    <div id="tab-routes" class="tab-content">
+
+                        <div class="mb-3">
+                            <button class="btn btn-success btn-success-color" onclick="showRouteForm()">إضافة
+                                مسار</button>
+                        </div>
+
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>اسم المسار</th>
+                                    <th>إجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="routes-table"></tbody>
+                        </table>
+                    </div>
+
+
+
+
+                    <!-- ================= Assign ================= -->
+                    <div id="tab-assign" class="tab-content">
+
+                        <div class="mb-3">
+                            <button class="btn btn-success btn-success-color" onclick="showAssignForm()">تعيين محطات
+                                لمسار</button>
+                        </div>
+
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>المسار</th>
+                                    <th>المحطات</th>
+                                    <th>إجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="assign-table"></tbody>
+                        </table>
+                    </div>
+
+                </div>
+
+                <div id="modal-station" class="custom-modal" style="display: none;">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3><i class="bi bi-geo-alt-fill"></i> إضافة محطة جديدة</h3>
+                        </div>
+
+                        <div class="modal-body">
+                            <div class="form-group mb-3">
+                                <label>اسم المحطة:</label>
+                                <input type="text" id="st-name" class="form-input" placeholder=":اسم محطة ">
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label>الوصف:</label>
+                                <input type="text" id="st-desc" class="form-input" placeholder="وصف  اللمحطة">
+                            </div>
+
+                            <div class="row" style="display: flex; gap: 10px;">
+                                <div class="col-6" style="flex: 1;">
+                                    <label>إحداثي X:</label>
+                                    <input type="number" id="st-x" class="form-input" placeholder="0.00">
+                                </div>
+                                <div class="col-6" style="flex: 1;">
+                                    <label>إحداثي Y:</label>
+                                    <input type="number" id="st-y" class="form-input" placeholder="0.00">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal-actions mt-4">
+                            <button onclick="saveStation()" class="btn btn-success btn-success-color">
+                                حفظ المحطة
+                            </button>
+                            <button onclick="closeModal('modal-station')" class="btn-cancel">
+                                إلغاء
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div id="modal-route" class="custom-modal" style="display: none;">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3>إضافة مسار جديد</h3>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group mb-3">
+                                <label>اسم المسار:</label>
+                                <input type="text" id="rt-name" class="form-input"
+                                    placeholder=": مسار مثال (مسار فلك - الغيل)">
+                            </div>
+                        </div>
+                        <div class="modal-actions">
+                            <button onclick="saveRoute()" class="btn btn-success btn-success-color"> حفظ
+                                المسار</button>
+                            <button onclick="closeModal('modal-route')" class="btn-cancel">إلغاء</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="modal-assign" class="custom-modal" style="display: none;">
+                    <div class="modal-content" style="max-width: 600px;">
+                        <div class="modal-header">
+                            <h3><i class="bi bi-diagram-3-fill"></i> تعيين محطات للمسار</h3>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group mb-4">
+                                <label class="fw-bold text-success">1. اختر المسار الرئيسي:</label>
+                                <select id="assign-route-select" class="form-input"></select>
+                            </div>
+
+                            <label class="fw-bold text-success">2. حدد محطات المسار بالترتيب:</label>
+                            <div id="assign-stations-container">
+                            </div>
+
+                            <button onclick="addStationSelectRow()" class="btn-add-row mt-3">
+                                <i class="bi bi-plus-circle"></i> إضافة محطة إضافية لهذا المسار
+                            </button>
+                        </div>
+                        <div class="modal-actions mt-4">
+                            <button onclick="saveAssign()" class="btn btn-success btn-success-color"> حفظ
+                                التعيين</button>
+                            <button onclick="closeModal('modal-assign')" class="btn-cancel">إلغاء</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="modal-view-details" class="custom-modal" style="display: none;">
+                    <div class="modal-content detail-card">
+                        <div class="detail-header">
+                            <div class="header-info">
+
+                                <div>
+                                    <h4 class="mb-0">تفاصيل خط الرحلة</h4>
+                                    <small class="text-muted" id="view-route-id"></small>
+                                </div>
+                            </div>
+                            <button onclick="closeModal('modal-view-details')" class="btn-close-modal">×</button>
+                        </div>
+
+                        <div class="detail-body">
+                            <div class="route-info-badge">
+                                <i class="bi bi-signpost-2"></i>
+                                <span id="view-route-name">اسم المسار</span>
+                            </div>
+
+                            <h6 class="mt-4 mb-3 text-secondary">محطات التوقف بالترتيب:</h6>
+                            <div id="timeline-container" class="timeline">
+                            </div>
+                        </div>
+
+                        <div class="modal-footer mt-3">
+                            <button onclick="closeModal('modal-view-details')" class="btn-login"
+                                style="width: 100%;">إغلاق العرض</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            </section>
+            <section id="sec-payments" class="page-section">
+                <div class="content-card">
+                    <h1 class="page-title">المدفوعات</h1>
+                </div>
+            </section>
+            <section id="sec-reports" class="page-section">
+
+                <div class="content-card">
+                    <div class="user-mgmt-header">
+                        <h1 class="page-title mb-0">إدارة التقارير</h1>
+
+                        <div class="custom-tabs">
+                            <button class="tab-btn active-tab" onclick="openReportTab('tab-reports-cards', this)">الكروت
+                                السريعة</button>
+                            <button class="tab-btn" onclick="openReportTab('tab-reports-stations', this)">إحصائيات
+                                المحطات</button>
+                            <button class="tab-btn" onclick="openReportTab('tab-reports-days', this)">إحصائيات
+                                الأيام</button>
+                            <button class="tab-btn" onclick="openReportTab('tab-reports-academic', this)">الهيكل
+                                الأكاديمي</button>
+                            <button class="tab-btn" onclick="openReportTab('tab-reports-charts', this)">المقارنات
+                                البيانية</button>
+                        </div>
+                    </div>
+
+                    <!-- تاب الكروت السريعة -->
+                    <div id="tab-reports-cards" class="tab-content active">
+                        <div id="reports-container" class="reports-container">
+                            <!-- دالة renderReports() ستضيف الكروت هنا -->
+                        </div>
+                    </div>
+
+                    <!-- تاب إحصائيات المحطات -->
+                    <div id="tab-reports-stations" class="tab-content">
+                        <div id="reports-container-stations">
+                            <!-- جدول الطلاب لكل محطة -->
+                        </div>
+                    </div>
+
+                    <!-- تاب إحصائيات الأيام -->
+                    <div id="tab-reports-days" class="tab-content">
+                        <div id="reports-container-days">
+                            <!-- جدول الطلاب لكل يوم -->
+                        </div>
+                    </div>
+
+                    <!-- تاب الهيكل الأكاديمي -->
+                    <div id="tab-reports-academic" class="tab-content">
+                        <div id="reports-container-academic">
+                            <!-- جدول الجامعات والكليات والأقسام والمستويات -->
+                        </div>
+                    </div>
+
+                    <!-- تاب المقارنات البيانية -->
+                    <div id="tab-reports-charts" class="tab-content">
+                        <div style="display: flex; flex-wrap: wrap; gap: 20px;">
+                            <canvas id="chart-stations" width="400" height="200"></canvas>
+                            <canvas id="chart-days" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="sec-notifications" class="page-section">
+                <div class="content-card">
+
+                    <div class="user-mgmt-header">
+                        <h1 class="page-title mb-0">إدارة الإشعارات</h1>
+
+                        <div class="custom-tabs">
+
+                            <button class="tab-btn active-tab"
+                                onclick="openNotificationTab('tab-notifications-all', this)">
+                                الكل
+                            </button>
+
+                            <button class="tab-btn" onclick="openNotificationTab('tab-notifications-absence', this)">
+                                إشعارات الغياب
+                            </button>
+
+                            <button class="tab-btn" onclick="openNotificationTab('tab-notifications-system', this)">
+                                إشعارات النظام
+                            </button>
+
+                            <!-- <button class="tab-btn" onclick="openNotificationTab('tab-notifications-coming', this)">
+                                قريباً
+                            </button> -->
+                            <!-- <button class="tab-btn" onclick="openNotificationTab('tab-notifications-coming2', this)">
+                                2 قريباً
+                            </button> -->
+
+                        </div>
+                    </div>
+
+                    <!-- تبويب الكل -->
+
+
+                    <div id="tab-notifications-all" class="tab-content active">
+
+                        <div class="tools-bar row g-3">
+
+                            <!-- <div class="col-md-5">
+                                <input type="text" id="search-notifications" class="search-box"
+                                    placeholder="بحث عن إشعار..." onkeyup="renderNotifications()">
+                            </div> -->
+
+                            <div class="col-md-3">
+                                <select id="filter-target" class="filter-select" onchange="renderNotifications()">
+
+                                    <option value="all">الجهة: الكل</option>
+                                    <option value="students">الطلاب</option>
+                                    <option value="drivers">السائقين</option>
+                                    <option value="supervisors">المشرفين</option>
+
+                                </select>
+                            </div>
+
+                            <div class="col-md-3">
+                                <select id="filter-type" class="filter-select" onchange="renderNotifications()">
+
+                                    <option value="all">الكل</option>
+                                    <option value="urgent_notification">إشعار عاجل</option>
+                                    <option value="absence_alert">تنبيه غياب</option>
+                                    <option value="warning">تحذير</option>
+                                    <option value="system_notification">إشعار نظام</option>
+                                    <option value="notification">إشعار عادي</option>
+
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <select id="filter-time" class="filter-select" onchange="renderNotifications()">
+                                    <option value="all">كل الأوقات</option>
+                                    <option value="desc">الأحدث أولاً</option>
+                                    <option value="asc">الأقدم أولاً</option>
+                                </select>
+                            </div>
+
+
+
+                        </div>
+                        <div class="col-md-1">
+                            <button class="btn btn-success btn-success-color width: 140px; height: 46px;"
+                                onclick="openNotifyModal()">
+                                إرسال
+                            </button>
+                        </div>
+
+                        <div id="notifications-container" class="notifications-grid">
+                        </div>
+
+                    </div>
+
+                    <!-- إشعارات الغياب -->
+
+                    <div id="tab-notifications-absence" class="tab-content">
+
+                        <div id="absence-container" class="notifications-grid">
+                        </div>
+
+                    </div>
+
+                    <!-- إشعارات النظام -->
+
+                    <div id="tab-notifications-system" class="tab-content">
+
+                        <div id="system-container" class="notifications-grid">
+                        </div>
+
+                    </div>
+
+                    <!-- قريباً -->
+
+                    <div id="tab-notifications-coming" class="tab-content">
+
+                        <div class="text-center py-5">
+                            سيتم إضافة أقسام جديدة قريباً
+                        </div>
+
+                    </div>
+
+                </div>
+                <div id="notifyModal" class="custom-modal">
+
+                    <div class="modal-box">
+
+                        <div class="modal-header">
+                            <h3>إرسال إشعار</h3>
+                            <button class="close-modal" onclick="closeNotifyModal()">✕</button>
+                        </div>
+
+                        <div class="modal-body">
+
+                            <label>العنوان</label>
+                            <input id="notify-title" type="text" class="form-input" placeholder="أدخل عنوان الإشعار">
+
+                            <label>محتوى الرسالة</label>
+                            <textarea id="notify-message" class="form-textarea"
+                                placeholder="أدخل نص الرسالة"></textarea>
+
+                            <label>الجهة</label>
+                            <select id="notify-target" class="form-select">
+                                <option value="students">الطلاب</option>
+                                <option value="drivers">السائقين</option>
+                                <option value="supervisors">المشرفين</option>
+                            </select>
+
+                            <label>نوع الإشعار</label>
+                            <select id="notify-type" class="form-select">
+                                <option value="notification">إشعار</option>
+                                <option value="alert">تنبيه</option>
+                                <option value="warning">تحذير</option>
+                                <option value="urgent_notification">إشعار عاجل</option>
+                            </select>
+
+                        </div>
+
+                        <div class="modal-footer">
+                            <div class="modal-footer">
+                                <button class="btn btn-success btn-success-color"
+                                    onclick="sendNotification()">إرسال</button>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </section>
+            <section id="sec-settings" class="page-section">
+                <div class="content-card settings-card">
+                    <h1 class="page-title">الإعدادات</h1>
+
+
+
+                </div>
+            </section>
+
+        </div>
+    </div>
+    <div id="modal-academic-details" class="modal-overlay" style="display: none;">
+        <div class="modal-content report-modal">
+            <div class="modal-header"
+                style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+                <h3 id="details-uni-title" style="margin: 0;">تفاصيل الإحصائيات</h3>
+                <button class="close-btn" onclick="closeModal('modal-academic-details')"
+                    style="background: none; border: none; font-size: 24px; cursor: pointer;">&times;</button>
+            </div>
+
+            <div class="modal-body" style="padding: 20px 0;">
+                <div class="uni-summary-card">
+                    <i class="bi bi-people-fill"></i>
+                    <span>إجمالي طلاب الجامعة: </span>
+                    <strong id="total-uni-students">0</strong>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="custom-table detailed-table">
+                        <thead>
+                            <tr>
+                                <th>الكلية</th>
+                                <th>القسم</th>
+                                <th>المستوى</th>
+                                <th>عدد الطلاب</th>
+                            </tr>
+                        </thead>
+                        <tbody id="details-table-body">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="modal-footer" style="text-align: left; border-top: 1px solid #eee; padding-top: 15px;">
+                <button class="btn btn-secondary" onclick="closeModal('modal-academic-details')"
+                    style="padding: 8px 20px; background-color: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                    إغلاق النافذة
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ===== Driver & Bus Add Modal ===== -->
+    <div class="student-modal-overlay" id="driverBusAddModal">
+        <div class="student-modal-card">
+            <h3 id="modal-title">إضافة سائق جديد</h3>
+
+            <div class="account-section">
+                <h4>بيانات السائق</h4>
+                <div class="form-grid">
+
+                    <input type="text" class="form-input" id="add-driver-username" placeholder="اسم المستخدم">
+                    <input type="password" class="form-input" id="add-driver-password" placeholder="كلمة المرور">
+
+                    <input type="text" class="form-input" id="add-driver-name" placeholder="اسم السائق">
+                    <input type="text" class="form-input" id="add-driver-phone" placeholder="رقم الجوال">
+
+
+                    <select id="add-driver-state" class="form-input">
+                        <option value="Active">نشط</option>
+                        <option value="Inactive">متوقف</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-grid">
+                <h4>بيانات الباص</h4>
+                <h4></h4>
+                <!-- <input type="text" class="form-input" id="add-bus-number" placeholder="رقم الباص"> -->
+                <input type="number" class="form-input" id="add-bus-passengers" placeholder="عدد الركاب">
+                <select id="add-bus-fuel-type" class="form-input">
+                    <option value="">اختر نوع الوقود</option>
+                    <option value="بترول">بترول</option>
+                    <option value="ديزل">ديزل</option>
+                    <option value="غاز">غاز</option>
+                </select>
+            </div>
+
+            <div class="student-modal-actions">
+                <button class="btn btn-success btn-success-color" onclick="saveDriverBus()">حفظ البيانات</button>
+                <button class="btn-cancel-gray" onclick="closeDriverBusModal()">إلغاء</button>
+            </div>
+        </div>
+    </div>
+    <div class="student-modal-overlay" id="driverBusDetailsModal">
+        <div class="student-modal-card">
+            <h3>تفاصيل السائق والباص</h3>
+
+            <div class="form-grid">
+                <p><strong>اسم السائق:</strong> <span id="detail-driver-name"></span></p>
+                <p><strong>رقم الجوال:</strong> <span id="detail-driver-phone"></span></p>
+                <p><strong>عدد الركاب:</strong> <span id="detail-bus-passengers"></span></p>
+                <p><strong>نوع الوقود:</strong> <span id="detail-bus-fuel"></span></p>
+                <p><strong>الحالة:</strong> <span id="detail-driver-state"></span></p>
+            </div>
+
+            <div class="student-modal-actions">
+                <button class="btn-cancel-gray" onclick="closeDriverBusDetailsModal()">إغلاق</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        function truncateText(text, maxLength = 60) { if (!text) return ""; if (text.length <= maxLength) return text; return text.substring(0, maxLength) + "..."; }
+
+        let lat = 14.775823;
+        let lng = 49.372572;
+
+        function loadMap(newLat = lat, newLng = lng) {
+
+            const mapContainer = document.getElementById("map");
+            if (!mapContainer) return;
+
+            const mapUrl = `https://maps.google.com/maps?q=${newLat},${newLng}&z=17&output=embed`;
+
+            let iframe = mapContainer.querySelector("iframe");
+
+            if (!iframe) {
+
+                iframe = document.createElement("iframe");
+
+                iframe.style.width = "100%";
+                iframe.style.height = "100%";
+                iframe.style.border = "0";
+                iframe.style.borderRadius = "8px";
+
+                iframe.loading = "lazy";
+
+                mapContainer.appendChild(iframe);
+            }
+
+            iframe.src = mapUrl;
+        }
+
+
+        document.addEventListener("DOMContentLoaded", function () {
+            loadMap(lat, lng);
+        });
+
+
+        function openNotificationTab(tabId, btn) {
+
+            const parent = document.getElementById("sec-notifications");
+
+            parent.querySelectorAll(".tab-content")
+                .forEach(t => t.classList.remove("active"));
+
+            parent.querySelectorAll(".tab-btn")
+                .forEach(b => b.classList.remove("active-tab"));
+
+            document.getElementById(tabId).classList.add("active");
+
+            btn.classList.add("active-tab");
+        }
+
+
+
+        let notificationsData = [];
+
+
+        async function fetchNotifications() {
+            try {
+                const res = await fetch(`${API}/notifications`);
+                notificationsData = await res.json();
+                console.table(notificationsData);
+                renderNotificationsCarts();
+
+                renderNotifications();
+            } catch (error) {
+                console.error("فشل في جلب الإشعارات:", error);
+            }
+        }
+
+
+        function renderNotifications() {
+
+            const container = document.getElementById("notifications-container");
+            if (!container) return;
+
+            container.innerHTML = "";
+
+            const targetFilter = document.getElementById("filter-target").value;
+            const typeFilter = document.getElementById("filter-type").value;
+            const timeFilter = document.getElementById("filter-time").value;
+
+            const targetMap = {
+                students: 1,
+                drivers: 2,
+                supervisors: 3
+            };
+
+            let filteredNotifications = notificationsData.filter(n => {
+
+                let targetMatch = true;
+                let typeMatch = true;
+
+                if (targetFilter !== "all") {
+                    targetMatch = n.target_group === targetMap[targetFilter];
+                }
+
+                if (typeFilter !== "all") {
+                    typeMatch = n.type === typeFilter;
+                }
+
+                return targetMatch && typeMatch;
+            });
+
+
+            // ترتيب حسب الوقت
+            if (timeFilter === "desc") {
+                filteredNotifications.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+            }
+
+            if (timeFilter === "asc") {
+                filteredNotifications.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+            }
+
+
+            filteredNotifications.forEach(n => {
+
+                let typeColor = "#0d6efd";
+                let typeLabel = "إشعار";
+                let icon = "bi-bell-fill";
+
+                switch (n.type) {
+                    case 'urgent_notification':
+                        typeColor = "#dc3545";
+                        typeLabel = "عاجل";
+                        icon = "bi-lightning-fill";
+                        break;
+
+                    case 'absence_alert':
+                        typeColor = "#fd7e14";
+                        typeLabel = "غياب";
+                        icon = "bi-person-x-fill";
+                        break;
+
+                    case 'warning':
+                        typeColor = "#ffc107";
+                        typeLabel = "تحذير";
+                        icon = "bi-exclamation-triangle-fill";
+                        break;
+
+                    case 'system_notification':
+                        typeColor = "#6f42c1";
+                        typeLabel = "نظام";
+                        icon = "bi-gear-fill";
+                        break;
+
+                    case 'alert':
+                        typeColor = "#17a2b8";
+                        typeLabel = "تنبيه";
+                        icon = "bi-info-circle-fill";
+                        break;
+                }
+
+                const targetLabels = {
+                    1: "الطلاب",
+                    2: "السائقين",
+                    3: "المشرفين"
+                };
+
+                let targetText = targetLabels[n.target_group] || "الكل";
+
+                container.innerHTML += `
+        <div class="station-card44" style="border-top: 5px solid ${typeColor};border-radius: 6px;">
+            <div class="station-header44">
+                <h4 class="station-title44" style="color: ${typeColor};">
+                    <i class="bi ${icon}"></i> ${n.title}
+                </h4>
+                <span class="station-id44">Sender: #${n.sender_id}</span>
+            </div>
+
+            <div class="station-body44">
+                <p class="station-desc44" style="font-size: 14px; color: #333; font-weight: 500;">
+                ${truncateText(n.message)}</p>
+
+                <div class="station-location44" style="margin-top: 8px; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 11px; color: #777;">
+                        <i class="bi bi-clock"></i>
+                        ${formatDate(n.created_at)}
+                    </span>
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content:space-between; margin-top: 5px;">
+                <span style="background: ${typeColor}15; color: ${typeColor}; padding: 2px 10px; border-radius: 20px; font-size: 10px; font-weight: bold; border: 1px solid ${typeColor}44;">
+                    ${typeLabel}
+                </span>
+
+                <span class="target-badge44 target-${n.target_group}">
+                ${targetText}
+                </span>
+            </div>
+        </div>
+        `;
+            });
+
+        }
+
+        function renderNotificationsCarts() {
+
+            const container = document.getElementById("notifications-cards-container");
+            if (!container) return;
+
+            let html = "";
+
+            notificationsData.forEach(n => {
+
+                let typeColor = "#0d6efd";
+                let typeLabel = "إشعار";
+                let icon = "bi-bell-fill";
+
+                switch (n.type) {
+
+                    case "urgent_notification":
+                        typeColor = "#dc3545";
+                        typeLabel = "عاجل";
+                        icon = "bi-lightning-fill";
+                        break;
+
+                    case "absence_alert":
+                        typeColor = "#fd7e14";
+                        typeLabel = "غياب";
+                        icon = "bi-person-x-fill";
+                        break;
+
+                    case "warning":
+                        typeColor = "#ffc107";
+                        typeLabel = "تحذير";
+                        icon = "bi-exclamation-triangle-fill";
+                        break;
+
+                    case "system_notification":
+                        typeColor = "#6f42c1";
+                        typeLabel = "نظام";
+                        icon = "bi-gear-fill";
+                        break;
+
+                    case "alert":
+                        typeColor = "#17a2b8";
+                        typeLabel = "تنبيه";
+                        icon = "bi-info-circle-fill";
+                        break;
+                }
+
+                const targetLabels = {
+                    1: "الطلاب",
+                    2: "السائقين",
+                    3: "المشرفين"
+                };
+
+                let targetText = targetLabels[n.target_group] || "الكل";
+
+                html += `
+        <div class="station-card44" style="border-top:4px solid ${typeColor}">
+
+            <div class="station-header44">
+
+                <h4 class="station-title44" style="color:${typeColor}">
+                    <i class="bi ${icon}"></i>
+                    ${n.title}
+                </h4>
+
+                <span class="station-id44">
+                    Sender #${n.sender_id}
+                </span>
+
+            </div>
+
+            <div class="station-body44">
+
+                <p class="station-desc44"
+                style="font-size:13px;color:#333;font-weight:500">
+
+                    ${n.message}
+
+                </p>
+
+                <div class="station-location44"
+                style="margin-top:6px;display:flex;justify-content:space-between">
+
+                    <span style="font-size:11px;color:#777">
+
+                        <i class="bi bi-clock"></i>
+                        ${formatDate(n.created_at)}
+
+                    </span>
+
+                    <span style="font-size:11px;font-weight:bold;color:#555">
+
+                        خاص بـ: ${targetText}
+
+                    </span>
+
+                </div>
+
+            </div>
+
+            <div style="display:flex;justify-content:flex-end;margin-top:5px">
+
+                <span style="
+                    background:${typeColor}15;
+                    color:${typeColor};
+                    padding:2px 10px;
+                    border-radius:20px;
+                    font-size:10px;
+                    font-weight:bold;
+                    border:1px solid ${typeColor}55;
+                ">
+                    ${typeLabel}
+                </span>
+
+            </div>
+
+        </div>
+        `;
+            });
+
+            container.innerHTML = html;
+        }
+        // "http://localhost:3000/notifications"
+
+        async function sendNotification() {
+            // استخدام المعرفات (IDs) للوصول المباشر والدقيق للعناصر
+            const title = document.getElementById("notify-title").value.trim();
+            const message = document.getElementById("notify-message").value.trim();
+            const target = document.getElementById("notify-target").value;
+            const typeValue = document.getElementById("notify-type").value;
+
+            // التحقق من إدخال البيانات
+            if (!title || !message) {
+                return alert("الرجاء إكمال البيانات");
+            }
+
+            // تحديد الفئة المستهدفة بناءً على القيمة (value) الإنجليزية القادمة من HTML
+            let target_group = 1;
+            if (target === "students") target_group = 1;
+            else if (target === "drivers") target_group = 2;
+            else if (target === "supervisors") target_group = 3;
+
+            // لا حاجة لتحويل نوع الإشعار لأن القيمة (value) في HTML هي نفسها التي تحتاجها في السيرفر
+            // ("notification", "alert", "warning", "urgent_notification")
+
+            const newNotification = {
+                sender_id: 1, // تأكد من أن هذا الرقم ديناميكي إذا كان يعتمد على المستخدم الحالي
+                title: title,
+                message: message,
+                created_at: new Date().toISOString(),
+                target_group: target_group,
+                type: typeValue
+            };
+
+            try {
+                // تأكد من أن المتغير API مُعرف مسبقاً في كودك
+                await fetch(`${API}/notifications`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    body: JSON.stringify(newNotification)
+                });
+
+                alert("تم إرسال الإشعار بنجاح");
+
+                // تفريغ الحقول بعد النجاح
+                document.getElementById("notify-title").value = "";
+                document.getElementById("notify-message").value = "";
+
+                // إغلاق النافذة المنبثقة
+                if (typeof closeNotifyModal === "function") {
+                    closeNotifyModal();
+                }
+
+                // تحديث قائمة الإشعارات (استدعاء دالة واحدة يكفي بدلاً من استدعاء loadNotifications و fetchNotifications معاً)
+                if (typeof fetchNotifications === "function") {
+                    fetchNotifications();
+                }
+
+            } catch (e) {
+                console.error("Error sending notification:", e);
+                alert("خطأ في الاتصال بالسيرفر");
+            }
+        }
+
+
+        fetchNotifications();
+
+
+        function updateLiveTime() {
+            const timeElement = document.getElementById('live-time');
+            if (!timeElement) return;
+
+            const now = new Date();
+
+            const options = {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+            };
+
+            timeElement.textContent = now.toLocaleTimeString('ar-YE', options);
+        }
+
+
+        updateLiveTime();
+
+
+        setInterval(updateLiveTime, 10 * 60000);
+        function loadMapMasaraty() {
+
+            const map = L.map('myMapMasaraty').setView([14.760074, 49.374723], 13);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(map);
+
+            const marker = L.marker([14.760074, 49.374723]).addTo(map)
+                .bindPopup("موقع البداية")
+                .openPopup();
+
+        }
+
+        document.addEventListener("DOMContentLoaded", loadMapMasaraty);
+
+    </script>
+
+    <script src="main.js"></script>
+</body>
+
+</html>
