@@ -61,7 +61,7 @@ async function login() {
             document.getElementById('main-wrapper').style.display = "block";
 
             await fetchUsers();
-            showPage('sec-notifications');
+            showPage('sec-home');
         }
         else {
             const errorData = await response.json();
@@ -3803,24 +3803,8 @@ function updateLiveTime() {
 
 
 updateLiveTime();
-
-
 setInterval(updateLiveTime, 10 * 60000);
-function loadMapMasaraty() {
 
-    const map = L.map('myMapMasaraty').setView([14.760074, 49.374723], 13);
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(map);
-
-    const marker = L.marker([14.760074, 49.374723]).addTo(map)
-        .bindPopup("موقع البداية")
-        .openPopup();
-
-}
-
-document.addEventListener("DOMContentLoaded", loadMapMasaraty);
 
 function openNotificationDetails(id) {
     // افترض وجود مصفوفة notificationsData والدالة formatDate
