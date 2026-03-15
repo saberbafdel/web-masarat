@@ -3880,53 +3880,264 @@ td {
 /* =========================================
    تنسيقات منطقة الرسوم البيانية (Charts)
    ========================================= */
-.days-chart-container{
-    display:flex;
-    align-items:flex-end;
-    justify-content:space-between;
-    height:260px;
-    margin-top:20px;
-    padding:20px;
-    border:1px solid #eee;
-    border-radius:10px;
-    background:#fafafa;
+.days-chart-container {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    height: 260px;
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    background: #fafafa;
 }
 
-.day-column-wrapper{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:flex-end;
-    width:90px; /* أصبح أعرض */
-    height:100%;
+.day-column-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    width: 90px;
+    /* أصبح أعرض */
+    height: 100%;
 }
 
-.day-bar{
-    width:70px; /* عرض العمود */
-    border-radius:6px 6px 0 0;
-    transition:0.4s;
+.day-bar {
+    width: 70px;
+    /* عرض العمود */
+    border-radius: 6px 6px 0 0;
+    transition: 0.4s;
 }
 
-.day-bar:hover{
-    transform:scaleY(1.05);
+.day-bar:hover {
+    transform: scaleY(1.05);
 }
 
-.day-count{
-    font-size:13px;
-    margin-bottom:6px;
-    font-weight:bold;
-    color:#333;
+.day-count {
+    font-size: 13px;
+    margin-bottom: 6px;
+    font-weight: bold;
+    color: #333;
 }
 
-.day-label{
-    font-size:13px;
-    margin-top:8px;
-    color:#444;
-}
-.reports-table td[rowspan]{
-    background:#f8f9fa;
-    font-weight:bold;
-    
-    
+.day-label {
+    font-size: 13px;
+    margin-top: 8px;
+    color: #444;
 }
 
+.reports-table td[rowspan] {
+    background: #f8f9fa;
+    font-weight: bold;
+
+
+}
+/* خلفية المودال الضبابية */
+.enterprise-modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background:rgba(0, 0, 0, 0.6);
+    /* backdrop-filter: blur(4px); */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 20px;
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* بطاقة المودال الرئيسية */
+.enterprise-modal-card {
+    background: #ffffff;
+    width: 100%;
+    max-width: 660px;
+    border-radius: 16px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    animation: slideUp 0.4s ease-out;
+}
+
+/* الرأس */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.modal-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.modal-title h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #1e293b;
+    font-weight: 600;
+}
+
+.icon-circle {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+}
+
+.close-icon-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #94a3b8;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.close-icon-btn:hover {
+    color: #0f172a;
+}
+
+/* المحتوى */
+.modal-body {
+    padding: 24px;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.full-width {
+    grid-column: 1 / -1;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.info-label {
+    font-size: 0.85rem;
+    color: #64748b;
+    font-weight: 500;
+}
+
+.info-value {
+    color: #334155;
+    font-weight: 500;
+}
+
+.text-lg {
+    font-size: 1.1rem;
+    color: #0f172a;
+}
+
+.text-muted {
+    color: #64748b;
+}
+
+.badge {
+    padding: 4px 12px;
+    border-radius: 9999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-block;
+    width: fit-content;
+}
+
+/* صندوق الرسالة */
+.message-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.message-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    padding: 16px;
+    border-radius: 8px;
+    color: #334155;
+    line-height: 1.6;
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+/* التذييل والأزرار */
+.modal-footer {
+    padding: 16px 24px;
+    background: #f8fafc;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sender-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #64748b;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 12px;
+}
+
+.btn {
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+}
+
+.btn-secondary {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #475569;
+}
+
+.btn-secondary:hover {
+    background: #f1f5f9;
+    color: #0f172a;
+}
+
+.btn-danger {
+    background: #ef4444;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #dc2626;
+    box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.3);
+}
+
+/* الحركات (Animations) */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}

@@ -5,7 +5,7 @@
 // const API = "http://192.168.154.204:8000/api";
 // const API = "http://localhost:3000";
 const API = "https://msaraty.ddns.net/api";
-
+let currentUserId = null;
 let usersData = [];
 
 let stationsData = [];
@@ -50,24 +50,20 @@ async function login() {
         if (response.ok) {
             const data = await response.json();
 
+            currentUserId = data.id; 
 
             const accountSpan = document.getElementById('currentAcount');
             if (accountSpan && data.username) {
-                accountSpan.textContent = data.username;
-            } else if (accountSpan) {
-                // plan
-                accountSpan.textContent = usernameInput;
+                accountSpan.textContent = data.username || usernameInput;
             }
-            // ------------------
 
             document.getElementById('login-page').style.display = "none";
             document.getElementById('main-wrapper').style.display = "block";
 
             await fetchUsers();
-            showPage('sec-home');
-
-            console.log("تم تسجيل الدخول بنجاح");
-        } else {
+            showPage('sec-notifications');
+        }
+        else {
             const errorData = await response.json();
             error.textContent = errorData.message || "بيانات الدخول غير صحيحة";
             error.style.display = "block";
@@ -3274,14 +3270,8 @@ function renderReports() {
     container.innerHTML += academicHTML;
 
 
-    // ---------- 5. مكان للرسوم البيانية ----------
-    container.innerHTML += `
-        <h3>المقارنات البيانية</h3>
-        <div id="reports-charts" style="display: flex; flex-wrap: wrap; gap: 20px;">
-            <canvas id="chart-stations" width="400" height="200"></canvas>
-            <canvas id="chart-days" width="400" height="200"></canvas>
-        </div>
-    `;
+
+
 
     // ---------- 6. توليد البيانات للـ Charts باستخدام Chart.js ----------
     if (typeof Chart !== 'undefined') {
@@ -3325,6 +3315,7 @@ function renderReports() {
         });
     }
 }
+
 function openReportTab(tabId, btn) {
 
     const section = document.getElementById('sec-reports');
@@ -3399,8 +3390,586 @@ function renderDaysChart(data, labels) {
 
 }
 
+/////////////nafigations
+/////////////nafigations
+/////////////nafigations
+/////////////nafigations
+/////////////nafigations
 
 
 
+function truncateTitle(text, maxLength = 20) { if (!text) return ""; if (text.length <= maxLength) return text; return text.substring(0, maxLength) + "..."; }
+function truncateMessage(text, maxLength = 60) { if (!text) return ""; if (text.length <= maxLength) return text; return text.substring(0, maxLength) + "..."; }
 
+let lat = 14.775823;
+let lng = 49.372572;
+
+function loadMap(newLat = lat, newLng = lng) {
+
+    const mapContainer = document.getElementById("map");
+    if (!mapContainer) return;
+
+    const mapUrl = `https://maps.google.com/maps?q=${newLat},${newLng}&z=17&output=embed`;
+
+    let iframe = mapContainer.querySelector("iframe");
+
+    if (!iframe) {
+
+        iframe = document.createElement("iframe");
+
+        iframe.style.width = "100%";
+        iframe.style.height = "100%";
+        iframe.style.border = "0";
+        iframe.style.borderRadius = "8px";
+
+        iframe.loading = "lazy";
+
+        mapContainer.appendChild(iframe);
+    }
+
+    iframe.src = mapUrl;
+}
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    loadMap(lat, lng);
+});
+
+
+function openNotificationTab(tabId, btn) {
+
+    const parent = document.getElementById("sec-notifications");
+
+    parent.querySelectorAll(".tab-content")
+        .forEach(t => t.classList.remove("active"));
+
+    parent.querySelectorAll(".tab-btn")
+        .forEach(b => b.classList.remove("active-tab"));
+
+    document.getElementById(tabId).classList.add("active");
+
+    btn.classList.add("active-tab");
+}
+
+
+
+let notificationsData = [];
+
+
+async function fetchNotifications() {
+    try {
+        const res = await fetch(`${API}/notifications`);
+        notificationsData = await res.json();
+        console.table(notificationsData);
+        renderNotificationsCarts();
+
+        renderNotifications();
+    } catch (error) {
+        console.error("فشل في جلب الإشعارات:", error);
+    }
+}
+
+
+function renderNotifications() {
+
+    const container = document.getElementById("notifications-container");
+    if (!container) return;
+
+    container.innerHTML = "";
+
+    const targetFilter = document.getElementById("filter-target").value;
+    const typeFilter = document.getElementById("filter-type").value;
+    const timeFilter = document.getElementById("filter-time").value;
+
+    const targetMap = {
+        students: 1,
+        drivers: 2,
+        supervisors: 3
+    };
+
+    let filteredNotifications = notificationsData.filter(n => {
+
+        let targetMatch = true;
+        let typeMatch = true;
+
+        if (targetFilter !== "all") {
+            targetMatch = n.target_group === targetMap[targetFilter];
+        }
+
+        if (typeFilter !== "all") {
+            typeMatch = n.type === typeFilter;
+        }
+
+        return targetMatch && typeMatch;
+    });
+
+
+    // ترتيب حسب الوقت
+    if (timeFilter === "desc") {
+        filteredNotifications.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    }
+
+    if (timeFilter === "asc") {
+        filteredNotifications.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+    }
+
+
+    filteredNotifications.forEach(n => {
+
+        let typeColor = "#0d6efd";
+        let typeLabel = "إشعار";
+        let icon = "bi-bell-fill";
+
+        switch (n.type) {
+            case 'urgent_notification':
+                typeColor = "#dc3545";
+                typeLabel = "عاجل";
+                icon = "bi-lightning-fill";
+                break;
+
+            case 'absence_alert':
+                typeColor = "#fd7e14";
+                typeLabel = "غياب";
+                icon = "bi-person-x-fill";
+                break;
+
+            case 'warning':
+                typeColor = "#ffc107";
+                typeLabel = "تحذير";
+                icon = "bi-exclamation-triangle-fill";
+                break;
+
+            case 'system_notification':
+                typeColor = "#6f42c1";
+                typeLabel = "نظام";
+                icon = "bi-gear-fill";
+                break;
+
+            case 'alert':
+                typeColor = "#17a2b8";
+                typeLabel = "تنبيه";
+                icon = "bi-info-circle-fill";
+                break;
+        }
+
+        const targetLabels = {
+            1: "الطلاب",
+            2: "السائقين",
+            3: "المشرفين"
+        };
+
+        let targetText = targetLabels[n.target_group] || "الكل";
+
+        container.innerHTML += `
+        <div class="station-card44"
+     onclick="openNotificationDetails(${n.id})"
+     style="border-top: 5px solid ${typeColor};border-radius: 6px; cursor:pointer;">
+            <div class="station-header44">
+                <h4 class="station-title44" style="color: ${typeColor};">
+                    <i class="bi ${icon}"></i> ${truncateTitle(n.title)}
+                </h4>
+                <span class="station-id44">Sender: #${n.sender_id}</span>
+            </div>
+
+            <div class="station-body44">
+                <p class="station-desc44" style="font-size: 14px; color: #333; font-weight: 500;">
+                ${truncateMessage(n.message)}</p>
+
+                <div class="station-location44" style="margin-top: 8px; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 11px; color: #777;">
+                        <i class="bi bi-clock"></i>
+                        ${formatDate(n.created_at)}
+                    </span>
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content:space-between; margin-top: 5px;">
+                <span style="background: ${typeColor}15; color: ${typeColor}; padding: 2px 10px; border-radius: 20px; font-size: 10px; font-weight: bold; border: 1px solid ${typeColor}44;">
+                    ${typeLabel}
+                </span>
+
+                <span class="target-badge44 target-${n.target_group}">
+                ${targetText}
+                </span>
+            </div>
+        </div>
+        `;
+    });
+
+}
+
+function renderNotificationsCarts() {
+
+    const container = document.getElementById("notifications-cards-container");
+    if (!container) return;
+
+    let html = "";
+
+    notificationsData.forEach(n => {
+
+        let typeColor = "#0d6efd";
+        let typeLabel = "إشعار";
+        let icon = "bi-bell-fill";
+
+        switch (n.type) {
+
+            case "urgent_notification":
+                typeColor = "#dc3545";
+                typeLabel = "عاجل";
+                icon = "bi-lightning-fill";
+                break;
+
+            case "absence_alert":
+                typeColor = "#fd7e14";
+                typeLabel = "غياب";
+                icon = "bi-person-x-fill";
+                break;
+
+            case "warning":
+                typeColor = "#ffc107";
+                typeLabel = "تحذير";
+                icon = "bi-exclamation-triangle-fill";
+                break;
+
+            case "system_notification":
+                typeColor = "#6f42c1";
+                typeLabel = "نظام";
+                icon = "bi-gear-fill";
+                break;
+
+            case "alert":
+                typeColor = "#17a2b8";
+                typeLabel = "تنبيه";
+                icon = "bi-info-circle-fill";
+                break;
+        }
+
+        const targetLabels = {
+            1: "الطلاب",
+            2: "السائقين",
+            3: "المشرفين"
+        };
+
+        let targetText = targetLabels[n.target_group] || "الكل";
+
+        html += `
+        <div class="station-card44" style="border-top:4px solid ${typeColor}">
+
+            <div class="station-header44">
+
+                <h4 class="station-title44" style="color:${typeColor}">
+                    <i class="bi ${icon}"></i>
+                    ${n.title}
+                </h4>
+
+                <span class="station-id44">
+                    Sender #${n.sender_id}
+                </span>
+
+            </div>
+
+            <div class="station-body44">
+
+                <p class="station-desc44"
+                style="font-size:13px;color:#333;font-weight:500">
+
+                    ${n.message}
+
+                </p>
+
+                <div class="station-location44"
+                style="margin-top:6px;display:flex;justify-content:space-between">
+
+                    <span style="font-size:11px;color:#777">
+
+                        <i class="bi bi-clock"></i>
+                        ${formatDate(n.created_at)}
+
+                    </span>
+
+                    <span style="font-size:11px;font-weight:bold;color:#555">
+
+                        خاص بـ: ${targetText}
+
+                    </span>
+
+                </div>
+
+            </div>
+
+            <div style="display:flex;justify-content:flex-end;margin-top:5px">
+
+                <span style="
+                    background:${typeColor}15;
+                    color:${typeColor};
+                    padding:2px 10px;
+                    border-radius:20px;
+                    font-size:10px;
+                    font-weight:bold;
+                    border:1px solid ${typeColor}55;
+                ">
+                    ${typeLabel}
+                </span>
+
+            </div>
+
+        </div>
+        `;
+    });
+
+    container.innerHTML = html;
+}
+
+
+async function sendNotification() {
+
+    const title = document.getElementById("notify-title").value.trim();
+    const message = document.getElementById("notify-message").value.trim();
+    const target = document.getElementById("notify-target").value;
+    const typeValue = document.getElementById("notify-type").value;
+
+
+    if (!title || !message) {
+        return alert("الرجاء إكمال البيانات");
+    }
+
+
+    let target_group = 1;
+    if (target === "students") target_group = 1;
+    else if (target === "drivers") target_group = 2;
+    else if (target === "supervisors") target_group = 3;
+
+
+    const newNotification = {
+        sender_id: currentUserId,
+        title: title,
+        message: message,
+        created_at: new Date().toISOString(),
+        target_group: target_group,
+        type: typeValue
+    };
+
+    try {
+
+        await fetch(`${API}/notifications`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            body: JSON.stringify(newNotification)
+        });
+
+        alert("تم إرسال الإشعار بنجاح");
+
+        // تفريغ الحقول بعد النجاح
+        document.getElementById("notify-title").value = "";
+        document.getElementById("notify-message").value = "";
+
+        // إغلاق النافذة المنبثقة
+        if (typeof closeNotifyModal === "function") {
+            closeNotifyModal();
+        }
+
+        // تحديث قائمة الإشعارات (استدعاء دالة واحدة يكفي بدلاً من استدعاء loadNotifications و fetchNotifications معاً)
+        if (typeof fetchNotifications === "function") {
+            fetchNotifications();
+        }
+
+    } catch (e) {
+        console.error("Error sending notification:", e);
+        alert("خطأ في الاتصال بالسيرفر");
+    }
+}
+
+
+fetchNotifications();
+
+
+function updateLiveTime() {
+    const timeElement = document.getElementById('live-time');
+    if (!timeElement) return;
+
+    const now = new Date();
+
+    const options = {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+    };
+
+    timeElement.textContent = now.toLocaleTimeString('ar-YE', options);
+}
+
+
+updateLiveTime();
+
+
+setInterval(updateLiveTime, 10 * 60000);
+function loadMapMasaraty() {
+
+    const map = L.map('myMapMasaraty').setView([14.760074, 49.374723], 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    const marker = L.marker([14.760074, 49.374723]).addTo(map)
+        .bindPopup("موقع البداية")
+        .openPopup();
+
+}
+
+document.addEventListener("DOMContentLoaded", loadMapMasaraty);
+
+function openNotificationDetails(id) {
+    // افترض وجود مصفوفة notificationsData والدالة formatDate
+    const n = notificationsData.find(notif => notif.id === id);
+    if (!n) return;
+
+    const targetLabels = {
+        1: "الطلاب",
+        2: "السائقين",
+        3: "المشرفين"
+    };
+
+    const typeLabels = {
+        urgent_notification: "عاجل",
+        absence_alert: "غياب",
+        warning: "تحذير",
+        system_notification: "نظام",
+        alert: "تنبيه",
+        notification: "إشعار"
+    };
+
+    let typeColor = "#0d6efd"; // اللون الافتراضي (أزرق)
+    let typeIcon = "<span class=\"bi bi-bell-fill\"></span>"; // أيقونة افتراضية
+
+    switch (n.type) {
+        case "urgent_notification":
+            typeColor = "#ef4444"; // أحمر حديث
+            typeIcon = "<span class=\"bi bi-lightning-fill\"></span>";
+            break;
+        case "absence_alert":
+            typeColor = "#f97316"; // برتقالي
+            typeIcon = "<span class=\"bi bi-lightning-fill\"></span>";
+            break;
+        case "warning":
+            typeColor = "#eab308"; // أصفر
+            typeIcon = "<span class=\"bi bi-exclamation-triangle-fill\"></span>";
+            break;
+        case "system_notification":
+            typeColor = "#8b5cf6"; // بنفسجي
+            typeIcon = "<span class=\"bi-gear-fill\"></span>";
+            break;
+        case "alert":
+            typeColor = "#06b6d4"; // سماوي
+            typeIcon = "<span class=\"bi bi-bell-fill\"></span>";
+            break;
+    }
+
+    const targetText = targetLabels[n.target_group] || "الكل";
+    const typeText = typeLabels[n.type] || "إشعار";
+
+    const modal = document.getElementById("notification-details-modal");
+
+    modal.innerHTML = `
+    <div class="enterprise-modal-overlay" onclick="closeNotificationDetails()">
+        <div class="enterprise-modal-card" onclick="event.stopPropagation()" dir="rtl">
+            
+            <div class="modal-header">
+                <div class="modal-title">
+                    <span class="icon-circle" style="background-color: ${typeColor}15; color: ${typeColor};">
+                        ${typeIcon}
+                    </span>
+                    <h3>تفاصيل الإشعار</h3>
+                </div>
+                <button class="close-icon-btn" onclick="closeNotificationDetails()">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <div class="info-grid">
+                    <div class="info-item full-width">
+                        <span class="info-label">العنوان</span>
+                        <strong class="info-value text-lg">${n.title}</strong>
+                    </div>
+
+                    <div class="info-item">
+                        <span class="info-label">النوع</span>
+                        <span class="badge" style="background-color: ${typeColor}15; color: ${typeColor}; border: 1px solid ${typeColor}30;">
+                            ${typeText}
+                        </span>
+                    </div>
+
+                    <div class="info-item">
+                        <span class="info-label">الجهة المستهدفة</span>
+                        <span class="info-value">${targetText}</span>
+                    </div>
+
+                    <div class="info-item">
+                        <span class="info-label">التاريخ</span>
+                        <span class="info-value text-muted">${formatDate(n.created_at)}</span>
+                    </div>
+                </div>
+
+                <div class="message-container">
+                    <span class="info-label">نص الرسالة</span>
+                    <div class="message-box">
+                        ${n.message}
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <div class="sender-info">
+                    <span class="bi bi-person-circle"></span>
+                    <span>المرسل: #${n.sender_id}</span>
+                </div>
+                <div class="action-buttons">
+                    <button class="btn btn-secondary" onclick="closeNotificationDetails()">إغلاق</button>
+                    <button class="btn btn-success btn-success-color" onclick="deleteNotification(${n.id})">
+                        <span style="margin-left: 5px;"></span> حذف الإشعار
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    `;
+
+    modal.style.display = "block";
+}
+function closeNotificationDetails() {
+    const modal = document.getElementById("notification-details-modal");
+    modal.style.display = "none";
+}
+function deleteNotification(id) {
+
+    if (!confirm("هل أنت متأكد من حذف هذا الإشعار؟")) return;
+
+    fetch(`${API}/notifications/${id}`, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+        .then(res => res.json())
+        .then(data => {
+
+            notificationsData =
+                notificationsData.filter(n => n.id !== id);
+
+            renderNotifications();
+
+            closeNotificationDetails();
+
+            alert("تم حذف الإشعار بنجاح");
+
+        })
+        .catch(err => {
+            console.error(err);
+            alert("فشل حذف الإشعار");
+        });
+
+}
 fetchAll();
