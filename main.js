@@ -48,8 +48,10 @@ async function login() {
 
         if (response.ok) {
             const data = await response.json();
+            console.clear();
+            console.log(data.user.id);
 
-            currentUserId = data.id;
+            currentUserId = data.user.id;
 
             const accountSpan = document.getElementById('currentAcount');
             if (accountSpan && data.username) {
@@ -1186,7 +1188,7 @@ async function saveStation() {
         location_y: parseFloat(y)
     };
 
-    // حفظ المحطة في النظام
+    
     try {
         const stationResponse = await fetch(`${API}/stations`, {
             method: "POST",
@@ -1200,13 +1202,13 @@ async function saveStation() {
             throw new Error("حدث خطأ أثناء إضافة المحطة");
         }
 
-        // إنشاء إشعار ديناميكي بالعربية
+        
         const newNotification = {
-            sender_id: currentUserId, // id المستخدم المسجل دخول
+            sender_id: Number(currentUserId), 
             title: "إضافة محطة جديدة",
             message: `تمت إضافة المحطة "${name}" بنجاح. الوصف: "${desc}". الإحداثيات: X = ${x}, Y = ${y}.`,
             created_at: new Date().toISOString(),
-            target_group: 3, // المشرفين
+            target_group: 3, 
             type: "system_notification"
         };
 
@@ -1223,12 +1225,9 @@ async function saveStation() {
             console.warn("تعذر إرسال الإشعار تلقائيًا");
         }
 
-        // تحديث البيانات في الواجهة
         await fetchStations();
         await fetchNotifications();
-       
 
-        // تفريغ الحقول بعد الإضافة
         document.getElementById('st-name').value = "";
         document.getElementById('st-desc').value = "";
         document.getElementById('st-x').value = "";
@@ -1936,7 +1935,7 @@ async function saveStudent() {
         await fetchStudents();
         await fetchUsers();
         await fetchNotifications();
-        
+
         renderStudents();
         renderUsers();
 
@@ -3808,7 +3807,7 @@ async function sendNotification() {
     else if (target === "supervisors") target_group = 3;
 
     const newNotification = {
-        sender_id: Number(currentUserId), // الـ ID الذي تم حفظه عند اللوجن
+        sender_id: currentUserId, // الـ ID الذي تم حفظه عند اللوجن
         title: title,
         message: message,
         created_at: new Date().toISOString(),
