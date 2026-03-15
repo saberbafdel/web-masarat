@@ -1846,14 +1846,12 @@ function onDepartmentChange(val) {
     });
 }
 
-
 async function saveStudent() {
 
-    const username = document.getElementById('add-student-username').value;
-    const password = document.getElementById('add-student-password').value;
+    const username = document.getElementById('add-student-username').value.trim();
+    const password = document.getElementById('add-student-password').value.trim();
     const studentStateElement = document.getElementById('add-student-state');
     const studentStateValue = studentStateElement ? studentStateElement.value : "Active";
-
 
     const userPayload = {
         username: username,
@@ -1864,7 +1862,7 @@ async function saveStudent() {
     };
 
     try {
-
+        // إنشاء حساب المستخدم أولاً
         const userResponse = await fetch(`${API}/users`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -1872,21 +1870,23 @@ async function saveStudent() {
         });
 
         if (!userResponse.ok) throw new Error("فشل إنشاء حساب المستخدم");
-        const selectedDays = Array.from(document.querySelectorAll('.days-grid input:checked'))
-            .map(cb => Number(cb.value));
 
         const createdUser = await userResponse.json();
         const newUserId = createdUser.id;
 
+        // الأيام المحددة للطالب
+        const selectedDays = Array.from(document.querySelectorAll('.days-grid input:checked'))
+            .map(cb => Number(cb.value));
 
+        // بيانات الطالب التفصيلية
         const studentPayload = {
             user_id: newUserId,
             username: username,
             password: password,
-            name: document.getElementById('add-student-name').value,
-            phone: document.getElementById('add-student-phone').value,
-            university_number: document.getElementById('add-student-university-number').value,
-            city: document.getElementById('add-student-city').value,
+            name: document.getElementById('add-student-name').value.trim(),
+            phone: document.getElementById('add-student-phone').value.trim(),
+            university_number: document.getElementById('add-student-university-number').value.trim(),
+            city: document.getElementById('add-student-city').value.trim(),
             gender: document.getElementById('add-student-gender').value,
             university_id: Number(document.getElementById('add-student-university').value),
             college_id: Number(document.getElementById('add-student-college').value),
@@ -1900,22 +1900,45 @@ async function saveStudent() {
             days: selectedDays
         };
 
+        // إضافة بيانات الطالب
         const studentResponse = await fetch(`${API}/students`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(studentPayload)
         });
 
-        if (studentResponse.ok) {
-            alert(`تم الحفظ بنجاح! تم ربط الطالب بالمستخدم رقم: ${newUserId}`);
-            closeStudentModal();
+        if (!studentResponse.ok) throw new Error("حدث خطأ أثناء إنشاء بيانات الطالب.");
 
+        // ------------------- إرسال إشعار تلقائي -------------------
+        const newNotification = {
+            sender_id: currentUserId,
+            title: "تم إضافة طالب جديد",
+            message: `تمت إضافة الطالب "${studentPayload.name}" بنجاح بالمستخدم رقم ${newUserId}. رقم الجامعة: ${studentPayload.university_number}, المدينة: ${studentPayload.city}.`,
+            created_at: new Date().toISOString(),
+            target_group: 3, // المشرفين
+            type: "system_notification"
+        };
 
-            if (typeof fetchStudents === 'function') fetchStudents();
-            if (typeof fetchUsers === 'function') fetchUsers();
-        } else {
-            alert("حدث خطأ أثناء إنشاء بيانات الطالب.");
+        const notifResponse = await fetch(`${API}/notifications`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "Accept": "application/json" },
+            body: JSON.stringify(newNotification)
+        });
+
+        if (!notifResponse.ok) {
+            console.warn("تعذر إرسال الإشعار تلقائيًا");
         }
+
+        // ------------------- تحديث البيانات في الواجهة -------------------
+        alert(`تم الحفظ بنجاح! تم ربط الطالب بالمستخدم رقم: ${newUserId}`);
+        closeStudentModal();
+
+        await fetchStudents();
+        await fetchUsers();
+        await fetchNotifications();
+        
+        renderStudents();
+        renderUsers();
 
     } catch (error) {
         console.error("Error:", error.message);
