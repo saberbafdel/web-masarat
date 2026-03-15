@@ -5,7 +5,6 @@
 // const API = "http://192.168.154.204:8000/api";
 // const API = "http://localhost:3000";
 const API = "https://msaraty.ddns.net/api";
-let currentUserId = null;
 let usersData = [];
 
 let stationsData = [];
@@ -21,7 +20,7 @@ let levelsData = [];
 let driversData = [];
 let busesData = [];
 
-
+let currentUserId = null;
 async function login() {
     const usernameInput = document.getElementById('login-username').value.trim();
     const password = document.getElementById('login-password').value.trim();
@@ -50,7 +49,7 @@ async function login() {
         if (response.ok) {
             const data = await response.json();
 
-            currentUserId = data.id; 
+            currentUserId = data.id;
 
             const accountSpan = document.getElementById('currentAcount');
             if (accountSpan && data.username) {
@@ -165,6 +164,7 @@ function formatDate(dateString) {
 async function fetchStations() {
     const res = await fetch(`${API}/stations`);
     stationsData = await res.json();
+    renderStations();
 }
 
 async function fetchRoutes() {
@@ -1170,12 +1170,14 @@ function closeAssignModal() {
 }
 
 async function saveStation() {
-    const name = document.getElementById('st-name').value;
-    const desc = document.getElementById('st-desc').value;
-    const x = document.getElementById('st-x').value;
-    const y = document.getElementById('st-y').value;
+    const name = document.getElementById('st-name').value.trim();
+    const desc = document.getElementById('st-desc').value.trim();
+    const x = document.getElementById('st-x').value.trim();
+    const y = document.getElementById('st-y').value.trim();
 
-    if (!name || !desc || !x || !y) return alert("يرجى ملء جميع الحقول");
+    if (!name || !desc || !x || !y) {
+        return alert("يرجى ملء جميع الحقول");
+    }
 
     const newStation = {
         station_name: name,
@@ -1184,16 +1186,59 @@ async function saveStation() {
         location_y: parseFloat(y)
     };
 
-    await fetch(`${API}/stations`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(newStation)
-    });
+    // حفظ المحطة في النظام
+    try {
+        const stationResponse = await fetch(`${API}/stations`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(newStation)
+        });
 
-    closeModal('modal-station');
-    fetchStations();
+        if (!stationResponse.ok) {
+            throw new Error("حدث خطأ أثناء إضافة المحطة");
+        }
+
+        // إنشاء إشعار ديناميكي بالعربية
+        const newNotification = {
+            sender_id: currentUserId, // id المستخدم المسجل دخول
+            title: "إضافة محطة جديدة",
+            message: `تمت إضافة المحطة "${name}" بنجاح. الوصف: "${desc}". الإحداثيات: X = ${x}, Y = ${y}.`,
+            created_at: new Date().toISOString(),
+            target_group: 3, // المشرفين
+            type: "system_notification"
+        };
+
+        const notifResponse = await fetch(`${API}/notifications`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            body: JSON.stringify(newNotification)
+        });
+
+        if (!notifResponse.ok) {
+            console.warn("تعذر إرسال الإشعار تلقائيًا");
+        }
+
+        // تحديث البيانات في الواجهة
+        await fetchStations();
+        await fetchNotifications();
+       
+
+        // تفريغ الحقول بعد الإضافة
+        document.getElementById('st-name').value = "";
+        document.getElementById('st-desc').value = "";
+        document.getElementById('st-x').value = "";
+        document.getElementById('st-y').value = "";
+
+        alert("تمت إضافة المحطة وإرسال الإشعار بنجاح");
+    } catch (err) {
+        console.error(err);
+        alert("حدث خطأ أثناء إضافة المحطة أو إرسال الإشعار");
+    }
 }
 
 async function deleteStation(id) {
@@ -3739,16 +3784,14 @@ async function sendNotification() {
     else if (target === "drivers") target_group = 2;
     else if (target === "supervisors") target_group = 3;
 
-
     const newNotification = {
-        sender_id: currentUserId,
+        sender_id: Number(currentUserId), // الـ ID الذي تم حفظه عند اللوجن
         title: title,
         message: message,
         created_at: new Date().toISOString(),
         target_group: target_group,
         type: typeValue
     };
-
     try {
 
         await fetch(`${API}/notifications`, {
