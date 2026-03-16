@@ -3245,7 +3245,49 @@ function renderReports() {
 
     container.innerHTML += chartHTML;
 
+    // ---------- 4. أسماء الطلاب لكل يوم ----------
 
+    let studentsPerDayHTML = `
+    <h3>أسماء الطلاب حسب الأيام</h3>
+    <div class="students-days-cards-wrap44">
+    `;
+
+    daysOfWeek.forEach(day => {
+
+        const dayStudents = studentsData.filter(s =>
+            Array.isArray(s.days) && s.days.includes(day.index)
+        );
+
+        let namesHTML = "";
+
+        if (dayStudents.length === 0) {
+            namesHTML = `<div class="day-student-empty44">لا يوجد طلاب في هذا اليوم</div>`;
+        } else {
+            namesHTML = dayStudents.map(student => `
+                <div class="day-student-name44">
+                    <i class="bi bi-person-fill"></i>
+                    <span>${student.name}</span>
+                </div>
+            `).join("");
+        }
+
+        studentsPerDayHTML += `
+            <div class="students-day-card44">
+                <div class="students-day-header44">
+                    <h4>${day.name}</h4>
+                    <span class="students-day-count44">${dayStudents.length} طالب</span>
+                </div>
+
+                <div class="students-day-list44">
+                    ${namesHTML}
+                </div>
+            </div>
+        `;
+    });
+
+    studentsPerDayHTML += `</div>`;
+
+    container.innerHTML += studentsPerDayHTML;
     // ---------- 4. الإحصائيات حسب الهيكل الأكاديمي ----------
     let academicHTML = `<h3>بيانات الجامعات </h3>
 <table class="reports-table">

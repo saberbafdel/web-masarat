@@ -4178,3 +4178,80 @@ td {
     height: 100%;
     filter: grayscale(0.2) contrast(1.1); /* لمسة فنية خفيفة لتقليل حدة ألوان جوجل التقليدية */
 }
+
+
+/* day lisy*/
+/* day lisy*/
+/* day lisy*/
+/* day lisy*/
+/* day lisy*/
+
+
+.students-days-cards-wrap44{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));
+    gap:15px;
+    margin-top:15px;
+}
+
+.students-day-card44{
+    background:#fff;
+    border:1px solid #e9ecef;
+    border-radius:12px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.06);
+    overflow:hidden;
+}
+
+.students-day-header44{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:12px 14px;
+    background:linear-gradient(90deg, #0d6efd, #3d8bfd);
+    color:#fff;
+}
+
+.students-day-header44 h4{
+    margin:0;
+    font-size:15px;
+}
+
+.students-day-count44{
+    background:rgba(255,255,255,0.15);
+    padding:4px 10px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:bold;
+}
+
+.students-day-list44{
+    padding:12px;
+    max-height:260px;
+    overflow-y:auto;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.day-student-name44{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:9px 10px;
+    background:#f8f9fa;
+    border-radius:8px;
+    font-size:13px;
+    color:#333;
+    border:1px solid #eef1f4;
+}
+
+.day-student-name44 i{
+    color:#0d6efd;
+}
+
+.day-student-empty44{
+    text-align:center;
+    padding:18px 10px;
+    color:#888;
+    font-size:13px;
+}
