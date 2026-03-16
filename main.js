@@ -21,6 +21,7 @@ let driversData = [];
 let busesData = [];
 
 let currentUserId = null;
+
 async function login() {
     const usernameInput = document.getElementById('login-username').value.trim();
     const password = document.getElementById('login-password').value.trim();
@@ -61,7 +62,7 @@ async function login() {
             document.getElementById('login-page').style.display = "none";
             document.getElementById('main-wrapper').style.display = "block";
 
-            await fetchUsers();
+            await fetchall();
             showPage('sec-home');
         }
         else {
@@ -161,47 +162,56 @@ function formatDate(dateString) {
 } async function fetchUsers() {
     const res = await fetch(`${API}/users`);
     usersData = await res.json();
+    renderAll();
 }
 
 async function fetchStations() {
     const res = await fetch(`${API}/stations`);
     stationsData = await res.json();
     renderStations();
+    renderAll();
 }
 
 async function fetchRoutes() {
     const res = await fetch(`${API}/routes`);
     routesData = await res.json();
+    renderAll();
 }
 
 async function fetchAssign() {
     const res = await fetch(`${API}/assign`);
     assignData = await res.json();
+    renderAll();
 }
 
 async function fetchStudents() {
     const res = await fetch(`${API}/students`);
     studentsData = await res.json();
+    renderAll();
 }
 
 async function fetchUniversities() {
     const res = await fetch(`${API}/universities`);
     universitiesData = await res.json();
+    renderAll();
 }
 
 async function fetchColleges() {
     const res = await fetch(`${API}/colleges`);
     collegesData = await res.json();
+    renderAll();
 }
 
 async function fetchDepartments() {
     const res = await fetch(`${API}/departments`);
     departmentsData = await res.json();
+    renderAll();
 }
 
 async function fetchLevels() {
     const res = await fetch(`${API}/levels`);
     levelsData = await res.json();
+    renderAll();
 }
 async function fetchAll() {
 
@@ -616,6 +626,7 @@ async function addAdmin() {
         document.getElementById('new-admin').value = "";
         document.getElementById('new-password').value = "";
         await fetchUsers();
+        renderAll();
         openUserTab('tab-users-list', document.querySelector('[onclick*="tab-users-list"]'));
     } catch (e) { alert("خطأ في السيرفر"); }
 }
@@ -1188,7 +1199,7 @@ async function saveStation() {
         location_y: parseFloat(y)
     };
 
-    
+
     try {
         const stationResponse = await fetch(`${API}/stations`, {
             method: "POST",
@@ -1202,13 +1213,13 @@ async function saveStation() {
             throw new Error("حدث خطأ أثناء إضافة المحطة");
         }
 
-        
+
         const newNotification = {
-            sender_id: Number(currentUserId), 
+            sender_id: Number(currentUserId),
             title: "إضافة محطة جديدة",
             message: `تمت إضافة المحطة "${name}" بنجاح. الوصف: "${desc}". الإحداثيات: X = ${x}, Y = ${y}.`,
             created_at: new Date().toISOString(),
-            target_group: 3, 
+            target_group: 3,
             type: "system_notification"
         };
 
@@ -3411,6 +3422,7 @@ function openReportTab(tabId, btn) {
     }, 50);
 
 }
+
 function renderDaysChart(data, labels) {
 
     const canvas = document.getElementById("daysChartCanvas");
@@ -3807,7 +3819,7 @@ async function sendNotification() {
     else if (target === "supervisors") target_group = 3;
 
     const newNotification = {
-        sender_id: currentUserId, // الـ ID الذي تم حفظه عند اللوجن
+        sender_id: currentUserId,
         title: title,
         message: message,
         created_at: new Date().toISOString(),
@@ -3827,19 +3839,20 @@ async function sendNotification() {
 
         alert("تم إرسال الإشعار بنجاح");
 
-        // تفريغ الحقول بعد النجاح
+
         document.getElementById("notify-title").value = "";
         document.getElementById("notify-message").value = "";
 
-        // إغلاق النافذة المنبثقة
+
         if (typeof closeNotifyModal === "function") {
             closeNotifyModal();
         }
 
-        // تحديث قائمة الإشعارات (استدعاء دالة واحدة يكفي بدلاً من استدعاء loadNotifications و fetchNotifications معاً)
-        if (typeof fetchNotifications === "function") {
-            fetchNotifications();
-        }
+
+        await fetchNotifications();
+        renderAll();
+
+
 
     } catch (e) {
         console.error("Error sending notification:", e);
@@ -3848,7 +3861,7 @@ async function sendNotification() {
 }
 
 
-fetchNotifications();
+
 
 
 function updateLiveTime() {
@@ -4021,4 +4034,8 @@ function deleteNotification(id) {
         });
 
 }
+
+
+
+
 fetchAll();
