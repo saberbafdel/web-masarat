@@ -3483,49 +3483,91 @@ container.innerHTML += pickupStationsStudentsHTML;
 
 
 
+// ---------- 7. أسماء الطلاب حسب الجامعات ----------
+
+let universitiesStudentsHTML = `
+<h3>أسماء الطلاب حسب الجامعات</h3>
+<div class="students-days-cards-wrap44">
+`;
+
+const universitiesWithStudents = universitiesData.filter(university =>
+    studentsData.some(student => student.university_id === university.id)
+);
+
+universitiesWithStudents.forEach(university => {
+
+    const universityStudents = studentsData.filter(student =>
+        student.university_id === university.id
+    );
+
+    const namesHTML = universityStudents.map(student => `
+        <div class="day-student-name44">
+            <i class="bi bi-person-fill"></i>
+            <span>${student.name}</span>
+        </div>
+    `).join("");
+
+    universitiesStudentsHTML += `
+        <div class="students-day-card44">
+            <div class="students-day-header44">
+                <h4>${university.university_name}</h4>
+                <span class="students-day-count44">${universityStudents.length} طالب</span>
+            </div>
+
+            <div class="students-day-list44">
+                ${namesHTML}
+            </div>
+        </div>
+    `;
+});
+
+universitiesStudentsHTML += `</div>`;
+
+container.innerHTML += universitiesStudentsHTML;
 
 
-    // ---------- 6. توليد البيانات للـ Charts باستخدام Chart.js ----------
-    if (typeof Chart !== 'undefined') {
-        // Chart الطلاب لكل محطة
-        const ctxStations = document.getElementById('chart-stations').getContext('2d');
-        new Chart(ctxStations, {
-            type: 'bar',
-            data: {
-                labels: stationsData.map(s => s.station_name),
-                datasets: [{
-                    label: 'عدد الطلاب في المحطة',
-                    data: stationsData.map(s => studentsData.filter(st => st.pickup_station_id === s.id || st.dropoff_station_id === s.id).length),
-                    backgroundColor: '#0d6efd'
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: { legend: { display: false } }
-            }
-        });
+// ---------- 8. أسماء الطلاب حسب الأقسام ----------
 
-        // Chart الطلاب لكل يوم
-        const ctxDays = document.getElementById('chart-days').getContext('2d');
-        new Chart(ctxDays, {
-            type: 'line',
-            data: {
-                labels: daysOfWeek,
-                datasets: [{
-                    label: 'عدد الطلاب لكل يوم',
-                    data: daysCount,
-                    borderColor: '#198754',
-                    backgroundColor: 'rgba(25, 135, 84, 0.2)',
-                    fill: true,
-                    tension: 0.3
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: { legend: { display: false } }
-            }
-        });
-    }
+let departmentsStudentsHTML = `
+<h3>أسماء الطلاب حسب الأقسام</h3>
+<div class="students-days-cards-wrap44">
+`;
+
+const departmentsWithStudents = departmentsData.filter(dept =>
+    studentsData.some(student => student.department_id === dept.id)
+);
+
+departmentsWithStudents.forEach(dept => {
+
+    const deptStudents = studentsData.filter(student =>
+        student.department_id === dept.id
+    );
+
+    const namesHTML = deptStudents.map(student => `
+        <div class="day-student-name44">
+            <i class="bi bi-person-fill"></i>
+            <span>${student.name}</span>
+        </div>
+    `).join("");
+
+    departmentsStudentsHTML += `
+        <div class="students-day-card44">
+            <div class="students-day-header44">
+                <h4>${dept.department_name}</h4>
+                <span class="students-day-count44">${deptStudents.length} طالب</span>
+            </div>
+
+            <div class="students-day-list44">
+                ${namesHTML}
+            </div>
+        </div>
+    `;
+});
+
+departmentsStudentsHTML += `</div>`;
+
+container.innerHTML += departmentsStudentsHTML;
+
 }
 
 function openReportTab(tabId, btn) {
