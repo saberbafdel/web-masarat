@@ -3180,6 +3180,94 @@ function renderReports() {
     container.innerHTML += stationsTableHTML;
 
 
+
+    // ---------- 6. أسماء الطلاب حسب محطات النزول ----------
+
+let dropoffStationsStudentsHTML = `
+<h3>أسماء الطلاب حسب محطات النزول</h3>
+<div class="students-days-cards-wrap44">
+`;
+
+const dropoffStationsWithStudents = stationsData.filter(station =>
+    studentsData.some(student => student.dropoff_station_id === station.id)
+);
+
+dropoffStationsWithStudents.forEach(station => {
+
+    const dropoffStudents = studentsData.filter(student =>
+        student.dropoff_station_id === station.id
+    );
+
+    const namesHTML = dropoffStudents.map(student => `
+        <div class="day-student-name44">
+            <i class="bi bi-person-fill"></i>
+            <span>${student.name}</span>
+        </div>
+    `).join("");
+
+    dropoffStationsStudentsHTML += `
+        <div class="students-day-card44">
+            <div class="students-day-header44">
+                <h4>${station.station_name}</h4>
+                <span class="students-day-count44">${dropoffStudents.length} طالب</span>
+            </div>
+
+            <div class="students-day-list44">
+                ${namesHTML}
+            </div>
+        </div>
+    `;
+});
+
+dropoffStationsStudentsHTML += `</div>`;
+
+container.innerHTML += dropoffStationsStudentsHTML;
+
+    // ---------- 5. أسماء الطلاب حسب محطات الصعود ----------
+
+let pickupStationsStudentsHTML = `
+<h3>أسماء الطلاب حسب محطات الصعود</h3>
+<div class="students-days-cards-wrap44">
+`;
+
+const pickupStationsWithStudents = stationsData.filter(station =>
+    studentsData.some(student => student.pickup_station_id === station.id)
+);
+
+pickupStationsWithStudents.forEach(station => {
+
+    const pickupStudents = studentsData.filter(student =>
+        student.pickup_station_id === station.id
+    );
+
+    const namesHTML = pickupStudents.map(student => `
+        <div class="day-student-name44">
+            <i class="bi bi-person-fill"></i>
+            <span>${student.name}</span>
+        </div>
+    `).join("");
+
+    pickupStationsStudentsHTML += `
+        <div class="students-day-card44">
+            <div class="students-day-header44">
+                <h4>${station.station_name}</h4>
+                <span class="students-day-count44">${pickupStudents.length} طالب</span>
+            </div>
+
+            <div class="students-day-list44">
+                ${namesHTML}
+            </div>
+        </div>
+    `;
+});
+
+pickupStationsStudentsHTML += `</div>`;
+
+container.innerHTML += pickupStationsStudentsHTML;
+
+        // ---------- 5. أسماء الطلاب حسب محطات الصعود ----------
+// ---------- 5. أسماء الطلاب حسب محطات الصعود ----------
+
     // ---------- 3. عدد الطلاب لكل يوم ----------
 
     // ---------- 3. عدد الطلاب لكل يوم (بدون الجمعة) ----------
@@ -3288,6 +3376,10 @@ function renderReports() {
     studentsPerDayHTML += `</div>`;
 
     container.innerHTML += studentsPerDayHTML;
+
+
+
+    
     // ---------- 4. الإحصائيات حسب الهيكل الأكاديمي ----------
     let academicHTML = `<h3>بيانات الجامعات </h3>
 <table class="reports-table">
