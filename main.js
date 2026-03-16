@@ -2648,6 +2648,7 @@ async function saveDriverBus() {
 
         fetchDriversAndBuses();
         await fetchUsers();
+        renderAll();
 
     } catch (error) {
         console.error("Error:", error);
@@ -2814,6 +2815,7 @@ async function updateDriverBus(driverId, busId) {
 
         await fetchUsers();
         await fetchDriversAndBuses();
+        renderAll();
 
 
     } catch (err) {
@@ -3091,7 +3093,7 @@ function renderReports() {
     const totalStudents = studentsData.length;
     const totalMaleStudents = studentsData.filter(s => s.gender === 'ذكر').length;
     const totalFemaleStudents = studentsData.filter(s => s.gender === 'أنثى').length;
-    const activeStudents = studentsData.filter(s => s.state).length;
+    const activeStudents = studentsData.filter(s => s.state.toLowerCase() === 'active').length;
 
     const totalSupervisors = usersData.filter(u => u.role_id === 3).length;
     const totalStations = stationsData.length;
@@ -3183,29 +3185,29 @@ function renderReports() {
 
     // ---------- 6. أسماء الطلاب حسب محطات النزول ----------
 
-let dropoffStationsStudentsHTML = `
+    let dropoffStationsStudentsHTML = `
 <h3>أسماء الطلاب حسب محطات النزول</h3>
 <div class="students-days-cards-wrap44">
 `;
 
-const dropoffStationsWithStudents = stationsData.filter(station =>
-    studentsData.some(student => student.dropoff_station_id === station.id)
-);
-
-dropoffStationsWithStudents.forEach(station => {
-
-    const dropoffStudents = studentsData.filter(student =>
-        student.dropoff_station_id === station.id
+    const dropoffStationsWithStudents = stationsData.filter(station =>
+        studentsData.some(student => student.dropoff_station_id === station.id)
     );
 
-    const namesHTML = dropoffStudents.map(student => `
+    dropoffStationsWithStudents.forEach(station => {
+
+        const dropoffStudents = studentsData.filter(student =>
+            student.dropoff_station_id === station.id
+        );
+
+        const namesHTML = dropoffStudents.map(student => `
         <div class="day-student-name44">
             <i class="bi bi-person-fill"></i>
             <span>${student.name}</span>
         </div>
     `).join("");
 
-    dropoffStationsStudentsHTML += `
+        dropoffStationsStudentsHTML += `
         <div class="students-day-card44">
             <div class="students-day-header44">
                 <h4>${station.station_name}</h4>
@@ -3217,37 +3219,37 @@ dropoffStationsWithStudents.forEach(station => {
             </div>
         </div>
     `;
-});
+    });
 
-dropoffStationsStudentsHTML += `</div>`;
+    dropoffStationsStudentsHTML += `</div>`;
 
-container.innerHTML += dropoffStationsStudentsHTML;
+    container.innerHTML += dropoffStationsStudentsHTML;
 
     // ---------- 5. أسماء الطلاب حسب محطات الصعود ----------
 
-let pickupStationsStudentsHTML = `
+    let pickupStationsStudentsHTML = `
 <h3>أسماء الطلاب حسب محطات الصعود</h3>
 <div class="students-days-cards-wrap44">
 `;
 
-const pickupStationsWithStudents = stationsData.filter(station =>
-    studentsData.some(student => student.pickup_station_id === station.id)
-);
-
-pickupStationsWithStudents.forEach(station => {
-
-    const pickupStudents = studentsData.filter(student =>
-        student.pickup_station_id === station.id
+    const pickupStationsWithStudents = stationsData.filter(station =>
+        studentsData.some(student => student.pickup_station_id === station.id)
     );
 
-    const namesHTML = pickupStudents.map(student => `
+    pickupStationsWithStudents.forEach(station => {
+
+        const pickupStudents = studentsData.filter(student =>
+            student.pickup_station_id === station.id
+        );
+
+        const namesHTML = pickupStudents.map(student => `
         <div class="day-student-name44">
             <i class="bi bi-person-fill"></i>
             <span>${student.name}</span>
         </div>
     `).join("");
 
-    pickupStationsStudentsHTML += `
+        pickupStationsStudentsHTML += `
         <div class="students-day-card44">
             <div class="students-day-header44">
                 <h4>${station.station_name}</h4>
@@ -3259,14 +3261,14 @@ pickupStationsWithStudents.forEach(station => {
             </div>
         </div>
     `;
-});
+    });
 
-pickupStationsStudentsHTML += `</div>`;
+    pickupStationsStudentsHTML += `</div>`;
 
-container.innerHTML += pickupStationsStudentsHTML;
+    container.innerHTML += pickupStationsStudentsHTML;
 
-        // ---------- 5. أسماء الطلاب حسب محطات الصعود ----------
-// ---------- 5. أسماء الطلاب حسب محطات الصعود ----------
+    // ---------- 5. أسماء الطلاب حسب محطات الصعود ----------
+    // ---------- 5. أسماء الطلاب حسب محطات الصعود ----------
 
     // ---------- 3. عدد الطلاب لكل يوم ----------
 
@@ -3376,10 +3378,120 @@ container.innerHTML += pickupStationsStudentsHTML;
     studentsPerDayHTML += `</div>`;
 
     container.innerHTML += studentsPerDayHTML;
+    // ---------- 4. مقارنة الطلاب النشطين: ذكور / إناث ----------
 
+    const activeStudentsOnly = studentsData.filter(s =>
+        String(s.state).toLowerCase() === "active"
+    );
 
+    const genderStats = [
+        {
+            name: "الذكور",
+            count: activeStudentsOnly.filter(s => s.gender === "ذكر").length
+        },
+        {
+            name: "الإناث",
+            count: activeStudentsOnly.filter(s => s.gender === "أنثى").length
+        }
+    ];
 
-    
+    const maxGenderValue = Math.max(...genderStats.map(g => g.count), 1);
+
+    let genderChartHTML = `
+    <h3>مقارنة الطلاب النشطين: الذكور والإناث</h3>
+
+    <div class="days-chart-container gender-chart-container44">
+    `;
+
+    genderStats.forEach(item => {
+
+        const heightPercent = (item.count / maxGenderValue) * 100;
+
+        let color = item.name === "الذكور" ? "#0d6efd" : "#e83e8c";
+
+        genderChartHTML += `
+            <div class="day-column-wrapper gender-column-wrapper44">
+
+                <div class="day-count">${item.count}</div>
+
+                <div class="day-bar gender-bar44"
+                     style="height:${heightPercent}%; background:${color}">
+                </div>
+
+                <div class="day-label">${item.name}</div>
+
+            </div>
+        `;
+    });
+
+    genderChartHTML += `</div>`;
+
+    container.innerHTML += genderChartHTML;
+
+// ---------- 5. مقارنة السيارات العاملة حسب نوع الوقود ----------
+
+// السائقون المقبولون والعاملون فقط
+const approvedActiveDrivers = driversData.filter(driver => {
+    const user = usersData.find(u => u.id === driver.user_id);
+    return user &&
+           user.status === "approved" &&
+           String(driver.state).toLowerCase() === "active";
+});
+
+// الحافلات المرتبطة بهؤلاء السائقين فقط
+const activeApprovedBuses = busesData.filter(bus =>
+    approvedActiveDrivers.some(driver => driver.id === bus.driver_id)
+);
+
+const fuelStats = [
+    {
+        name: "بترول",
+        count: activeApprovedBuses.filter(bus => bus.type_fuel === "بترول").length,
+        color: "#dc3545"
+    },
+    {
+        name: "ديزل",
+        count: activeApprovedBuses.filter(bus => bus.type_fuel === "ديزل").length,
+        color: "#ffc107"
+    },
+    {
+        name: "غاز",
+        count: activeApprovedBuses.filter(bus => bus.type_fuel === "غاز").length,
+        color: "#198754"
+    }
+];
+
+const maxFuelValue = Math.max(...fuelStats.map(f => f.count), 1);
+
+let fuelChartHTML = `
+<h3>مقارنة السيارات العاملة حسب نوع الوقود</h3>
+
+<div class="days-chart-container gender-chart-container44">
+`;
+
+fuelStats.forEach(item => {
+
+    const heightPercent = (item.count / maxFuelValue) * 100;
+
+    fuelChartHTML += `
+        <div class="day-column-wrapper gender-column-wrapper44">
+
+            <div class="day-count">${item.count}</div>
+
+            <div class="day-bar gender-bar44"
+                 style="height:${heightPercent}%; background:${item.color}">
+            </div>
+
+            <div class="day-label">${item.name}</div>
+
+        </div>
+    `;
+});
+
+fuelChartHTML += `</div>`;
+
+container.innerHTML += fuelChartHTML;
+
     // ---------- 4. الإحصائيات حسب الهيكل الأكاديمي ----------
     let academicHTML = `<h3>بيانات الجامعات </h3>
 <table class="reports-table">
@@ -3483,31 +3595,31 @@ container.innerHTML += pickupStationsStudentsHTML;
 
 
 
-// ---------- 7. أسماء الطلاب حسب الجامعات ----------
+    // ---------- 7. أسماء الطلاب حسب الجامعات ----------
 
-let universitiesStudentsHTML = `
+    let universitiesStudentsHTML = `
 <h3>أسماء الطلاب حسب الجامعات</h3>
 <div class="students-days-cards-wrap44">
 `;
 
-const universitiesWithStudents = universitiesData.filter(university =>
-    studentsData.some(student => student.university_id === university.id)
-);
-
-universitiesWithStudents.forEach(university => {
-
-    const universityStudents = studentsData.filter(student =>
-        student.university_id === university.id
+    const universitiesWithStudents = universitiesData.filter(university =>
+        studentsData.some(student => student.university_id === university.id)
     );
 
-    const namesHTML = universityStudents.map(student => `
+    universitiesWithStudents.forEach(university => {
+
+        const universityStudents = studentsData.filter(student =>
+            student.university_id === university.id
+        );
+
+        const namesHTML = universityStudents.map(student => `
         <div class="day-student-name44">
             <i class="bi bi-person-fill"></i>
             <span>${student.name}</span>
         </div>
     `).join("");
 
-    universitiesStudentsHTML += `
+        universitiesStudentsHTML += `
         <div class="students-day-card44">
             <div class="students-day-header44">
                 <h4>${university.university_name}</h4>
@@ -3519,38 +3631,38 @@ universitiesWithStudents.forEach(university => {
             </div>
         </div>
     `;
-});
+    });
 
-universitiesStudentsHTML += `</div>`;
+    universitiesStudentsHTML += `</div>`;
 
-container.innerHTML += universitiesStudentsHTML;
+    container.innerHTML += universitiesStudentsHTML;
 
 
-// ---------- 8. أسماء الطلاب حسب الأقسام ----------
+    // ---------- 8. أسماء الطلاب حسب الأقسام ----------
 
-let departmentsStudentsHTML = `
+    let departmentsStudentsHTML = `
 <h3>أسماء الطلاب حسب الأقسام</h3>
 <div class="students-days-cards-wrap44">
 `;
 
-const departmentsWithStudents = departmentsData.filter(dept =>
-    studentsData.some(student => student.department_id === dept.id)
-);
-
-departmentsWithStudents.forEach(dept => {
-
-    const deptStudents = studentsData.filter(student =>
-        student.department_id === dept.id
+    const departmentsWithStudents = departmentsData.filter(dept =>
+        studentsData.some(student => student.department_id === dept.id)
     );
 
-    const namesHTML = deptStudents.map(student => `
+    departmentsWithStudents.forEach(dept => {
+
+        const deptStudents = studentsData.filter(student =>
+            student.department_id === dept.id
+        );
+
+        const namesHTML = deptStudents.map(student => `
         <div class="day-student-name44">
             <i class="bi bi-person-fill"></i>
             <span>${student.name}</span>
         </div>
     `).join("");
 
-    departmentsStudentsHTML += `
+        departmentsStudentsHTML += `
         <div class="students-day-card44">
             <div class="students-day-header44">
                 <h4>${dept.department_name}</h4>
@@ -3562,11 +3674,11 @@ departmentsWithStudents.forEach(dept => {
             </div>
         </div>
     `;
-});
+    });
 
-departmentsStudentsHTML += `</div>`;
+    departmentsStudentsHTML += `</div>`;
 
-container.innerHTML += departmentsStudentsHTML;
+    container.innerHTML += departmentsStudentsHTML;
 
 }
 

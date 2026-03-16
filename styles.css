@@ -4255,3 +4255,23 @@ td {
     color:#888;
     font-size:13px;
 }
+
+/* defrint students gender */
+/* defrint students gender */
+/* defrint students gender */
+/* defrint students gender */
+/* defrint students gender */
+
+.gender-chart-container44{
+    justify-content:center;
+    gap:40px;
+}
+
+.gender-column-wrapper44{
+    width:140px;
+}
+
+.gender-bar44{
+    width:100px;
+    border-radius:8px 8px 0 0;
+}
