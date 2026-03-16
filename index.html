@@ -86,32 +86,75 @@
         </div>
 
         <aside class="sidebar">
+
             <div class="part-top">
-                <div class="sidebar-item" onclick="showPage('sec-profile')" title="الملف الشخصي"><i
-                        class="bi bi-person-circle"></i></div>
-                <div class="sidebar-item" onclick="showPage('sec-home')" title="الرئيسية"><i class="bi bi-house"></i>
+
+                <div class="sidebar-item" onclick="showPage('sec-profile')">
+                    <i class="bi bi-person-circle"></i>
+                    <span>الملف الشخصي</span>
                 </div>
-                <div class="sidebar-item" onclick="showPage('sec-users')" title="المستخدمين"><i
-                        class="bi bi-people-fill"></i></div>
-                <div class="sidebar-item" onclick="showPage('sec-students')" title="الطلاب"><i
-                        class="bi bi-mortarboard"></i></div>
-                <div class="sidebar-item" onclick="showPage('sec-drivers')" title="السائقين"><i
-                        class="bi bi-train-front"></i></div>
-                <div class="sidebar-item" onclick="showPage('sec-trips')" title="الرحلات"><i class="bi bi-geo-alt"></i>
+
+                <div class="sidebar-item" onclick="showPage('sec-home')">
+                    <i class="bi bi-house"></i>
+                    <span>الرئيسية</span>
                 </div>
-                <div class="sidebar-item" onclick="showPage('sec-payments')" title="المدفوعات"><i
-                        class="bi bi-credit-card"></i></div>
-                <div class="sidebar-item" onclick="showPage('sec-reports')" title="التقارير"><i
-                        class="bi bi-clipboard-data"></i></div>
-                <div class="sidebar-item" onclick="showPage('sec-notifications')" title="الإشعارات"><i
-                        class="bi bi-bell"></i></div>
+
+                <div class="sidebar-item" onclick="showPage('sec-users')">
+                    <i class="bi bi-people-fill"></i>
+                    <span>المستخدمين</span>
+                </div>
+
+                <div class="sidebar-item" onclick="showPage('sec-students')">
+                    <i class="bi bi-mortarboard"></i>
+                    <span>الطلاب</span>
+                </div>
+
+                <div class="sidebar-item" onclick="showPage('sec-drivers')">
+                    <i class="bi bi-train-front"></i>
+                    <span>السائقين</span>
+                </div>
+
+                <div class="sidebar-item" onclick="showPage('sec-trips')">
+                    <i class="bi bi-geo-alt"></i>
+                    <span>الرحلات</span>
+                </div>
+
+                <div class="sidebar-item" onclick="showPage('sec-payments')">
+                    <i class="bi bi-credit-card"></i>
+                    <span>المدفوعات</span>
+                </div>
+
+                <div class="sidebar-item" onclick="showPage('sec-reports')">
+                    <i class="bi bi-clipboard-data"></i>
+                    <span>التقارير</span>
+                </div>
+
+                <div class="sidebar-item" onclick="showPage('sec-notifications')">
+                    <i class="bi bi-bell"></i>
+                    <span>الإشعارات</span>
+                </div>
+
             </div>
+
             <div class="part-down">
-                <div class="sidebar-item"><i class="bi bi-info-circle"></i></div>
-                <div class="sidebar-item" onclick="showPage('sec-settings')"><i class="bi bi-gear"></i></div>
-                <div class="sidebar-item mt-auto" onclick="location.reload()" title="خروج"><i
-                        class="bi bi-box-arrow-left text-danger"></i></div>
+
+                <div class="sidebar-item">
+                    <i class="bi bi-info-circle"></i>
+                    <span>حول النظام</span>
+                </div>
+
+                <div class="sidebar-item" onclick="showPage('sec-settings')">
+                    <i class="bi bi-gear"></i>
+                    <span>الإعدادات</span>
+                </div>
+
+                <div class="sidebar-item mt-auto" onclick="location.reload()">
+                    <i class="bi bi-box-arrow-left text-danger"></i>
+                    <span>خروج</span>
+                </div>
+
             </div>
+
         </aside>
 
         <div class="main-content">
@@ -812,7 +855,8 @@
                         <h1 class="page-title mb-0">إدارة التقارير</h1>
 
                         <div class="custom-tabs">
-                            <button class="tab-btn active-tab" onclick="openReportTab('tab-reports-cards', this)">الكل</button>
+                            <button class="tab-btn active-tab"
+                                onclick="openReportTab('tab-reports-cards', this)">الكل</button>
                             <button class="tab-btn" onclick="openReportTab('tab-reports-stations', this)">إحصائيات
                                 المحطات</button>
                             <button class="tab-btn" onclick="openReportTab('tab-reports-days', this)">إحصائيات
