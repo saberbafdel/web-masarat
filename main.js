@@ -4,6 +4,7 @@
 // const API = "http://192.168.1.164:8000/api";
 // const API = "http://192.168.154.204:8000/api";
 // const API = "http://localhost:3000";
+
 const API = "https://msaraty.ddns.net/api";
 let usersData = [];
 
@@ -21,6 +22,11 @@ let driversData = [];
 let busesData = [];
 
 let currentUserId = null;
+
+
+let notificationsData = [];
+
+
 
 async function login() {
     const usernameInput = document.getElementById('login-username').value.trim();
@@ -62,7 +68,7 @@ async function login() {
             document.getElementById('login-page').style.display = "none";
             document.getElementById('main-wrapper').style.display = "block";
 
-            await fetchall();
+            
             showPage('sec-home');
         }
         else {
@@ -159,7 +165,8 @@ function formatDate(dateString) {
         d.getHours() + ":" +
         d.getMinutes();
 
-} async function fetchUsers() {
+} 
+async function fetchUsers() {
     const res = await fetch(`${API}/users`);
     usersData = await res.json();
     renderAll();
@@ -212,6 +219,19 @@ async function fetchLevels() {
     const res = await fetch(`${API}/levels`);
     levelsData = await res.json();
     renderAll();
+}
+
+async function fetchNotifications() {
+    try {
+        const res = await fetch(`${API}/notifications`);
+        notificationsData = await res.json();
+        console.table(notificationsData);
+        renderNotificationsCarts();
+
+        renderNotifications();
+    } catch (error) {
+        console.error("فشل في جلب الإشعارات:", error);
+    }
 }
 async function fetchAll() {
 
@@ -3819,22 +3839,6 @@ function openNotificationTab(tabId, btn) {
 }
 
 
-
-let notificationsData = [];
-
-
-async function fetchNotifications() {
-    try {
-        const res = await fetch(`${API}/notifications`);
-        notificationsData = await res.json();
-        console.table(notificationsData);
-        renderNotificationsCarts();
-
-        renderNotifications();
-    } catch (error) {
-        console.error("فشل في جلب الإشعارات:", error);
-    }
-}
 
 
 function renderNotifications() {
