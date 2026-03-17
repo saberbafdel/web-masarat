@@ -75,6 +75,7 @@ body {
     background-color: var(--main-bg);
     overflow-x: hidden;
     font-family: "Tajawal", sans-serif;
+    
 }
 
 /* Login */
@@ -281,8 +282,8 @@ body {
 
 .main-content {
     margin-right: var(--sidebar-width);
-    padding: 30px;
-    min-height: 100vh;
+    
+    
 }
 
 .page-section {
@@ -1747,7 +1748,7 @@ h1.page-title::after {
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: var(--bg-color);
-    padding: 20px;
+    padding: 18px;
 }
 
 /* زر فتح الموديل */
@@ -4407,7 +4408,5 @@ td {
 }
 
 /* ===== FIX CONTENT UNDER NAVBAR ===== */
-#main-wrapper {
-    padding-top: 70px;
-    /* مهم جدا */
-}
+
+
