@@ -56,7 +56,7 @@ async function login() {
         if (response.ok) {
             const data = await response.json();
             console.clear();
-            console.log(data.user.id);
+            console.log(data.user.role_id);
 
             currentUserId = data.user.id;
 
@@ -64,12 +64,17 @@ async function login() {
             if (accountSpan && data.username) {
                 accountSpan.textContent = data.username || usernameInput;
             }
+            if (data.user.role_id === 3) {
+                document.getElementById('login-page').style.display = "none";
+                document.getElementById('main-wrapper').style.display = "block";
+                showPage('sec-home');
 
-            document.getElementById('login-page').style.display = "none";
-            document.getElementById('main-wrapper').style.display = "block";
+            }else{
+                error.textContent = "ليس لديك الصلاحيات الزامة للذخول";
+                error.style.display = "block";
+            }
 
-            
-            showPage('sec-home');
+
         }
         else {
             const errorData = await response.json();
@@ -165,7 +170,7 @@ function formatDate(dateString) {
         d.getHours() + ":" +
         d.getMinutes();
 
-} 
+}
 async function fetchUsers() {
     const res = await fetch(`${API}/users`);
     usersData = await res.json();
@@ -272,6 +277,7 @@ function renderAll() {
     renderReports();
 
     renderNotifications();
+    
 }
 
 function openUserTab(tabId, btnElement) {
@@ -279,12 +285,10 @@ function openUserTab(tabId, btnElement) {
     const parent = document.getElementById('sec-users');
     parent.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
 
-
     parent.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active-tab'));
 
     document.getElementById(tabId).classList.add('active');
     btnElement.classList.add('active-tab');
-
 
     renderUsers();
 }
@@ -302,7 +306,7 @@ function openStudentTab(tabId, btnElement) {
     btnElement.classList.add('active-tab');
 
     if (tabId === 'tab-students-data') {
-        // refresh lookup data for select options
+        
         fetchUniversities();
         fetchColleges();
         fetchDepartments();
@@ -886,9 +890,7 @@ async function deleteUser(userId) {
     if (!confirm(confirmMsg)) return;
 
     try {
-        // -------------------
-        // حذف بيانات الطالب
-        // -------------------
+        
         if (isStudent) {
             const student = studentsData.find(s => s.user_id == userId);
             if (student) {
@@ -1332,11 +1334,10 @@ async function updateStation(id) {
 
             closeStationModal();
 
-            // إعادة تحميل البيانات بشكل صحيح
+        
             await fetchStations();
             await fetchAssign();
 
-            // إعادة الرندر
             renderStations();
             renderStationsCards();
             renderAssign();
@@ -1593,9 +1594,7 @@ function resetUnifiedForm() {
 }
 
 
-// =======================================
-// تعبئة الجامعات
-// =======================================
+
 function fillUniversities() {
 
     const sel = document.getElementById("unified-uni-select");
@@ -1609,12 +1608,10 @@ function fillUniversities() {
 }
 
 
-// =======================================
-// التعامل مع التغييرات
-// =======================================
+
 function handleAcademicChange(type) {
 
-    // ========= جامعة =========
+    
     if (type === "uni") {
         const uniId = document.getElementById("unified-uni-select").value;
         document.getElementById("new-uni-name").style.display = (uniId === "NEW") ? "block" : "none";
@@ -1632,7 +1629,7 @@ function handleAcademicChange(type) {
         collegeSel.innerHTML += filtered.map(c => `<option value="${Number(c.id)}">${c.college_name}</option>`).join('');
     }
 
-    // ========= كلية =========
+    
     if (type === "college") {
         const colId = document.getElementById("unified-college-select").value;
         document.getElementById("new-college-name").style.display = (colId === "NEW") ? "block" : "none";
@@ -1680,9 +1677,7 @@ function handleAcademicChange(type) {
 }
 
 
-// =======================================
-// الحفظ
-// =======================================
+
 async function saveUnifiedStructure() {
 
     try {
@@ -1759,7 +1754,7 @@ async function saveUnifiedStructure() {
             fetchColleges(),
             fetchDepartments(),
             fetchLevels(),
-            // renderAcademicStructure(),
+        
 
         ]);
 
@@ -3448,52 +3443,52 @@ function renderReports() {
 
     container.innerHTML += genderChartHTML;
 
-// ---------- 5. مقارنة السيارات العاملة حسب نوع الوقود ----------
+    // ---------- 5. مقارنة السيارات العاملة حسب نوع الوقود ----------
 
-// السائقون المقبولون والعاملون فقط
-const approvedActiveDrivers = driversData.filter(driver => {
-    const user = usersData.find(u => u.id === driver.user_id);
-    return user &&
-           user.status === "approved" &&
-           String(driver.state).toLowerCase() === "active";
-});
+    // السائقون المقبولون والعاملون فقط
+    const approvedActiveDrivers = driversData.filter(driver => {
+        const user = usersData.find(u => u.id === driver.user_id);
+        return user &&
+            user.status === "approved" &&
+            String(driver.state).toLowerCase() === "active";
+    });
 
-// الحافلات المرتبطة بهؤلاء السائقين فقط
-const activeApprovedBuses = busesData.filter(bus =>
-    approvedActiveDrivers.some(driver => driver.id === bus.driver_id)
-);
+    // الحافلات المرتبطة بهؤلاء السائقين فقط
+    const activeApprovedBuses = busesData.filter(bus =>
+        approvedActiveDrivers.some(driver => driver.id === bus.driver_id)
+    );
 
-const fuelStats = [
-    {
-        name: "بترول",
-        count: activeApprovedBuses.filter(bus => bus.type_fuel === "بترول").length,
-        color: "#dc3545"
-    },
-    {
-        name: "ديزل",
-        count: activeApprovedBuses.filter(bus => bus.type_fuel === "ديزل").length,
-        color: "#ffc107"
-    },
-    {
-        name: "غاز",
-        count: activeApprovedBuses.filter(bus => bus.type_fuel === "غاز").length,
-        color: "#198754"
-    }
-];
+    const fuelStats = [
+        {
+            name: "بترول",
+            count: activeApprovedBuses.filter(bus => bus.type_fuel === "بترول").length,
+            color: "#dc3545"
+        },
+        {
+            name: "ديزل",
+            count: activeApprovedBuses.filter(bus => bus.type_fuel === "ديزل").length,
+            color: "#ffc107"
+        },
+        {
+            name: "غاز",
+            count: activeApprovedBuses.filter(bus => bus.type_fuel === "غاز").length,
+            color: "#198754"
+        }
+    ];
 
-const maxFuelValue = Math.max(...fuelStats.map(f => f.count), 1);
+    const maxFuelValue = Math.max(...fuelStats.map(f => f.count), 1);
 
-let fuelChartHTML = `
+    let fuelChartHTML = `
 <h3>مقارنة السيارات العاملة حسب نوع الوقود</h3>
 
 <div class="days-chart-container gender-chart-container44">
 `;
 
-fuelStats.forEach(item => {
+    fuelStats.forEach(item => {
 
-    const heightPercent = (item.count / maxFuelValue) * 100;
+        const heightPercent = (item.count / maxFuelValue) * 100;
 
-    fuelChartHTML += `
+        fuelChartHTML += `
         <div class="day-column-wrapper gender-column-wrapper44">
 
             <div class="day-count">${item.count}</div>
@@ -3506,11 +3501,11 @@ fuelStats.forEach(item => {
 
         </div>
     `;
-});
+    });
 
-fuelChartHTML += `</div>`;
+    fuelChartHTML += `</div>`;
 
-container.innerHTML += fuelChartHTML;
+    container.innerHTML += fuelChartHTML;
 
     // ---------- 4. الإحصائيات حسب الهيكل الأكاديمي ----------
     let academicHTML = `<h3>بيانات الجامعات </h3>
@@ -4326,8 +4321,6 @@ function deleteNotification(id) {
         });
 
 }
-
-
 
 
 fetchAll();
