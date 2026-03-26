@@ -1252,7 +1252,32 @@
     <div id="notification-details-modal"></div>
 
     <script>
-        
+
+        async function fetchAbsenceRequests() {
+            try {
+                // const response = await fetch(`${API}/absence-requests`, {
+                const response = await fetch(`http://192.168.137.1:3000/absence-requests`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error("فشل في جلب طلبات الغياب");
+                }
+
+                const data = await response.json();
+                console.log("طلبات الغياب:", data);
+
+                return data;
+            } catch (error) {
+                console.error("Error fetching absence requests:", error);
+                return [];
+            }
+        }
+
 
 
     </script>
