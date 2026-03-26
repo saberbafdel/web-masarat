@@ -232,6 +232,7 @@ async function fetchNotifications() {
         notificationsData = await res.json();
         console.table(notificationsData);
         renderNotificationsCarts();
+        renderSystemNotifications();
 
         renderNotifications();
     } catch (error) {
@@ -252,7 +253,8 @@ async function fetchAll() {
         fetchLevels(),
         fetchNotifications(),
         fetchDriversAndBuses(),
-        fetchAbsenceRequests()
+        fetchAbsenceRequests(),
+
     ]);
 
     renderAll();
@@ -278,6 +280,8 @@ function renderAll() {
     renderReports();
 
     renderNotifications();
+    renderSystemNotifications();
+    
 
 }
 
@@ -2920,7 +2924,7 @@ function renderStationsCards() {
             student.dropoff_station_id === s.id
         ).length;
 
-        
+
         html += `
         <div class="station-card44" 
              onclick="loadMap(${s.location_x}, ${s.location_y})" 
@@ -3813,8 +3817,6 @@ function loadMap(newLat = lat, newLng = lng) {
 document.addEventListener("DOMContentLoaded", function () {
     loadMap(lat, lng);
 });
-
-
 function openNotificationTab(tabId, btn) {
 
     const parent = document.getElementById("sec-notifications");
@@ -3826,11 +3828,16 @@ function openNotificationTab(tabId, btn) {
         .forEach(b => b.classList.remove("active-tab"));
 
     document.getElementById(tabId).classList.add("active");
-
     btn.classList.add("active-tab");
+
+    if (tabId === "tab-notifications-all") {
+        renderNotifications();
+    }
+
+    if (tabId === "tab-notifications-system") {
+        renderSystemNotifications();
+    }
 }
-
-
 
 
 function renderNotifications() {
@@ -4318,6 +4325,84 @@ function deleteNotification(id) {
         });
 
 }
+function renderSystemNotifications() {
 
+    const container = document.getElementById("system-container");
+    if (!container) return;
+
+    container.innerHTML = "";
+
+    // 🔴 فلترة مباشرة: فقط إشعارات النظام
+    let filteredNotifications = notificationsData.filter(n => n.type === "system_notification");
+
+    // 🔴 ترتيب من الأحدث للأقدم
+    filteredNotifications.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+    if (filteredNotifications.length === 0) {
+        container.innerHTML = `
+        <div class="station-card44">
+            <div class="station-body44">
+                <p class="station-desc44" style="font-size: 14px; color: #777; font-weight: 500; text-align:center;">
+                    لا توجد إشعارات نظام حالياً
+                </p>
+            </div>
+        </div>`;
+        return;
+    }
+
+    const targetLabels = {
+        1: "الطلاب",
+        2: "السائقين",
+        3: "المشرفين"
+    };
+
+    filteredNotifications.forEach(n => {
+
+        // نفس ستايل النظام الموجود عندك
+        let typeColor = "#6f42c1";
+        let typeLabel = "نظام";
+        let icon = "bi-gear-fill";
+
+        let targetText = targetLabels[n.target_group] || "الكل";
+
+        container.innerHTML += `
+        <div class="station-card44"
+            onclick="openNotificationDetails(${n.id})"
+            style="border-top: 5px solid ${typeColor}; border-radius: 6px; cursor:pointer;">
+
+            <div class="station-header44">
+                <h4 class="station-title44" style="color: ${typeColor};">
+                    <i class="bi ${icon}"></i> ${truncateTitle(n.title)}
+                </h4>
+                <span class="station-id44">Sender: #${n.sender_id}</span>
+            </div>
+
+            <div class="station-body44">
+                <p class="station-desc44" style="font-size: 14px; color: #333; font-weight: 500;">
+                    ${truncateMessage(n.message)}
+                </p>
+
+                <div class="station-location44" style="margin-top: 8px; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 11px; color: #777;">
+                        <i class="bi bi-clock"></i>
+                        ${formatDate(n.created_at)}
+                    </span>
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content:space-between; margin-top: 5px;">
+                <span style="background: ${typeColor}15; color: ${typeColor}; padding: 2px 10px; border-radius: 20px; font-size: 10px; font-weight: bold; border: 1px solid ${typeColor}44;">
+                    ${typeLabel}
+                </span>
+
+                <span class="target-badge44 target-${n.target_group}">
+                    ${targetText}
+                </span>
+            </div>
+        </div>
+        `;
+    });
+}
+ renderSystemNotifications();
 
 fetchAll();

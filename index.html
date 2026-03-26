@@ -917,8 +917,8 @@
                             </button>
 
                             <button class="tab-btn" onclick="openNotificationTab('tab-notifications-system', this)">
-                                إشعارات النظام
-                            </button>
+                        إشعارات النظام
+                    </button>
 
                             <!-- <button class="tab-btn" onclick="openNotificationTab('tab-notifications-coming', this)">
                                 قريباً
@@ -998,7 +998,7 @@
                                 onchange="renderAbsenceRequestsNotifications()">
                                 <option value="all">كل أنواع الغياب</option>
                                 <option value="pickup">غياب ذهاب</option>
-                                <option value="dropoff">غياب إياب</option>
+                                <option value="dropoff">غياب عودة</option>
                                 <option value="full">غياب كامل</option>
                             </select>
 
@@ -1027,14 +1027,10 @@
                     <div id="absence-details-modal44"></div>
 
                     <!-- إشعارات النظام -->
+                    
 
                     <div id="tab-notifications-system" class="tab-content">
-
-                        <div id="system-container" class="notifications-grid">
-                            سيتم إضافة أقسام جديدة قريباً
-                            إشعارات النظام
-                        </div>
-
+                        <div id="system-container" class="notifications-grid"></div>
                     </div>
 
                     <!-- قريباً -->
@@ -1280,7 +1276,9 @@
     <div id="notification-details-modal"></div>
 
     <script>
+
         const ABSENCE_API = 'http://192.168.137.1:3000/absence-requests';
+
         let absenceRequestsData = [];
 
         async function fetchAbsenceRequests() {
@@ -1325,20 +1323,27 @@
         function getArabicDayName44(dateString) {
             if (!dateString) return "غير محدد";
 
-            const date = new Date(dateString);
-            if (isNaN(date)) return "غير محدد";
+            const parts = dateString.split("-");
+            if (parts.length !== 3) return "غير محدد";
 
-            const days = [
-                "الأحد",
-                "الإثنين",
-                "الثلاثاء",
-                "الأربعاء",
-                "الخميس",
-                "الجمعة",
-                "السبت"
-            ];
+            const year = Number(parts[0]);
+            const month = Number(parts[1]) - 1;
+            const day = Number(parts[2]);
 
-            return days[date.getDay()] || "غير محدد";
+            const date = new Date(year, month, day);
+            if (isNaN(date.getTime())) return "غير محدد";
+
+            const dayMap = {
+                0: "الأحد",
+                1: "الإثنين",
+                2: "الثلاثاء",
+                3: "الأربعاء",
+                4: "الخميس",
+                5: "الجمعة",
+                6: "السبت"
+            };
+
+            return dayMap[date.getDay()] || "غير محدد";
         }
 
         function renderAbsenceRequestsNotifications() {
