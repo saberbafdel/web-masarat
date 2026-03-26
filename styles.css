@@ -4414,6 +4414,115 @@ td {
 
 
 
+.absence-card44 {
+    background: #ffffff;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #f0f0f0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.absence-card44:hover {
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+}
+
+.absence-top-bar44 {
+    height: 6px;
+    width: 100%;
+}
+
+.absence-card-body44 {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.absence-card-header44 {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px dashed #f0f0f0;
+}
+
+.absence-student-name44 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 700;
+    color: #2d3436;
+}
+
+.absence-date-line44 {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 6px;
+    font-size: 12px;
+    color: #636e72;
+    line-height: 1.4;
+}
+
+.absence-date-line44 span {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: #f8f9fa;
+    padding: 4px 8px;
+    border-radius: 6px;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.absence-type-badge44 {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+    line-height: 1.4;
+}
+
+.absence-card-footer44 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-top: 2px;
+}
+
+.absence-request-id44 {
+    font-size: 11px;
+    font-weight: 600;
+    color: #6c757d;
+    background: #f8f9fa;
+    padding: 3px 8px;
+    border-radius: 4px;
+}
+
+.absence-details-btn44 {
+    border: none;
+    background: #00a1ad;
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    font-size: 12px;
+    font-weight: 600;
+    box-shadow: 0 4px 10px rgba(0, 161, 173, 0.18);
+}
+
+.absence-details-btn44:hover {
+    background: #008c97;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(0, 161, 173, 0.24);
+}
 
 .absence-toolbar44 {
     display: grid;
@@ -4425,179 +4534,286 @@ td {
 .empty-state44 {
     text-align: center;
     padding: 30px 20px;
-    color: #777;
-    background: #fff;
-    border: 1px dashed #ddd;
+    color: #888;
+    background: #ffffff;
+    border: 1px dashed #e9ecef;
     border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
 }
-
-.absence-card44 {
-    background: #fff;
-    border-radius: 14px;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
-    overflow: hidden;
-    border: 1px solid #eef1f4;
-    margin-bottom: 14px;
-}
-
-.absence-top-bar44 {
-    height: 8px;
-    width: 100%;
-}
-
-.absence-card-body44 {
-    padding: 16px;
-}
-
-.absence-card-header44 {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 12px;
-}
-
-.absence-student-name44 {
-    margin: 0 0 8px;
-    font-size: 17px;
-    color: #222;
-}
-
-.absence-date-line44 {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    font-size: 12px;
-    color: #666;
-}
-
-.absence-type-badge44 {
-    padding: 5px 12px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: bold;
-    white-space: nowrap;
-}
-
-.absence-card-footer44 {
-    margin-top: 16px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-}
-
-.absence-request-id44 {
-    font-size: 12px;
-    color: #666;
-}
-
-.absence-details-btn44 {
-    border: none;
-    background: #0d6efd;
-    color: #fff;
-    padding: 8px 14px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: .2s;
-}
-
-.absence-details-btn44:hover {
-    transform: translateY(-1px);
-    opacity: .95;
-}
-
+/* الخلفية المعتمة */
 .modal-overlay44 {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.45);
-    z-index: 99999;
+    background: rgba(15, 23, 42, 0.38);
+    backdrop-filter: blur(2px);
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 20px;
+    padding: 14px;
+    z-index: 99999;
+    animation: fadeIn44 0.22s ease;
 }
 
+/* الكارد الرئيسي */
 .absence-modal-card44 {
-    width: 950px;
-    max-width: 100%;
-    max-height: 90vh;
-    overflow: auto;
-    background: #fff;
+    width: min(1120px, 96vw);
+    background: #ffffff;
     border-radius: 16px;
-    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 14px 35px rgba(0, 0, 0, 0.14);
+    display: flex;
+    flex-direction: column;
     overflow: hidden;
+    animation: scaleIn44 0.24s ease;
 }
 
+/* الشريط العلوي */
 .absence-modal-top44 {
-    height: 10px;
     width: 100%;
+    height: 8px;
+    flex-shrink: 0;
 }
 
+/* المحتوى الداخلي */
 .absence-modal-content44 {
-    padding: 24px;
+    padding: 16px 18px;
+    overflow: visible;
 }
 
+/* عنوان الصفحة */
 .absence-modal-title44 {
+    margin: 0 0 12px;
     text-align: center;
-    margin: 0 0 18px;
-    color: #333;
-}
-
-.absence-modal-student-bar44 {
-    background: #f8f9fa;
-    border: 1px solid #eceff3;
-    padding: 14px 16px;
-    border-radius: 12px;
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 18px;
+    font-size: 20px;
+    font-weight: 800;
     color: #1f2937;
+    line-height: 1.3;
 }
 
-.absence-section-title44 {
-    margin: 22px 0 12px;
-    font-size: 17px;
-    color: #333;
-}
-
-.absence-info-grid44 {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 12px;
-}
-
-.absence-info-box44 {
-    background: #fafbfc;
-    border: 1px solid #edf1f5;
+/* شريط اسم المستخدم / الطالب */
+.absence-modal-student-bar44 {
+    background: linear-gradient(135deg, #f8fafc, #eef2f7);
+    border: 1px solid #e8edf3;
     border-radius: 12px;
     padding: 12px 14px;
+    margin-bottom: 14px;
+    font-size: 17px;
+    font-weight: 700;
+    color: #111827;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
 }
 
+/* عنوان فرعي للقسم */
+.absence-section-title44 {
+    margin: 14px 0 10px;
+    font-size: 15px;
+    font-weight: 800;
+    color: #2d3436;
+    padding-bottom: 6px;
+    border-bottom: 1px dashed #e5e7eb;
+}
+
+/* شبكة البيانات */
+.absence-info-grid44 {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+}
+
+/* بطاقة البيانات */
+.absence-info-box44 {
+    background: #fbfcfd;
+    border: 1px solid #edf1f5;
+    border-radius: 12px;
+    padding: 10px 12px;
+    transition: 0.2s ease;
+    min-height: 64px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.absence-info-box44:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.05);
+    border-color: #dbe4ee;
+}
+
+/* اسم الخاصية */
 .absence-info-box44 label {
     display: block;
-    font-size: 12px;
+    margin-bottom: 4px;
+    font-size: 11px;
+    font-weight: 800;
     color: #6b7280;
-    margin-bottom: 6px;
-    font-weight: bold;
+    letter-spacing: 0.2px;
 }
 
+/* قيمة الخاصية */
 .absence-info-box44 div {
-    font-size: 14px;
+    font-size: 13px;
+    font-weight: 600;
     color: #111827;
-    line-height: 1.6;
+    line-height: 1.5;
+    word-break: break-word;
 }
 
+/* إذا كانت هناك رسالة طويلة أو نص طويل */
+.absence-message-box44 {
+    background: #fbfcfd;
+    border: 1px solid #edf1f5;
+    border-radius: 12px;
+    padding: 12px;
+    line-height: 1.7;
+    font-size: 13px;
+    color: #1f2937;
+    white-space: pre-line;
+    word-break: break-word;
+}
+
+/* منطقة الأزرار */
 .absence-modal-actions44 {
-    margin-top: 22px;
     display: flex;
     justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+    margin-top: 14px;
+    flex-wrap: wrap;
 }
 
+/* زر الإغلاق */
 .absence-close-btn44 {
     border: none;
     background: #dc3545;
     color: #fff;
-    padding: 10px 18px;
-    border-radius: 10px;
+    padding: 9px 15px;
+    border-radius: 9px;
     cursor: pointer;
+    font-size: 13px;
+    font-weight: 700;
+    transition: 0.22s ease;
+    box-shadow: 0 5px 12px rgba(220, 53, 69, 0.16);
+}
+
+.absence-close-btn44:hover {
+    background: #c82333;
+    transform: translateY(-1px);
+}
+
+/* زر ثانوي إذا احتجته */
+.absence-secondary-btn44 {
+    border: none;
+    background: #f1f5f9;
+    color: #334155;
+    padding: 9px 15px;
+    border-radius: 9px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 700;
+    transition: 0.22s ease;
+}
+
+.absence-secondary-btn44:hover {
+    background: #e2e8f0;
+}
+
+/* إخفاء سكرول المحتوى لأننا لا نريده */
+.absence-modal-content44::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+}
+
+/* تابلت */
+@media (max-width: 992px) {
+    .absence-modal-card44 {
+        width: min(980px, 97vw);
+    }
+
+    .absence-modal-content44 {
+        padding: 15px;
+    }
+
+    .absence-modal-title44 {
+        font-size: 18px;
+    }
+
+    .absence-modal-student-bar44 {
+        font-size: 16px;
+    }
+
+    .absence-info-grid44 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* موبايل */
+@media (max-width: 768px) {
+    .modal-overlay44 {
+        padding: 10px;
+        align-items: center;
+    }
+
+    .absence-modal-card44 {
+        width: 100%;
+        border-radius: 14px;
+    }
+
+    .absence-modal-content44 {
+        padding: 14px;
+    }
+
+    .absence-modal-title44 {
+        font-size: 17px;
+        margin-bottom: 10px;
+    }
+
+    .absence-modal-student-bar44 {
+        font-size: 15px;
+        padding: 11px 12px;
+        margin-bottom: 12px;
+    }
+
+    .absence-section-title44 {
+        font-size: 14px;
+        margin: 12px 0 8px;
+    }
+
+    .absence-info-grid44 {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .absence-info-box44 {
+        min-height: auto;
+        padding: 10px 11px;
+    }
+
+    .absence-modal-actions44 {
+        justify-content: stretch;
+    }
+
+    .absence-close-btn44,
+    .absence-secondary-btn44 {
+        width: 100%;
+    }
+}
+
+/* حركات لطيفة */
+@keyframes fadeIn44 {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes scaleIn44 {
+    from {
+        opacity: 0;
+        transform: translateY(8px) scale(0.985);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }

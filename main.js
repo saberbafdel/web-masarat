@@ -69,7 +69,7 @@ async function login() {
                 document.getElementById('main-wrapper').style.display = "block";
                 showPage('sec-home');
 
-            }else{
+            } else {
                 error.textContent = "ليس لديك الصلاحيات الزامة للذخول";
                 error.style.display = "block";
             }
@@ -278,7 +278,7 @@ function renderAll() {
     renderReports();
 
     renderNotifications();
-    
+
 }
 
 function openUserTab(tabId, btnElement) {
@@ -307,7 +307,7 @@ function openStudentTab(tabId, btnElement) {
     btnElement.classList.add('active-tab');
 
     if (tabId === 'tab-students-data') {
-        
+
         fetchUniversities();
         fetchColleges();
         fetchDepartments();
@@ -891,7 +891,7 @@ async function deleteUser(userId) {
     if (!confirm(confirmMsg)) return;
 
     try {
-        
+
         if (isStudent) {
             const student = studentsData.find(s => s.user_id == userId);
             if (student) {
@@ -1335,7 +1335,7 @@ async function updateStation(id) {
 
             closeStationModal();
 
-        
+
             await fetchStations();
             await fetchAssign();
 
@@ -1612,7 +1612,7 @@ function fillUniversities() {
 
 function handleAcademicChange(type) {
 
-    
+
     if (type === "uni") {
         const uniId = document.getElementById("unified-uni-select").value;
         document.getElementById("new-uni-name").style.display = (uniId === "NEW") ? "block" : "none";
@@ -1630,7 +1630,7 @@ function handleAcademicChange(type) {
         collegeSel.innerHTML += filtered.map(c => `<option value="${Number(c.id)}">${c.college_name}</option>`).join('');
     }
 
-    
+
     if (type === "college") {
         const colId = document.getElementById("unified-college-select").value;
         document.getElementById("new-college-name").style.display = (colId === "NEW") ? "block" : "none";
@@ -1755,7 +1755,7 @@ async function saveUnifiedStructure() {
             fetchColleges(),
             fetchDepartments(),
             fetchLevels(),
-        
+
 
         ]);
 
@@ -2920,7 +2920,7 @@ function renderStationsCards() {
             student.dropoff_station_id === s.id
         ).length;
 
-        // نقوم باستدعاء loadMap وتمرير الإحداثيات عند النقر
+        
         html += `
         <div class="station-card44" 
              onclick="loadMap(${s.location_x}, ${s.location_y})" 
@@ -2955,10 +2955,10 @@ function renderDriversCards() {
     const container = document.getElementById('drivers-cards-container44');
     if (!container) return;
 
-    // جلب قيم البحث (اختياري إذا كنت تستخدم حقل بحث)
+
     const searchText = document.getElementById('driver-search-input')?.value.toLowerCase() || "";
 
-    // 1. دمج البيانات وفلترتها (فقط المقبولين والذين حالتهم "يعمل")
+
     const filteredData = busesData
         .map(bus => {
             const driver = driversData.find(d => d.id === bus.driver_id);
@@ -2966,8 +2966,8 @@ function renderDriversCards() {
 
             const user = usersData.find(u => u.id === driver.user_id);
 
-            // الشرط المعدل: يجب أن يكون المستخدم مقبولاً (approved) 
-            // ويجب أن تكون حالة السائق نشطة (active) حصراً
+
+
             if (!user || user.status !== "approved" || driver.state.toLowerCase() !== "active") {
                 return null;
             }
@@ -2983,13 +2983,13 @@ function renderDriversCards() {
             };
         })
         .filter(item => {
-            // تصفية القيم الفارغة + تطبيق بحث النص إذا وجد
+
             if (item === null) return false;
             return item.driver_name.toLowerCase().includes(searchText) ||
                 item.driver_phone.includes(searchText);
         });
 
-    // 2. توليد الكروت للسائقين النشطين فقط
+
     let html = "";
     filteredData.forEach(item => {
         html += `
@@ -3025,7 +3025,7 @@ function renderDriversCards() {
         `;
     });
 
-    // إذا لم يكن هناك سائقون يعملون، اعرض رسالة بسيطة
+
     container.innerHTML = html || '<p style="text-align:center; color:#888; padding:20px;">لا يوجد سائقين متاحين حالياً</p>';
 }
 
@@ -3035,7 +3035,7 @@ function renderStudentsCards() {
 
     let html = "";
 
-    // فلترة الطلاب النشطين فقط
+
     const activeStudents = studentsData.filter(s => s.state === 'active');
 
     console.table(activeStudents);
@@ -3097,9 +3097,6 @@ function renderStudentsCards() {
 
 
 
-
-
-
 function renderReports() {
     const container = document.getElementById('reports-container');
     if (!container) return;
@@ -3115,17 +3112,16 @@ function renderReports() {
     const totalStations = stationsData.length;
     const totalRoutes = routesData.length;
 
-    // أنواع السيارات حسب الوقود
-    // حساب إحصائيات السائقين والكروت
+
     const approvedDrivers = driversData.filter(driver => {
         const user = usersData.find(u => u.id === driver.user_id);
         return user && user.status === "approved";
     });
 
-    const totalDrivers = approvedDrivers.length; // جميع السائقين المعتمدين
-    const activeDrivers = approvedDrivers.filter(d => d.state.toLowerCase() === 'active').length; // السائقين العاملين
+    const totalDrivers = approvedDrivers.length;
+    const activeDrivers = approvedDrivers.filter(d => d.state.toLowerCase() === 'active').length;
 
-    // حساب السيارات حسب الوقود المرتبطة بالسائقين المعتمدين
+
     const approvedBuses = busesData.filter(bus => approvedDrivers.some(d => d.id === bus.driver_id));
     const petrolCars = approvedBuses.filter(b => b.type_fuel === 'بترول').length;
     const dieselCars = approvedBuses.filter(b => b.type_fuel === 'ديزل').length;

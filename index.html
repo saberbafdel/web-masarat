@@ -1297,7 +1297,7 @@
 
         function getAbsenceTypeLabel44(type) {
             if (type === "pickup") return "غياب ذهاب";
-            if (type === "dropoff") return "غياب إياب";
+            if (type === "dropoff") return "غياب عودة";
             if (type === "full") return "غياب كامل";
             return "غير محدد";
         }
@@ -1317,7 +1317,7 @@
 
             return date.toLocaleDateString("ar-EG", {
                 day: "numeric",
-                month: "long",
+                month: "numeric",
                 year: "numeric"
             });
         }
@@ -1589,7 +1589,7 @@
             modal.style.display = "none";
             modal.innerHTML = "";
         }
-        
+        renderAbsenceRequestsNotifications();
 
 
 
