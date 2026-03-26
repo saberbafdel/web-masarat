@@ -75,7 +75,7 @@ body {
     background-color: var(--main-bg);
     overflow-x: hidden;
     font-family: "Tajawal", sans-serif;
-    
+
 }
 
 /* Login */
@@ -282,8 +282,8 @@ body {
 
 .main-content {
     margin-right: var(--sidebar-width);
-    
-    
+
+
 }
 
 .page-section {
@@ -4408,5 +4408,196 @@ td {
 }
 
 /* ===== FIX CONTENT UNDER NAVBAR ===== */
+/* ===== FIX CONTENT UNDER NAVBAR ===== */
+/* ===== FIX CONTENT UNDER NAVBAR ===== */
+/* ===== FIX CONTENT UNDER NAVBAR ===== */
 
 
+
+
+.absence-toolbar44 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.empty-state44 {
+    text-align: center;
+    padding: 30px 20px;
+    color: #777;
+    background: #fff;
+    border: 1px dashed #ddd;
+    border-radius: 12px;
+}
+
+.absence-card44 {
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+    border: 1px solid #eef1f4;
+    margin-bottom: 14px;
+}
+
+.absence-top-bar44 {
+    height: 8px;
+    width: 100%;
+}
+
+.absence-card-body44 {
+    padding: 16px;
+}
+
+.absence-card-header44 {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.absence-student-name44 {
+    margin: 0 0 8px;
+    font-size: 17px;
+    color: #222;
+}
+
+.absence-date-line44 {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    font-size: 12px;
+    color: #666;
+}
+
+.absence-type-badge44 {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.absence-card-footer44 {
+    margin-top: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.absence-request-id44 {
+    font-size: 12px;
+    color: #666;
+}
+
+.absence-details-btn44 {
+    border: none;
+    background: #0d6efd;
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.absence-details-btn44:hover {
+    transform: translateY(-1px);
+    opacity: .95;
+}
+
+.modal-overlay44 {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.absence-modal-card44 {
+    width: 950px;
+    max-width: 100%;
+    max-height: 90vh;
+    overflow: auto;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+}
+
+.absence-modal-top44 {
+    height: 10px;
+    width: 100%;
+}
+
+.absence-modal-content44 {
+    padding: 24px;
+}
+
+.absence-modal-title44 {
+    text-align: center;
+    margin: 0 0 18px;
+    color: #333;
+}
+
+.absence-modal-student-bar44 {
+    background: #f8f9fa;
+    border: 1px solid #eceff3;
+    padding: 14px 16px;
+    border-radius: 12px;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 18px;
+    color: #1f2937;
+}
+
+.absence-section-title44 {
+    margin: 22px 0 12px;
+    font-size: 17px;
+    color: #333;
+}
+
+.absence-info-grid44 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+}
+
+.absence-info-box44 {
+    background: #fafbfc;
+    border: 1px solid #edf1f5;
+    border-radius: 12px;
+    padding: 12px 14px;
+}
+
+.absence-info-box44 label {
+    display: block;
+    font-size: 12px;
+    color: #6b7280;
+    margin-bottom: 6px;
+    font-weight: bold;
+}
+
+.absence-info-box44 div {
+    font-size: 14px;
+    color: #111827;
+    line-height: 1.6;
+}
+
+.absence-modal-actions44 {
+    margin-top: 22px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.absence-close-btn44 {
+    border: none;
+    background: #dc3545;
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 10px;
+    cursor: pointer;
+}

@@ -992,11 +992,39 @@
 
                     <div id="tab-notifications-absence" class="tab-content">
 
-                        <div id="absence-container" class="notifications-grid">
-                            سيتم إضافة أقسام جديدة قريباً إشعارات الغياب
+                        <div class="absence-toolbar44">
+
+                            <select id="absence-filter-type44" class="filter-select"
+                                onchange="renderAbsenceRequestsNotifications()">
+                                <option value="all">كل أنواع الغياب</option>
+                                <option value="pickup">غياب ذهاب</option>
+                                <option value="dropoff">غياب إياب</option>
+                                <option value="full">غياب كامل</option>
+                            </select>
+
+                            <select id="absence-filter-day44" class="filter-select"
+                                onchange="renderAbsenceRequestsNotifications()">
+                                <option value="all">كل الأيام</option>
+                                <option value="السبت">السبت</option>
+                                <option value="الأحد">الأحد</option>
+                                <option value="الإثنين">الإثنين</option>
+                                <option value="الثلاثاء">الثلاثاء</option>
+                                <option value="الأربعاء">الأربعاء</option>
+                                <option value="الخميس">الخميس</option>
+                                <option value="الجمعة">الجمعة</option>
+                            </select>
+
+                            <input type="text" id="absence-search44" class="filter-select"
+                                placeholder="ابحث باسم الطالب أو الرقم الجامعي"
+                                oninput="renderAbsenceRequestsNotifications()">
+
                         </div>
 
+                        <div id="absence-container" class="notifications-grid"></div>
+
                     </div>
+
+                    <div id="absence-details-modal44"></div>
 
                     <!-- إشعارات النظام -->
 
@@ -1252,31 +1280,316 @@
     <div id="notification-details-modal"></div>
 
     <script>
+        const ABSENCE_API = 'http://192.168.137.1:3000/absence-requests';
+        let absenceRequestsData = [];
 
         async function fetchAbsenceRequests() {
             try {
-                // const response = await fetch(`${API}/absence-requests`, {
-                const response = await fetch(`http://192.168.137.1:3000/absence-requests`, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Accept": "application/json"
-                    }
+                const res = await fetch(ABSENCE_API);
+                if (!res.ok) throw new Error("فشل جلب طلبات الغياب");
+                absenceRequestsData = await res.json();
+            } catch (error) {
+                console.error("fetchAbsenceRequests Error:", error);
+                absenceRequestsData = [];
+            }
+            renderAbsenceRequestsNotifications();
+        }
+
+        function getAbsenceTypeLabel44(type) {
+            if (type === "pickup") return "غياب ذهاب";
+            if (type === "dropoff") return "غياب إياب";
+            if (type === "full") return "غياب كامل";
+            return "غير محدد";
+        }
+
+        function getAbsenceTypeColor44(type) {
+            if (type === "pickup") return "#0d6efd";
+            if (type === "dropoff") return "#fd7e14";
+            if (type === "full") return "#dc3545";
+            return "#6c757d";
+        }
+
+        function formatAbsenceDate44(dateString) {
+            if (!dateString) return "غير محدد";
+
+            const date = new Date(dateString);
+            if (isNaN(date)) return "غير محدد";
+
+            return date.toLocaleDateString("ar-EG", {
+                day: "numeric",
+                month: "long",
+                year: "numeric"
+            });
+        }
+
+        function getArabicDayName44(dateString) {
+            if (!dateString) return "غير محدد";
+
+            const date = new Date(dateString);
+            if (isNaN(date)) return "غير محدد";
+
+            const days = [
+                "الأحد",
+                "الإثنين",
+                "الثلاثاء",
+                "الأربعاء",
+                "الخميس",
+                "الجمعة",
+                "السبت"
+            ];
+
+            return days[date.getDay()] || "غير محدد";
+        }
+
+        function renderAbsenceRequestsNotifications() {
+            const container = document.getElementById("absence-container");
+            if (!container) return;
+
+            const typeFilter = document.getElementById("absence-filter-type44")?.value || "all";
+            const dayFilter = document.getElementById("absence-filter-day44")?.value || "all";
+            const searchText = (document.getElementById("absence-search44")?.value || "").trim().toLowerCase();
+
+            container.innerHTML = "";
+
+            if (!Array.isArray(absenceRequestsData) || absenceRequestsData.length === 0) {
+                container.innerHTML = `<div class="empty-state44">لا توجد طلبات غياب حالياً</div>`;
+                return;
+            }
+
+            let filteredRequests = [...absenceRequestsData]
+                .sort((a, b) => {
+                    const dateA = new Date(a.date || 0).getTime();
+                    const dateB = new Date(b.date || 0).getTime();
+
+                    if (dateB !== dateA) return dateB - dateA;
+
+                    const idA = Number(a.id || 0);
+                    const idB = Number(b.id || 0);
+                    return idB - idA;
+                })
+                .filter(req => {
+                    const student = studentsData.find(s => Number(s.id) === Number(req.student_id));
+                    const studentName = (student?.name || "").toLowerCase();
+                    const universityNumber = String(student?.university_number || "").toLowerCase();
+                    const dayName = getArabicDayName44(req.date);
+
+                    const matchType = typeFilter === "all" || req.type === typeFilter;
+                    const matchDay = dayFilter === "all" || dayName === dayFilter;
+                    const matchSearch =
+                        !searchText ||
+                        studentName.includes(searchText) ||
+                        universityNumber.includes(searchText);
+
+                    return matchType && matchDay && matchSearch;
                 });
 
-                if (!response.ok) {
-                    throw new Error("فشل في جلب طلبات الغياب");
-                }
-
-                const data = await response.json();
-                console.log("طلبات الغياب:", data);
-
-                return data;
-            } catch (error) {
-                console.error("Error fetching absence requests:", error);
-                return [];
+            if (filteredRequests.length === 0) {
+                container.innerHTML = `<div class="empty-state44">لا توجد نتائج مطابقة</div>`;
+                return;
             }
+
+            container.innerHTML = filteredRequests.map(req => {
+                const student = studentsData.find(s => Number(s.id) === Number(req.student_id));
+                const studentName = student?.name || `طالب رقم ${req.student_id}`;
+                const typeLabel = getAbsenceTypeLabel44(req.type);
+                const typeColor = getAbsenceTypeColor44(req.type);
+                const dayName = getArabicDayName44(req.date);
+                const formattedDate = formatAbsenceDate44(req.date);
+
+                return `
+        <div class="absence-card44">
+            <div class="absence-top-bar44" style="background: linear-gradient(90deg, ${typeColor}, ${typeColor}99);"></div>
+
+            <div class="absence-card-body44">
+
+                <div class="absence-card-header44">
+                    <div>
+                        <h4 class="absence-student-name44">${studentName}</h4>
+                        <div class="absence-date-line44">
+                            <span><i class="bi bi-calendar-event"></i> ${formattedDate}</span>
+                            <span><i class="bi bi-calendar-week"></i> ${dayName}</span>
+                        </div>
+                    </div>
+
+                    <span class="absence-type-badge44"
+                          style="background:${typeColor}18; color:${typeColor}; border:1px solid ${typeColor}44;">
+                        ${typeLabel}
+                    </span>
+                </div>
+
+                <div class="absence-card-footer44">
+                    <span class="absence-request-id44">طلب رقم: ${req.id ?? "-"}</span>
+
+                    <button class="absence-details-btn44" onclick="openAbsenceDetails44(${req.id})">
+                        عرض التفاصيل
+                    </button>
+                </div>
+
+            </div>
+        </div>
+        `;
+            }).join("");
         }
+        function openAbsenceDetails44(requestId) {
+            const req = absenceRequestsData.find(r => Number(r.id) === Number(requestId));
+            if (!req) return;
+
+            const student = studentsData.find(s => Number(s.id) === Number(req.student_id));
+
+            const typeLabel = getAbsenceTypeLabel44(req.type);
+            const typeColor = getAbsenceTypeColor44(req.type);
+            const dayName = getArabicDayName44(req.date);
+            const formattedDate = formatAbsenceDate44(req.date);
+
+            const pickupStationName =
+                stationsData.find(st => Number(st.id) === Number(student?.pickup_station_id))?.station_name || "غير محدد";
+
+            const dropoffStationName =
+                stationsData.find(st => Number(st.id) === Number(student?.dropoff_station_id))?.station_name || "غير محدد";
+
+            const universityName =
+                universitiesData.find(u => Number(u.id) === Number(student?.university_id))?.university_name || "غير محدد";
+
+            const collegeName =
+                collegesData.find(c => Number(c.id) === Number(student?.college_id))?.college_name || "غير محدد";
+
+            const departmentName =
+                departmentsData.find(d => Number(d.id) === Number(student?.department_id))?.department_name || "غير محدد";
+
+            const levelName =
+                levelsData.find(l => Number(l.id) === Number(student?.level_id))?.level_name || "غير محدد";
+
+            const modal = document.getElementById("absence-details-modal44");
+            if (!modal) return;
+
+            modal.innerHTML = `
+    <div class="modal-overlay44" onclick="closeAbsenceDetails44()">
+
+        <div class="absence-modal-card44" onclick="event.stopPropagation()">
+
+            <div class="absence-modal-top44"
+                 style="background: linear-gradient(90deg, ${typeColor}, ${typeColor}99);">
+            </div>
+
+            <div class="absence-modal-content44">
+
+                <h2 class="absence-modal-title44">تفاصيل طلب الغياب</h2>
+
+                <div class="absence-modal-student-bar44">
+                    ${student?.name || `طالب رقم ${req.student_id}`}
+                </div>
+
+                <div class="absence-info-grid44">
+
+                    <div class="absence-info-box44">
+                        <label>نوع الغياب</label>
+                        <div>${typeLabel}</div>
+                    </div>
+
+                    <div class="absence-info-box44">
+                        <label>اليوم</label>
+                        <div>${dayName}</div>
+                    </div>
+
+                    <div class="absence-info-box44">
+                        <label>التاريخ</label>
+                        <div>${formattedDate}</div>
+                    </div>
+
+                    <div class="absence-info-box44">
+                        <label>رقم الطلب</label>
+                        <div>${req.id ?? "-"}</div>
+                    </div>
+
+                </div>
+
+                <h3 class="absence-section-title44">بيانات الطالب</h3>
+
+                <div class="absence-info-grid44">
+
+                    <div class="absence-info-box44">
+                        <label>الاسم</label>
+                        <div>${student?.name || "غير محدد"}</div>
+                    </div>
+
+                    <div class="absence-info-box44">
+                        <label>الهاتف</label>
+                        <div>${student?.phone || "غير متوفر"}</div>
+                    </div>
+
+                    <div class="absence-info-box44">
+                        <label>الرقم الجامعي</label>
+                        <div>${student?.university_number || "غير متوفر"}</div>
+                    </div>
+
+                    <div class="absence-info-box44">
+                        <label>المدينة</label>
+                        <div>${student?.city || "غير محدد"}</div>
+                    </div>
+
+                    <div class="absence-info-box44">
+                        <label>الجنس</label>
+                        <div>${student?.gender || "غير محدد"}</div>
+                    </div>
+
+                    <div class="absence-info-box44">
+                        <label>الحالة</label>
+                        <div>${student?.state || "غير محدد"}</div>
+                    </div>
+
+                    <div class="absence-info-box44">
+                        <label>الجامعة</label>
+                        <div>${universityName}</div>
+                    </div>
+
+                    <div class="absence-info-box44">
+                        <label>الكلية</label>
+                        <div>${collegeName}</div>
+                    </div>
+
+                    <div class="absence-info-box44">
+                        <label>القسم</label>
+                        <div>${departmentName}</div>
+                    </div>
+
+                    <div class="absence-info-box44">
+                        <label>المستوى</label>
+                        <div>${levelName}</div>
+                    </div>
+
+                    <div class="absence-info-box44">
+                        <label>محطة الصعود</label>
+                        <div>${pickupStationName}</div>
+                    </div>
+
+                    <div class="absence-info-box44">
+                        <label>محطة النزول</label>
+                        <div>${dropoffStationName}</div>
+                    </div>
+
+                </div>
+
+                <div class="absence-modal-actions44">
+                    <button class="absence-close-btn44" onclick="closeAbsenceDetails44()">
+                        إغلاق
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    `;
+
+            modal.style.display = "block";
+        }
+
+        function closeAbsenceDetails44() {
+            const modal = document.getElementById("absence-details-modal44");
+            if (!modal) return;
+            modal.style.display = "none";
+            modal.innerHTML = "";
+        }
+        
 
 
 

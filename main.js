@@ -251,7 +251,8 @@ async function fetchAll() {
         fetchDepartments(),
         fetchLevels(),
         fetchNotifications(),
-        fetchDriversAndBuses()
+        fetchDriversAndBuses(),
+        fetchAbsenceRequests()
     ]);
 
     renderAll();
