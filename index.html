@@ -913,11 +913,11 @@
                             </button>
 
                             <button class="tab-btn" onclick="openNotificationTab('tab-notifications-absence', this)">
-                                إشعارات الغياب
+                                طلبات الغياب
                             </button>
 
                             <button class="tab-btn" onclick="openNotificationTab('tab-notifications-system', this)">
-                        إشعارات النظام
+                        عمليات النظام
                     </button>
 
                             <!-- <button class="tab-btn" onclick="openNotificationTab('tab-notifications-coming', this)">
@@ -979,7 +979,7 @@
                         <div class="col-md-1">
                             <button class="btn btn-success btn-success-color width: 140px; height: 46px;"
                                 onclick="openNotifyModal()">
-                                إرسال
+                                إرسال إشعار
                             </button>
                         </div>
 
@@ -1277,7 +1277,7 @@
 
     <script>
 
-        const ABSENCE_API = 'http://192.168.137.1:3000/absence-requests';
+        const ABSENCE_API = 'http://localhost:3000/absence-requests';
 
         let absenceRequestsData = [];
 
@@ -1290,6 +1290,7 @@
                 console.error("fetchAbsenceRequests Error:", error);
                 absenceRequestsData = [];
             }
+            await fetchUsers();
             renderAbsenceRequestsNotifications();
         }
 

@@ -3145,9 +3145,9 @@ function renderReports() {
    
     <div class="report-card"><h4>السائقين الكلي</h4><p>${totalDrivers}</p></div>
     <div class="report-card"><h4>السائقين العاملين</h4><p>${activeDrivers}</p></div>
-    <div class="report-card"><h4>سيارات بترول</h4><p>${petrolCars}</p></div>
-    <div class="report-card"><h4>سيارات الديزل</h4><p>${dieselCars}</p></div>
-    <div class="report-card"><h4>سيارات الغاز</h4><p>${gasCars}</p></div>
+    <div class="report-card"><h4>باصات بترول</h4><p>${petrolCars}</p></div>
+    <div class="report-card"><h4>باصات الديزل</h4><p>${dieselCars}</p></div>
+    <div class="report-card"><h4>باصات الغاز</h4><p>${gasCars}</p></div>
 </div>
 `;
 
@@ -3414,7 +3414,7 @@ function renderReports() {
     const maxGenderValue = Math.max(...genderStats.map(g => g.count), 1);
 
     let genderChartHTML = `
-    <h3>مقارنة الطلاب النشطين: الذكور والإناث</h3>
+    <h3>مقارنة عدد الطلاب : الذكور والإناث</h3>
 
     <div class="days-chart-container gender-chart-container44">
     `;
@@ -3480,7 +3480,7 @@ function renderReports() {
     const maxFuelValue = Math.max(...fuelStats.map(f => f.count), 1);
 
     let fuelChartHTML = `
-<h3>مقارنة السيارات العاملة حسب نوع الوقود</h3>
+<h3>مقارنة الباصات حسب نوع الوقود</h3>
 
 <div class="days-chart-container gender-chart-container44">
 `;
