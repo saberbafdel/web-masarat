@@ -4540,6 +4540,7 @@ td {
     border-radius: 12px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
 }
+
 /* الخلفية المعتمة */
 .modal-overlay44 {
     position: fixed;
@@ -4802,6 +4803,7 @@ td {
     from {
         opacity: 0;
     }
+
     to {
         opacity: 1;
     }
@@ -4812,8 +4814,339 @@ td {
         opacity: 0;
         transform: translateY(8px) scale(0.985);
     }
+
     to {
         opacity: 1;
         transform: translateY(0) scale(1);
+    }
+}
+
+
+
+
+
+
+
+#sec-trips .trips-top-bar99 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+}
+
+#sec-trips .trips-subtitle99 {
+    margin: 6px 0 0;
+    color: #777;
+    font-size: 14px;
+}
+
+#sec-trips .trip-main-add-btn99 {
+    border: none;
+    background: linear-gradient(135deg, #1ec8a5, #14b89c);
+    color: #fff;
+    border-radius: 14px;
+    padding: 12px 18px;
+    font-weight: 700;
+    cursor: pointer;
+    min-width: 180px;
+}
+
+.trip-modal-overlay99 {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.45);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+    padding: 20px;
+}
+
+.trip-modal-overlay99.show {
+    display: flex;
+}
+
+.trip-modal-box99 {
+    width: min(1100px, 96%);
+    max-height: 92vh;
+    overflow-y: auto;
+    background: #f3f5f7;
+    border: 2px solid #5aa2ff;
+    border-radius: 18px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
+    padding: 26px;
+}
+
+.trip-modal-header99 {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 14px;
+    margin-bottom: 20px;
+}
+
+.trip-modal-header99 h2 {
+    margin: 0 0 6px;
+    color: #555;
+    font-size: 34px;
+    font-weight: 800;
+}
+
+.trip-modal-header99 p {
+    margin: 0;
+    color: #7a7a7a;
+}
+
+.trip-modal-close99 {
+    border: none;
+    background: #fff;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 20px;
+    color: #444;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+.trip-form-grid99 {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(280px, 1fr));
+    gap: 18px 24px;
+    margin-bottom: 20px;
+}
+
+.trip-field99 label {
+    display: block;
+    margin-bottom: 8px;
+    color: #555;
+    font-weight: 600;
+}
+
+.trip-field99 .filter-select {
+    width: 100%;
+    min-height: 46px;
+    border-radius: 12px;
+    border: 1px solid #cfd6de;
+    background: #eef0f2;
+    padding: 10px 14px;
+    outline: none;
+}
+
+.trip-live-summary99,
+.trip-confirm-summary99 {
+    margin-bottom: 18px;
+    background: #ffffff;
+    border: 1px solid #d9e0e7;
+    border-radius: 14px;
+    padding: 14px 16px;
+    color: #555;
+    line-height: 1.9;
+}
+
+.trip-students-section99 {
+    margin-top: 10px;
+}
+
+.trip-students-top99 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+
+.trip-students-top99 h3 {
+    margin: 0;
+    color: #444;
+    font-size: 28px;
+}
+
+.trip-students-tools99 {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.trip-students-tools99 .filter-select {
+    min-width: 220px;
+    border-radius: 12px;
+    border: 1px solid #cfd6de;
+    background: #fff;
+    padding: 10px 14px;
+    min-height: 44px;
+}
+
+.trip-students-grid99 {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(280px, 1fr));
+    gap: 10px 16px;
+    background: #e9edf1;
+    border: 1px solid #cfd6de;
+    border-radius: 12px;
+    padding: 18px;
+    min-height: 180px;
+}
+
+.trip-student-item99 {
+    background: #f8f8f8;
+    border: 1px solid #bfc7cf;
+    border-radius: 12px;
+    min-height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 14px;
+}
+
+.trip-student-left99,
+.trip-student-right99 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.trip-detail-btn99 {
+    border: none;
+    background: transparent;
+    color: #16a3eb;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.trip-student-name99 {
+    flex: 1;
+    text-align: center;
+    color: #5a5a5a;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.trip-check-btn99 {
+    border: 1px solid #9bc9c1;
+    background: #eef8f6;
+    color: #16a34a;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 900;
+    font-size: 16px;
+}
+
+.trip-check-btn99.selected {
+    background: #2dd4bf;
+    color: #fff;
+    border-color: #2dd4bf;
+}
+
+.trip-check-btn99:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.trip-empty-box99 {
+    grid-column: 1 / -1;
+    background: #fff;
+    border: 1px dashed #bcc7d2;
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+    color: #777;
+}
+
+.trip-modal-actions99 {
+    display: flex;
+    gap: 12px;
+    margin-top: 22px;
+    flex-wrap: wrap;
+}
+
+.trip-save-btn99 {
+    min-width: 170px;
+    border: none;
+    border-radius: 14px;
+    padding: 12px 18px;
+    background: linear-gradient(135deg, #1fd1b3, #14c39d);
+    color: #fff;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.trip-cancel-btn99 {
+    min-width: 170px;
+    border: none;
+    border-radius: 14px;
+    padding: 12px 18px;
+    background: #d6ecea;
+    color: #13b8a0;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.small-confirm99 .confirm-box99 {
+    width: min(780px, 96%);
+}
+
+.trip-confirm-list-wrap99 h3 {
+    margin: 0 0 10px;
+    color: #444;
+}
+
+.trip-confirm-students99 {
+    max-height: 260px;
+    overflow-y: auto;
+    display: grid;
+    gap: 8px;
+}
+
+.trip-confirm-student-item99 {
+    background: #fff;
+    border: 1px solid #d8e0e8;
+    border-radius: 12px;
+    padding: 10px 14px;
+    color: #555;
+}
+
+.saved-trips-list99 {
+    display: grid;
+    gap: 12px;
+}
+
+.saved-trip-card99 {
+    background: #fff;
+    border: 1px solid #d9e0e7;
+    border-radius: 16px;
+    padding: 16px;
+    line-height: 1.9;
+    color: #555;
+}
+
+.saved-trip-title99 {
+    margin: 0 0 10px;
+    font-size: 18px;
+    color: #222;
+}
+
+@media (max-width: 900px) {
+
+    .trip-form-grid99,
+    .trip-students-grid99 {
+        grid-template-columns: 1fr;
+    }
+
+    .trip-modal-box99 {
+        padding: 18px;
+    }
+
+    .trip-modal-header99 h2,
+    .trip-students-top99 h3 {
+        font-size: 24px;
     }
 }

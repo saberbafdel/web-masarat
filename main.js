@@ -56,7 +56,7 @@ async function login() {
         if (response.ok) {
             const data = await response.json();
             console.clear();
-            console.log(data.user.role_id);
+            console.log(data);
 
             currentUserId = data.user.id;
 
@@ -117,7 +117,7 @@ function showPage(pageId) {
 
 function openTripTab(tabId, btnElement) {
 
-    const parent = document.getElementById('sec-trips');
+    const parent = document.getElementById('sec-stations');
     parent.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
 
 
@@ -277,11 +277,16 @@ function renderAll() {
 
     renderAcademicStructure();
 
+
+
+
     renderReports();
 
     renderNotifications();
     renderSystemNotifications();
-    
+
+
+    renderTripsPage();
 
 }
 
@@ -627,23 +632,45 @@ function renderBlacklist() {
     });
 }
 
-
 async function addAdmin() {
     const username = document.getElementById('new-admin').value.trim();
     const password = document.getElementById('new-password').value.trim();
 
     if (!username || !password) return alert("الرجاء إكمال البيانات");
 
-    const newAdmin = {
-        username,
-        password,
-        role_id: 3,
-        status: "pending",
-        created_at: new Date().toISOString()
-    };
-
     try {
-        await fetch(`${API}/users`, {
+
+        // const usersResponse = await fetch(`${API}/users`, {
+        //     headers: {
+        //         "Accept": "application/json"
+        //     }
+        // });
+
+        // if (!usersResponse.ok) throw new Error("فشل في جلب المستخدمين");
+
+        // const users = await usersResponse.json();
+
+
+        const isExists = usersData.some(user =>
+            user.username &&
+            user.username.trim().toLowerCase() === username.toLowerCase()
+        );
+
+        if (isExists) {
+            alert("اسم المستخدم موجود مسبقًا، اختر اسمًا آخر");
+            return;
+        }
+
+
+        const newAdmin = {
+            username,
+            password,
+            role_id: 3,
+            status: "pending",
+            created_at: new Date().toISOString()
+        };
+
+        const addResponse = await fetch(`${API}/users`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -651,15 +678,23 @@ async function addAdmin() {
             },
             body: JSON.stringify(newAdmin)
         });
+
+        if (!addResponse.ok) throw new Error("فشل في إضافة المستخدم");
+
         alert("تم إضافة المشرف بنجاح");
+
         document.getElementById('new-admin').value = "";
         document.getElementById('new-password').value = "";
+
         await fetchUsers();
         renderAll();
         openUserTab('tab-users-list', document.querySelector('[onclick*="tab-users-list"]'));
-    } catch (e) { alert("خطأ في السيرفر"); }
-}
 
+    } catch (e) {
+        alert("خطأ في السيرفر");
+        console.error(e);
+    }
+}
 
 
 
@@ -1877,81 +1912,194 @@ function onDepartmentChange(val) {
 }
 
 async function saveStudent() {
-
     const username = document.getElementById('add-student-username').value.trim();
     const password = document.getElementById('add-student-password').value.trim();
     const studentStateElement = document.getElementById('add-student-state');
     const studentStateValue = studentStateElement ? studentStateElement.value : "Active";
 
-    const userPayload = {
-        username: username,
-        password: password,
-        role_id: 1,
-        status: "pending",
-        created_at: new Date().toISOString()
-    };
+    const name = document.getElementById('add-student-name').value.trim();
+    const phone = document.getElementById('add-student-phone').value.trim();
+    const universityNumber = document.getElementById('add-student-university-number').value.trim();
+    const city = document.getElementById('add-student-city').value.trim();
+    const gender = document.getElementById('add-student-gender').value;
+    const universityId = Number(document.getElementById('add-student-university').value);
+    const collegeId = Number(document.getElementById('add-student-college').value);
+    const departmentId = Number(document.getElementById('add-student-department').value);
+    const levelId = Number(document.getElementById('add-student-level').value);
+    const pickupStationId = Number(document.getElementById('add-student-boarding-station').value);
+    const dropoffStationId = Number(document.getElementById('add-student-alighting-station').value);
+
+    const selectedDays = Array.from(document.querySelectorAll('.days-grid input:checked'))
+        .map(cb => Number(cb.value));
+
+    if (!username || !password || !name || !phone || !universityNumber || !city) {
+        return alert("الرجاء تعبئة جميع الحقول المطلوبة");
+    }
+
+    if (!gender || !universityId || !collegeId || !departmentId || !levelId || !pickupStationId || !dropoffStationId) {
+        return alert("الرجاء اختيار جميع البيانات المطلوبة");
+    }
+
+    if (selectedDays.length === 0) {
+        return alert("الرجاء اختيار أيام الدوام");
+    }
+
+    let newUserId = null;
 
     try {
-        // إنشاء حساب المستخدم أولاً
+        // 1) التحقق من عدم تكرار اسم المستخدم
+        const checkUsersResponse = await fetch(`${API}/users`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        });
+
+        const checkUsersText = await checkUsersResponse.text();
+        let usersList = [];
+
+        try {
+            usersList = checkUsersText ? JSON.parse(checkUsersText) : [];
+        } catch {
+            usersList = [];
+        }
+
+        if (!checkUsersResponse.ok) {
+            throw new Error("تعذر التحقق من أسماء المستخدمين");
+        }
+
+        const usernameExists = Array.isArray(usersList) && usersList.some(u =>
+            String(u.username || "").trim().toLowerCase() === username.toLowerCase()
+        );
+
+        if (usernameExists) {
+            throw new Error("اسم المستخدم موجود بالفعل، اختر اسمًا آخر");
+        }
+
+        // 2) إنشاء المستخدم
+        const userPayload = {
+            username: username,
+            password: password,
+            role_id: 1,
+            status: "pending",
+            created_at: new Date().toISOString()
+        };
+
         const userResponse = await fetch(`${API}/users`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
             body: JSON.stringify(userPayload)
         });
 
-        if (!userResponse.ok) throw new Error("فشل إنشاء حساب المستخدم");
+        const userRawText = await userResponse.text();
+        console.log("users response status:", userResponse.status);
+        console.log("users response body:", userRawText);
 
-        const createdUser = await userResponse.json();
-        const newUserId = createdUser.id;
+        let createdUser = null;
+        try {
+            createdUser = userRawText ? JSON.parse(userRawText) : null;
+        } catch {
+            createdUser = null;
+        }
 
-        // الأيام المحددة للطالب
-        const selectedDays = Array.from(document.querySelectorAll('.days-grid input:checked'))
-            .map(cb => Number(cb.value));
+        if (!userResponse.ok) {
+            throw new Error(
+                createdUser?.message ||
+                userRawText ||
+                "فشل إنشاء حساب المستخدم"
+            );
+        }
 
-        // بيانات الطالب التفصيلية
+        newUserId = createdUser?.id;
+
+        if (!newUserId) {
+            throw new Error("لم يتم إرجاع user_id من السيرفر");
+        }
+
+        // 3) إنشاء الطالب
         const studentPayload = {
             user_id: newUserId,
             username: username,
             password: password,
-            name: document.getElementById('add-student-name').value.trim(),
-            phone: document.getElementById('add-student-phone').value.trim(),
-            university_number: document.getElementById('add-student-university-number').value.trim(),
-            city: document.getElementById('add-student-city').value.trim(),
-            gender: document.getElementById('add-student-gender').value,
-            university_id: Number(document.getElementById('add-student-university').value),
-            college_id: Number(document.getElementById('add-student-college').value),
-            department_id: Number(document.getElementById('add-student-department').value),
-            level_id: Number(document.getElementById('add-student-level').value),
-            pickup_station_id: Number(document.getElementById('add-student-boarding-station').value),
-            dropoff_station_id: Number(document.getElementById('add-student-alighting-station').value),
+            name: name,
+            phone: phone,
+            university_number: universityNumber,
+            city: city,
+            gender: gender,
+            university_id: universityId,
+            college_id: collegeId,
+            department_id: departmentId,
+            level_id: levelId,
+            pickup_station_id: pickupStationId,
+            dropoff_station_id: dropoffStationId,
             role_id: 1,
             status: "approved",
             state: studentStateValue,
             days: selectedDays
         };
 
-        // إضافة بيانات الطالب
         const studentResponse = await fetch(`${API}/students`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
             body: JSON.stringify(studentPayload)
         });
 
-        if (!studentResponse.ok) throw new Error("حدث خطأ أثناء إنشاء بيانات الطالب.");
+        const studentRawText = await studentResponse.text();
+        console.log("students response status:", studentResponse.status);
+        console.log("students response body:", studentRawText);
 
-        // ------------------- إرسال إشعار تلقائي -------------------
+        let createdStudent = null;
+        try {
+            createdStudent = studentRawText ? JSON.parse(studentRawText) : null;
+        } catch {
+            createdStudent = null;
+        }
+
+        if (!studentResponse.ok) {
+            // rollback حذف المستخدم إذا فشل إنشاء الطالب
+            try {
+                await fetch(`${API}/users/${newUserId}`, {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    }
+                });
+                console.warn("تم حذف المستخدم لأن إنشاء الطالب فشل");
+            } catch (deleteErr) {
+                console.warn("فشل حذف المستخدم بعد فشل إنشاء الطالب", deleteErr);
+            }
+
+            throw new Error(
+                createdStudent?.message ||
+                studentRawText ||
+                "حدث خطأ أثناء إنشاء بيانات الطالب."
+            );
+        }
+
+        // 4) إنشاء الإشعار
         const newNotification = {
             sender_id: currentUserId,
             title: "تم إضافة طالب جديد",
             message: `تمت إضافة الطالب "${studentPayload.name}" بنجاح بالمستخدم رقم ${newUserId}. رقم الجامعة: ${studentPayload.university_number}, المدينة: ${studentPayload.city}.`,
             created_at: new Date().toISOString(),
-            target_group: 3, // المشرفين
+            target_group: 3,
             type: "system_notification"
         };
 
         const notifResponse = await fetch(`${API}/notifications`, {
             method: "POST",
-            headers: { "Content-Type": "application/json", "Accept": "application/json" },
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
             body: JSON.stringify(newNotification)
         });
 
@@ -1959,7 +2107,6 @@ async function saveStudent() {
             console.warn("تعذر إرسال الإشعار تلقائيًا");
         }
 
-        // ------------------- تحديث البيانات في الواجهة -------------------
         alert(`تم الحفظ بنجاح! تم ربط الطالب بالمستخدم رقم: ${newUserId}`);
         closeStudentModal();
 
@@ -1971,11 +2118,10 @@ async function saveStudent() {
         renderUsers();
 
     } catch (error) {
-        console.error("Error:", error.message);
+        console.error("Error:", error);
         alert("فشل في إكمال العملية: " + error.message);
     }
 }
-
 function clearForm() {
 
     document.querySelectorAll('.form-input').forEach(input => {
@@ -4403,6 +4549,6 @@ function renderSystemNotifications() {
         `;
     });
 }
- renderSystemNotifications();
+renderSystemNotifications();
 
 fetchAll();
