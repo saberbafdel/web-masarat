@@ -1947,7 +1947,7 @@ async function saveStudent() {
     let newUserId = null;
 
     try {
-        // 1) التحقق من عدم تكرار اسم المستخدم
+        
         const checkUsersResponse = await fetch(`${API}/users`, {
             method: "GET",
             headers: {
@@ -1977,7 +1977,7 @@ async function saveStudent() {
             throw new Error("اسم المستخدم موجود بالفعل، اختر اسمًا آخر");
         }
 
-        // 2) إنشاء المستخدم
+        
         const userPayload = {
             username: username,
             password: password,
@@ -2020,7 +2020,7 @@ async function saveStudent() {
             throw new Error("لم يتم إرجاع user_id من السيرفر");
         }
 
-        // 3) إنشاء الطالب
+        
         const studentPayload = {
             user_id: newUserId,
             username: username,
