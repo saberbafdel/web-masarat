@@ -168,15 +168,15 @@
 
                     <div class="home-layout">
 
-                        <div class="home-side" id="stations-cards44">
+                        <!-- <div class="home-side" id="stations-cards44">
                             <div class="station-card44">
 
                             </div>
 
-                        </div>
-                        <!-- <div class="home-side" id="notifications-cards-container">
-
                         </div> -->
+                        <div class="home-side" id="notifications-cards-container">
+
+                        </div> 
                         <!-- <div class="home-side" id="drivers-cards-container44">
 
                         </div>
@@ -847,7 +847,7 @@
                     <div class="trips-top-bar99">
                         <div>
                             <h1 class="page-title">إدارة الرحلات</h1>
-                            
+
                         </div>
 
                         <button class="trip-main-add-btn99" onclick="openCreateTripModal()">
@@ -1300,114 +1300,121 @@
     <div id="notification-details-modal"></div>
 
     <div id="create-trip-modal99" class="trip-modal-overlay99">
-    <div class="trip-modal-box99">
-        <div class="trip-modal-header99">
-            <div>
-                <h2>إنشاء رحلة جديدة</h2>
-                <p>حدد بيانات الرحلة، ثم اختر الطلاب المناسبين للمسار واليوم المحدد.</p>
-            </div>
-            <button type="button" class="trip-modal-close99" onclick="closeCreateTripModal()">×</button>
-        </div>
-
-        <div class="trip-form-grid99 trip-form-main99">
-
-            <div class="trip-field99">
-                <label>نوع الرحلة</label>
-                <select id="trip-type-select99" class="filter-select" onchange="updateTripModalPreview99()">
-                    <option value="">حدد نوع الرحلة</option>
-                    <option value="pickup">رحلة ذهاب</option>
-                    <option value="dropoff">رحلة عودة</option>
-                </select>
-            </div>
-
-            <div class="trip-field99">
-                <label>تاريخ الرحلة</label>
-                <input type="date" id="trip-date-input99" class="filter-select" onchange="onTripDateChange99()">
-            </div>
-
-            <div class="trip-field99">
-                <label>وقت الرحلة</label>
-                <input type="time" id="trip-time-input99" class="filter-select" value="00:00" onchange="onTripTimeChange99()">
-            </div>
-
-            <div class="trip-field99">
-                <label>آخر وقت مسموح فيه بطلب الغياب</label>
-                <input type="datetime-local" id="trip-deadline-input99" class="filter-select" onchange="onTripDeadlineChange99()">
-            </div>
-
-            <div class="trip-field99">
-                <label>حدد تعيين المسار</label>
-                <select id="trip-route-select99" class="filter-select" onchange="onTripRouteChange99()">
-                    <option value="">حدد تعيين المسار</option>
-                </select>
-            </div>
-
-            <div class="trip-field99">
-                <label>حدد الباص</label>
-                <select id="trip-bus-select99" class="filter-select" onchange="onTripBusChange99()">
-                    <option value="">حدد الباص</option>
-                </select>
-            </div>
-
-            <div class="trip-field99 trip-field-full99">
-                <label>اسم الرحلة</label>
-                <input type="text" id="trip-name-input99" class="filter-select" readonly>
-            </div>
-
-        </div>
-
-        <div id="trip-live-summary99" class="trip-live-summary99">
-            لم يتم اختيار بيانات الرحلة بعد
-        </div>
-
-        <div class="trip-students-section99">
-            <div class="trip-students-top99">
+        <div class="trip-modal-box99">
+            <div class="trip-modal-header99">
                 <div>
-                    <h3>اختيار الطلاب</h3>
-                    <p class="trip-students-subtitle99">يمكنك فلترة الطلاب حسب نوع المطابقة واليوم المحدد للرحلة.</p>
+                    <h2>إنشاء رحلة جديدة</h2>
+                    <p>حدد بيانات الرحلة، ثم اختر الطلاب المناسبين للمسار واليوم المحدد.</p>
+                </div>
+                <button type="button" class="trip-modal-close99" onclick="closeCreateTripModal()">×</button>
+            </div>
+
+            <div class="trip-form-grid99 trip-form-main99">
+
+                <div class="trip-field99">
+                    <label>نوع الرحلة</label>
+                    <select id="trip-type-select99" class="filter-select" onchange="updateTripModalPreview99()">
+                        <option value="">حدد نوع الرحلة</option>
+                        <option value="pickup">رحلة ذهاب</option>
+                        <option value="dropoff">رحلة عودة</option>
+                    </select>
                 </div>
 
-                <div class="trip-seats-badge99" id="trip-seat-counter99">
-                    اختر الباص أولاً
+                <div class="trip-field99">
+                    <label>تاريخ الرحلة</label>
+                    <input type="date" id="trip-date-input99" class="filter-select" onchange="onTripDateChange99()">
+                </div>
+
+                <div class="trip-field99">
+                    <label>وقت الرحلة</label>
+                    <input type="time" id="trip-time-input99" class="filter-select" value="00:00"
+                        onchange="onTripTimeChange99()">
+                </div>
+
+                <div class="trip-field99">
+                    <label>آخر وقت مسموح فيه بطلب الغياب</label>
+                    <input type="datetime-local" id="trip-deadline-input99" class="filter-select"
+                        onchange="onTripDeadlineChange99()">
+                </div>
+
+                <div class="trip-field99">
+                    <label>حدد تعيين المسار</label>
+                    <select id="trip-route-select99" class="filter-select" onchange="onTripRouteChange99()">
+                        <option value="">حدد تعيين المسار</option>
+                    </select>
+                </div>
+
+                <div class="trip-field99">
+                    <label>حدد الباص</label>
+                    <select id="trip-bus-select99" class="filter-select" onchange="onTripBusChange99()">
+                        <option value="">حدد الباص</option>
+                    </select>
+                </div>
+
+                <div class="trip-field99 trip-field-full99">
+                    <label>اسم الرحلة</label>
+                    <input type="text" id="trip-name-input99" class="filter-select" readonly>
+                </div>
+
+            </div>
+
+            <div id="trip-live-summary99" class="trip-live-summary99">
+                لم يتم اختيار بيانات الرحلة بعد
+            </div>
+
+            <div class="trip-students-section99">
+                <div class="trip-students-top99">
+                    <div>
+                        <h3>اختيار الطلاب</h3>
+                        <p class="trip-students-subtitle99"></p>
+                    </div>
+
+                    <div class="trip-seats-badge99" id="trip-seat-counter99">
+                        اختر الباص أولاً
+                    </div>
+                </div>
+
+                <div class="trip-students-tools99">
+                    <select id="trip-student-filter99" class="filter-select" onchange="onTripStudentsScopeChange99()">
+                        <option value="all">كل المحطات</option>
+                        <option value="pickup">حسب محطات الركوب</option>
+                        <option value="dropoff">حسب محطة النزول النهائية</option>
+                    </select>
+
+                    <select id="trip-student-days-filter99" class="filter-select"
+                        onchange="onTripStudentsScopeChange99()">
+                        <option value="trip_day_only">طلاب يوم الرحلة فقط</option>
+                        <option value="all_days">كل الطلاب بغض النظر عن الأيام</option>
+                    </select>
+
+
+                    <select id="trip-student-gender-filter99" class="filter-select"
+                        onchange="onTripGenderFilterChange99()">
+                        <option value="all">الكل</option>
+                        <option value="male">الذكور فقط</option>
+                        <option value="female">الإناث فقط</option>
+                    </select>
+
+                    <input type="text" id="trip-student-search99" class="filter-select" placeholder="ابحث باسم الطالب"
+                        oninput="renderTripStudentsList99()">
+                </div>
+
+                <div id="trip-route-hint99" class="trip-route-hint99">
+                    اختر المسار والتاريخ لعرض تفاصيل الفلترة
+                </div>
+
+                <div id="trip-students-grid99" class="trip-students-grid99">
+                    <div class="trip-empty-box99">اختر المسار والباص لعرض الطلاب</div>
                 </div>
             </div>
 
-            <div class="trip-students-tools99">
-                <select id="trip-student-filter99" class="filter-select" onchange="onTripStudentsScopeChange99()">
-                    <option value="all">كل المطابقين</option>
-                    <option value="pickup">حسب محطات الركوب</option>
-                    <option value="dropoff">حسب محطة النزول النهائية</option>
-                </select>
-
-                <select id="trip-student-days-filter99" class="filter-select" onchange="onTripStudentsScopeChange99()">
-                    <option value="trip_day_only">طلاب يوم الرحلة فقط</option>
-                    <option value="all_days">كل الطلاب بغض النظر عن الأيام</option>
-                </select>
-
-                <input
-                    type="text"
-                    id="trip-student-search99"
-                    class="filter-select"
-                    placeholder="ابحث باسم الطالب"
-                    oninput="renderTripStudentsList99()"
-                >
+            <div class="trip-modal-actions99">
+                <button type="button" class="trip-save-btn99" onclick="openTripConfirmModal99()">متابعة وإنشاء
+                    الرحلة</button>
+                <button type="button" class="trip-cancel-btn99" onclick="closeCreateTripModal()">إلغاء</button>
             </div>
-
-            <div id="trip-route-hint99" class="trip-route-hint99">
-                اختر المسار والتاريخ لعرض تفاصيل الفلترة
-            </div>
-
-            <div id="trip-students-grid99" class="trip-students-grid99">
-                <div class="trip-empty-box99">اختر المسار والباص لعرض الطلاب</div>
-            </div>
-        </div>
-
-        <div class="trip-modal-actions99">
-            <button type="button" class="trip-save-btn99" onclick="openTripConfirmModal99()">متابعة وإنشاء الرحلة</button>
-            <button type="button" class="trip-cancel-btn99" onclick="closeCreateTripModal()">إلغاء</button>
         </div>
     </div>
-</div>
     <div id="confirm-trip-modal99" class="trip-modal-overlay99 small-confirm99" style="display:none;">
         <div class="trip-modal-box99 confirm-box99">
 
@@ -1432,6 +1439,22 @@
                     <button class="trip-cancel-btn99" onclick="closeTripConfirmModal99()">رجوع</button>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div id="trips-list-container99"></div>
+    <div id="trip-details-modal99" class="trip-details-overlay99">
+        <div class="trip-details-box99">
+            <div class="trip-details-header99">
+                <div>
+                    <h3>تفاصيل الرحلة</h3>
+                    <p>عرض جميع بيانات الرحلة والطلاب المرتبطين بها</p>
+                </div>
+
+                <button type="button" class="trip-details-close99" onclick="closeTripDetailsModal99()">×</button>
+            </div>
+
+            <div id="trip-details-content99" class="trip-details-content99"></div>
         </div>
     </div>
 
@@ -1785,15 +1808,50 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const TRIPS_API99 = "https://msaraty.ddns.net/api/trips";
+
 let tripSelectedStudentIds99 = [];
-let localTripsData99 = JSON.parse(localStorage.getItem("localTripsData99")) || [];
+let localTripsData99 = [];
 
 const DEFAULT_TRIP_TIME99 = "00:00";
 
 const STUDENT_DETAILS_MODAL_IDS99 = [
-
     "student-details-card",
-    
 ];
 
 function pad99(num) {
@@ -1802,6 +1860,72 @@ function pad99(num) {
 
 function normalizeText99(value) {
     return String(value || "").trim().toLowerCase();
+}
+
+function normalizeGenderValue99(value) {
+    const v = normalizeText99(value);
+
+    if (["male", "m", "ذكر"].includes(v)) return "male";
+    if (["female", "f", "أنثى", "انثى"].includes(v)) return "female";
+
+    return "";
+}
+
+function getStudentGenderLabel99(student) {
+    const gender = normalizeGenderValue99(student?.gender);
+
+    if (gender === "male") return "ذكر";
+    if (gender === "female") return "أنثى";
+
+    return "غير محدد";
+}
+
+function getGenderFilterLabel99(value) {
+    const gender = normalizeGenderValue99(value);
+
+    if (gender === "male") return "الذكور فقط";
+    if (gender === "female") return "الإناث فقط";
+
+    return "الكل";
+}
+
+function getTripTypeLabel99(tripType) {
+    if (tripType === "pickup") return "رحلة ذهاب";
+    if (tripType === "dropoff") return "رحلة عودة";
+    return "غير محدد";
+}
+
+function getTripStatusInfo99(trip) {
+    if (!trip || !trip.trip_date) {
+        return {
+            label: "غير محدد",
+            badgeClass: "bg-secondary-subtle text-secondary"
+        };
+    }
+
+    const tripTime = trip.trip_time || DEFAULT_TRIP_TIME99;
+    const tripDateTime = new Date(`${trip.trip_date}T${tripTime}`);
+    const now = new Date();
+    const today = formatDateForInput99(now);
+
+    if (trip.trip_date === today) {
+        return {
+            label: "اليوم",
+            badgeClass: "bg-primary-subtle text-primary"
+        };
+    }
+
+    if (!isNaN(tripDateTime.getTime()) && tripDateTime > now) {
+        return {
+            label: "قادمة",
+            badgeClass: "bg-success-subtle text-success"
+        };
+    }
+
+    return {
+        label: "منتهية",
+        badgeClass: "bg-secondary-subtle text-secondary"
+    };
 }
 
 function formatDateForInput99(date = new Date()) {
@@ -1840,13 +1964,13 @@ function getTripDayIndex99(dateValue) {
     const jsDay = new Date(year, month - 1, day).getDay();
 
     const map = {
-        6: 1, // السبت
-        0: 2, // الأحد
-        1: 3, // الإثنين
-        2: 4, // الثلاثاء
-        3: 5, // الأربعاء
-        4: 6, // الخميس
-        5: 0  // الجمعة
+        6: 1,
+        0: 2,
+        1: 3,
+        2: 4,
+        3: 5,
+        4: 6,
+        5: 0
     };
 
     return map[jsDay] || 0;
@@ -1921,8 +2045,31 @@ function formatDateTime99(value) {
     });
 }
 
+async function fetchTrips99() {
+    try {
+        const response = await fetch(TRIPS_API99, {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`فشل جلب الرحلات. Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        localTripsData99 = Array.isArray(data) ? data : [];
+        renderSavedTrips99();
+    } catch (error) {
+        console.error("Trips GET Error:", error);
+        localTripsData99 = [];
+        renderSavedTrips99();
+    }
+}
+
 function renderTripsPage() {
-    renderSavedTrips99();
+    fetchTrips99();
 }
 
 function openCreateTripModal() {
@@ -1989,6 +2136,9 @@ function resetTripModal99() {
     const dayFilter = document.getElementById("trip-student-days-filter99");
     if (dayFilter) dayFilter.value = "trip_day_only";
 
+    const genderFilter = document.getElementById("trip-student-gender-filter99");
+    if (genderFilter) genderFilter.value = "all";
+
     const summary = document.getElementById("trip-live-summary99");
     if (summary) summary.innerHTML = "لم يتم اختيار بيانات الرحلة بعد";
 
@@ -1997,6 +2147,9 @@ function resetTripModal99() {
 
     const seatCounter = document.getElementById("trip-seat-counter99");
     if (seatCounter) seatCounter.innerHTML = "اختر الباص أولاً";
+
+    const subtitle = document.querySelector(".trip-students-subtitle99");
+    if (subtitle) subtitle.innerHTML = "سيتم عرض الطلاب هنا بعد تحديد المسار والباص.";
 
     const grid = document.getElementById("trip-students-grid99");
     if (grid) {
@@ -2056,6 +2209,14 @@ function onTripStudentsScopeChange99() {
     renderTripStudentsList99();
 }
 
+function onTripGenderFilterChange99() {
+    pruneSelectedStudentsToCurrentFilters99();
+    updateTripRouteHint99();
+    updateTripSeatsCounter99();
+    updateTripModalPreview99();
+    renderTripStudentsList99();
+}
+
 function pruneSelectedStudentsToCurrentFilters99() {
     const allowedIds = new Set(
         getStudentsForRoute99().map(student => Number(student.id))
@@ -2084,6 +2245,26 @@ function getFinalDropoffStationId99(assign) {
     const stations = getAssignStationsArray99(assign);
     if (!stations.length) return null;
     return Number(stations[stations.length - 1]);
+}
+
+function getAssignById99(assignId) {
+    return assignData.find(assign => Number(assign.id) === Number(assignId)) || null;
+}
+
+function getRouteById99(routeId) {
+    return routesData.find(route => Number(route.id) === Number(routeId)) || null;
+}
+
+function getBusById99(busId) {
+    return busesData.find(bus => Number(bus.id) === Number(busId)) || null;
+}
+
+function getDriverById99(driverId) {
+    return driversData.find(driver => Number(driver.id) === Number(driverId)) || null;
+}
+
+function getUserById99(userId) {
+    return usersData.find(user => Number(user.id) === Number(userId)) || null;
 }
 
 function getStationName99(stationId) {
@@ -2142,7 +2323,7 @@ function getBusCapacity99(bus) {
 
 function getBusLabel99(bus) {
     if (!bus) return "باص غير معروف";
-    return bus.bus_number || bus.number || bus.plate_number || `#${bus.id}`;
+    return bus.bus_number || bus.number || bus.plate_number || `${bus.id}`;
 }
 
 function getDriverByBus99(bus) {
@@ -2187,8 +2368,6 @@ function getAvailableBuses99() {
 function getBusOptionLabel99(bus) {
     const driverName = getDriverNameByBus99(bus);
     const seats = getBusCapacity99(bus);
-    const busLabel = getBusLabel99(bus);
-
     return `${driverName} ==> ${seats} مقعد`;
 }
 
@@ -2241,6 +2420,7 @@ function updateTripRouteHint99() {
     const assignId = document.getElementById("trip-route-select99")?.value || "";
     const tripDate = document.getElementById("trip-date-input99")?.value || "";
     const daysMode = document.getElementById("trip-student-days-filter99")?.value || "trip_day_only";
+    const genderMode = document.getElementById("trip-student-gender-filter99")?.value || "all";
 
     if (!hint) return;
 
@@ -2254,11 +2434,15 @@ function updateTripRouteHint99() {
     const finalStationName = getStationName99(stations[stations.length - 1]);
     const dayName = getArabicDayName99(tripDate) || "غير محدد";
     const dayFilterText = daysMode === "trip_day_only" ? "طلاب يوم الرحلة فقط" : "كل الطلاب";
+    const genderFilterText = getGenderFilterLabel99(genderMode);
 
     hint.innerHTML = `
-        <span><strong>محطة النزول النهائية:</strong> ${finalStationName}</span>
-        <span><strong>يوم الرحلة:</strong> ${dayName}</span>
-        <span><strong>فلتر الأيام:</strong> ${dayFilterText}</span>
+        <div class="d-flex flex-wrap gap-2">
+            <span class="badge rounded-pill text-bg-light border">محطة النزول النهائية: ${finalStationName}</span>
+            <span class="badge rounded-pill text-bg-light border">يوم الرحلة: ${dayName}</span>
+            <span class="badge rounded-pill text-bg-light border">فلتر الأيام: ${dayFilterText}</span>
+            <span class="badge rounded-pill text-bg-light border">فلتر الجنس: ${genderFilterText}</span>
+        </div>
     `;
 }
 
@@ -2283,11 +2467,9 @@ function collectTripFormData99(showAlert = true) {
     const routeName = getRouteName99(selectedAssign);
     const driver = getDriverByBus99(selectedBus);
     const driverName = driver ? (driver.name_driver || "غير محدد") : "غير محدد";
-
-    const tripTypeLabel = tripType === "pickup" ? "رحلة ذهاب" : "رحلة عودة";
+    const tripTypeLabel = getTripTypeLabel99(tripType);
     const tripDayName = getArabicDayName99(tripDate);
     const tripName = `${routeName} - ${tripTypeLabel} - ${tripDayName} - ${tripDate}`;
-
     const finalDropoffStationId = getFinalDropoffStationId99(selectedAssign);
     const finalDropoffStationName = getStationName99(finalDropoffStationId);
 
@@ -2298,7 +2480,6 @@ function collectTripFormData99(showAlert = true) {
         trip_day_name: tripDayName,
         trip_date: tripDate,
         trip_time: tripTime,
-        trip_datetime: `${tripDate}T${tripTime}`,
         deadline: deadline,
         assign_id: Number(selectedAssign.id),
         route_id: Number(selectedAssign.route_id),
@@ -2310,6 +2491,63 @@ function collectTripFormData99(showAlert = true) {
         bus_capacity: getBusCapacity99(selectedBus),
         driver_id: driver ? Number(driver.id) : null,
         driver_name: driverName
+    };
+}
+
+function buildTripNameFromTrip99(trip) {
+    const assign = getAssignById99(trip.assign_id);
+    const routeName = assign ? getRouteName99(assign) : `مسار رقم ${trip.route_id || ""}`;
+    const tripTypeLabel = getTripTypeLabel99(trip.trip_type);
+    const tripDayName = getArabicDayName99(trip.trip_date) || "غير محدد";
+
+    if (trip.trip_name) return trip.trip_name;
+    return `${routeName} - ${tripTypeLabel} - ${tripDayName} - ${trip.trip_date || ""}`;
+}
+
+function resolveTripData99(trip) {
+    if (!trip) return null;
+
+    const assign = getAssignById99(trip.assign_id);
+    const resolvedRouteId = trip.route_id ? Number(trip.route_id) : (assign ? Number(assign.route_id) : null);
+    const route = resolvedRouteId ? getRouteById99(resolvedRouteId) : null;
+    const routeName = route ? route.route_name : (resolvedRouteId ? `مسار رقم ${resolvedRouteId}` : "غير محدد");
+
+    const routeFinalStationId = assign ? getFinalDropoffStationId99(assign) : null;
+    const routeFinalStationName = routeFinalStationId !== null ? getStationName99(routeFinalStationId) : "غير محددة";
+
+    const bus = getBusById99(trip.bus_id);
+    const busLabel = getBusLabel99(bus);
+    const busCapacity = getBusCapacity99(bus);
+
+    const resolvedDriverId = trip.driver_id ? Number(trip.driver_id) : (bus && bus.driver_id ? Number(bus.driver_id) : null);
+    const driver = resolvedDriverId ? getDriverById99(resolvedDriverId) : null;
+    const driverName = driver ? (driver.name_driver || "غير محدد") : "غير محدد";
+
+    const creator = trip.created_by ? getUserById99(trip.created_by) : null;
+    const createdByName = creator ? creator.username : "غير محدد";
+
+    const tripTypeLabel = getTripTypeLabel99(trip.trip_type);
+    const tripDayName = getArabicDayName99(trip.trip_date);
+    const tripName = buildTripNameFromTrip99(trip);
+    const studentIds = Array.isArray(trip.student_ids)
+        ? trip.student_ids.map(Number).filter(n => !isNaN(n))
+        : [];
+
+    return {
+        ...trip,
+        trip_name: tripName,
+        trip_type_label: tripTypeLabel,
+        trip_day_name: tripDayName,
+        route_id: resolvedRouteId,
+        route_name: routeName,
+        route_final_station_id: routeFinalStationId,
+        route_final_station_name: routeFinalStationName,
+        bus_label: busLabel,
+        bus_capacity: busCapacity,
+        driver_id: resolvedDriverId,
+        driver_name: driverName,
+        created_by_name: createdByName,
+        student_ids: studentIds
     };
 }
 
@@ -2337,29 +2575,76 @@ function updateTripModalPreview99() {
     const remainingSeats = Math.max(data.bus_capacity - tripSelectedStudentIds99.length, 0);
 
     summary.innerHTML = `
-        <div class="trip-summary-row99">
-            <span><strong>اسم الرحلة:</strong> ${data.trip_name}</span>
-            <span><strong>نوع الرحلة:</strong> ${data.trip_type_label}</span>
-        </div>
-        <div class="trip-summary-row99">
-            <span><strong>اليوم والتاريخ:</strong> ${data.trip_day_name} - ${data.trip_date}</span>
-            <span><strong>وقت الرحلة:</strong> ${formatTime99(data.trip_time)}</span>
-        </div>
-        <div class="trip-summary-row99">
-            <span><strong>المسار:</strong> ${data.route_name}</span>
-            <span><strong>محطة النزول النهائية:</strong> ${data.route_final_station_name}</span>
-        </div>
-        <div class="trip-summary-row99">
-            <span><strong>السائق:</strong> ${data.driver_name}</span>
-            <span><strong>الباص:</strong> ${data.bus_label}</span>
-        </div>
-        <div class="trip-summary-row99">
-            <span><strong>السعة:</strong> ${data.bus_capacity}</span>
-            <span><strong>المقاعد المتبقية:</strong> ${remainingSeats}</span>
-        </div>
-        <div class="trip-summary-row99">
-            <span><strong>عدد الطلاب المحددين:</strong> ${tripSelectedStudentIds99.length}</span>
-            <span><strong>آخر وقت للغياب:</strong> ${data.deadline ? formatDateTime99(data.deadline) : "غير محدد"}</span>
+        <div class="row g-2">
+            <div class="col-md-6">
+                <div class="bg-light border rounded-3 p-2 h-100">
+                    <small class="text-muted d-block">اسم الرحلة</small>
+                    <strong>${data.trip_name}</strong>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="bg-light border rounded-3 p-2 h-100">
+                    <small class="text-muted d-block">نوع الرحلة</small>
+                    <strong>${data.trip_type_label}</strong>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="bg-light border rounded-3 p-2 h-100">
+                    <small class="text-muted d-block">اليوم والتاريخ</small>
+                    <strong>${data.trip_day_name} - ${data.trip_date}</strong>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="bg-light border rounded-3 p-2 h-100">
+                    <small class="text-muted d-block">وقت الرحلة</small>
+                    <strong>${formatTime99(data.trip_time)}</strong>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="bg-light border rounded-3 p-2 h-100">
+                    <small class="text-muted d-block">المسار</small>
+                    <strong>${data.route_name}</strong>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="bg-light border rounded-3 p-2 h-100">
+                    <small class="text-muted d-block">محطة النزول النهائية</small>
+                    <strong>${data.route_final_station_name}</strong>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="bg-light border rounded-3 p-2 h-100">
+                    <small class="text-muted d-block">السائق / الباص</small>
+                    <strong>${data.driver_name} / ${data.bus_label}</strong>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="bg-light border rounded-3 p-2 h-100">
+                    <small class="text-muted d-block">السعة / المتبقي</small>
+                    <strong>${data.bus_capacity} / ${remainingSeats}</strong>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="bg-light border rounded-3 p-2 h-100">
+                    <small class="text-muted d-block">عدد الطلاب المحددين</small>
+                    <strong>${tripSelectedStudentIds99.length}</strong>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="bg-light border rounded-3 p-2 h-100">
+                    <small class="text-muted d-block">آخر وقت للغياب</small>
+                    <strong>${data.deadline ? formatDateTime99(data.deadline) : "غير محدد"}</strong>
+                </div>
+            </div>
         </div>
     `;
 }
@@ -2368,6 +2653,7 @@ function getStudentsForRoute99() {
     const assignId = document.getElementById("trip-route-select99")?.value || "";
     const mode = document.getElementById("trip-student-filter99")?.value || "all";
     const dayFilterMode = document.getElementById("trip-student-days-filter99")?.value || "trip_day_only";
+    const genderFilterValue = document.getElementById("trip-student-gender-filter99")?.value || "all";
     const tripDate = document.getElementById("trip-date-input99")?.value || "";
 
     const selectedAssign = assignData.find(a => Number(a.id) === Number(assignId));
@@ -2375,6 +2661,7 @@ function getStudentsForRoute99() {
 
     const stationIds = getAssignStationsArray99(selectedAssign);
     const finalDropoffStationId = getFinalDropoffStationId99(selectedAssign);
+    const genderFilter = normalizeGenderValue99(genderFilterValue);
 
     const unique = new Set();
     const result = [];
@@ -2399,6 +2686,11 @@ function getStudentsForRoute99() {
 
         if (dayFilterMode === "trip_day_only") {
             if (!studentMatchesTripDay99(student, tripDate)) return;
+        }
+
+        if (genderFilter) {
+            const studentGender = normalizeGenderValue99(student.gender);
+            if (studentGender !== genderFilter) return;
         }
 
         if (!unique.has(Number(student.id))) {
@@ -2476,25 +2768,46 @@ function renderTripStudentsList99() {
     const grid = document.getElementById("trip-students-grid99");
     const busId = document.getElementById("trip-bus-select99")?.value || "";
     const search = document.getElementById("trip-student-search99")?.value.trim().toLowerCase() || "";
+    const subtitle = document.querySelector(".trip-students-subtitle99");
 
     if (!grid) return;
 
     updateTripSeatsCounter99();
 
     if (!busId) {
+        if (subtitle) subtitle.innerHTML = "اختر الباص أولًا حتى يتم عرض الطلاب.";
         grid.innerHTML = `<div class="trip-empty-box99">اختر الباص أولاً</div>`;
         return;
     }
 
-    const students = getStudentsForRoute99().filter(student =>
-        (student.name || "").toLowerCase().includes(search)
-    );
+    const students = getStudentsForRoute99().filter(student => {
+        const text = `
+            ${student.name || ""}
+            ${getStudentGenderLabel99(student)}
+            ${getStationName99(student.pickup_station_id)}
+            ${getStationName99(student.dropoff_station_id)}
+            ${getArabicDaysFromStudent99(student)}
+        `.toLowerCase();
+
+        return text.includes(search);
+    });
 
     const selectedBus = busesData.find(bus => Number(bus.id) === Number(busId));
     const capacity = getBusCapacity99(selectedBus);
+    const remaining = Math.max(capacity - tripSelectedStudentIds99.length, 0);
+
+    if (subtitle) {
+        subtitle.innerHTML = `
+            المعروضون: <strong>${students.length}</strong>
+            &nbsp;|&nbsp;
+            المحددون: <strong>${tripSelectedStudentIds99.length}</strong>
+            &nbsp;|&nbsp;
+            المقاعد المتبقية: <strong>${remaining}</strong>
+        `;
+    }
 
     if (!students.length) {
-        grid.innerHTML = `<div class="trip-empty-box99">لا يوجد طلاب مطابقون لهذا المسار أو اليوم المحدد</div>`;
+        grid.innerHTML = `<div class="trip-empty-box99">لا يوجد طلاب مطابقون لهذا المسار أو اليوم أو الجنس المحدد</div>`;
         return;
     }
 
@@ -2506,16 +2819,30 @@ function renderTripStudentsList99() {
         const pickupName = getStationName99(student.pickup_station_id);
         const dropoffName = getStationName99(student.dropoff_station_id);
         const studentDays = getArabicDaysFromStudent99(student);
+        const genderLabel = getStudentGenderLabel99(student);
+        const genderType = normalizeGenderValue99(student.gender);
 
         return `
-            <div class="trip-student-item99 ${isSelected ? "active-card99" : ""}">
-                <div class="trip-student-main99">
-                    <div class="trip-student-name99">${student.name || "بدون اسم"}</div>
+            <div class="trip-student-card99 ${isSelected ? "selected-card99" : ""}">
+                <div class="trip-student-card-head99">
+                    <div class="trip-student-title99">${student.name || "بدون اسم"}</div>
+                    <span class="trip-student-gender99 ${genderType || "unknown"}">${genderLabel}</span>
+                </div>
 
-                    <div class="trip-student-meta99">
-                        <span class="trip-student-chip99">ركوب: ${pickupName}</span>
-                        <span class="trip-student-chip99">نزول: ${dropoffName}</span>
-                        <span class="trip-student-chip99">الأيام: ${studentDays}</span>
+                <div class="trip-student-info99">
+                    <div class="trip-student-row99">
+                        <span class="label">محطة الصعود</span>
+                        <span class="value">${pickupName}</span>
+                    </div>
+
+                    <div class="trip-student-row99">
+                        <span class="label">محطة النزول</span>
+                        <span class="value">${dropoffName}</span>
+                    </div>
+
+                    <div class="trip-student-row99">
+                        <span class="label">أيام الدوام</span>
+                        <span class="value">${studentDays}</span>
                     </div>
                 </div>
 
@@ -2527,7 +2854,6 @@ function renderTripStudentsList99() {
                         title="عرض التفاصيل"
                     >
                         <i class="bi bi-eye-fill"></i>
-                        <span>تفاصيل</span>
                     </button>
 
                     <button
@@ -2537,7 +2863,7 @@ function renderTripStudentsList99() {
                         ${disabled ? "disabled" : ""}
                         title="تحديد الطالب"
                     >
-                        <i class="bi bi-check-lg"></i>
+                        <i class="bi ${isSelected ? "bi-check2" : "bi-plus-lg"}"></i>
                     </button>
                 </div>
             </div>
@@ -2623,54 +2949,74 @@ function closeTripConfirmModal99() {
     document.body.style.overflow = "";
 }
 
-function confirmCreateTrip99() {
+async function confirmCreateTrip99() {
+    console.table(assignData);
+    console.log(assignData);
     const tripData = collectTripFormData99();
     if (!tripData) return;
 
-    const creator = usersData.find(u => Number(u.id) === Number(currentUserId));
-
-    const selectedStudents = studentsData
-        .filter(student => tripSelectedStudentIds99.includes(Number(student.id)))
-        .map(student => ({
-            id: student.id,
-            name: student.name || ""
-        }));
+    const nowISO = new Date().toISOString();
 
     const newTrip = {
-        id: Date.now(),
         trip_name: tripData.trip_name,
         trip_type: tripData.trip_type,
-        trip_type_label: tripData.trip_type_label,
-        trip_day_name: tripData.trip_day_name,
         trip_date: tripData.trip_date,
         trip_time: tripData.trip_time,
-        trip_datetime: tripData.trip_datetime,
         deadline: tripData.deadline,
-        assign_id: tripData.assign_id,
-        route_id: tripData.route_id,
-        route_name: tripData.route_name,
-        route_final_station_id: tripData.route_final_station_id,
-        route_final_station_name: tripData.route_final_station_name,
-        bus_id: tripData.bus_id,
-        bus_label: tripData.bus_label,
-        bus_capacity: tripData.bus_capacity,
-        driver_id: tripData.driver_id,
-        driver_name: tripData.driver_name,
-        created_by: currentUserId || null,
-        created_by_name: creator ? creator.username : "غير محدد",
-        created_at: new Date().toISOString(),
-        students: selectedStudents,
-        student_ids: selectedStudents.map(s => s.id)
+
+        assign_id: Number(tripData.assign_id),
+        route_id: Number(tripData.route_id),
+        bus_id: Number(tripData.bus_id),
+        driver_id: tripData.driver_id ? Number(tripData.driver_id) : null,
+
+        created_by: currentUserId ? Number(currentUserId) : null,
+        created_at: nowISO,
+        updated_at: nowISO,
+
+        student_ids: tripSelectedStudentIds99.map(id => Number(id))
     };
 
-    localTripsData99.unshift(newTrip);
-    localStorage.setItem("localTripsData99", JSON.stringify(localTripsData99));
+    try {
+        const response = await fetch(TRIPS_API99, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            body: JSON.stringify(newTrip)
+        });
 
-    closeTripConfirmModal99();
-    closeCreateTripModal();
+        const savedTrip = await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+                savedTrip?.message ||
+                `فشل حفظ الرحلة في json-server. Status: ${response.status}`
+            );
+        }
+
+        closeTripConfirmModal99();
+        closeCreateTripModal();
+        await fetchTrips99();
+
+        alert("تم إنشاء الرحلة بنجاح وحفظها في trips");
+    } catch (error) {
+        console.error("Trip Save Error:", error);
+        alert(error.message || "حدث خطأ أثناء حفظ الرحلة");
+    }
+}
+
+let tripsSearchQuery99 = "";
+let tripsTypeFilter99 = "all";
+
+function onTripsSearchChange99(value) {
+    tripsSearchQuery99 = normalizeText99(value);
     renderSavedTrips99();
+}
 
-    alert("تم إنشاء الرحلة بنجاح وحفظها محليًا");
+function onTripsTypeFilterChange99(value) {
+    tripsTypeFilter99 = value || "all";
+    renderSavedTrips99();
 }
 
 function renderSavedTrips99() {
@@ -2679,31 +3025,261 @@ function renderSavedTrips99() {
 
     if (!Array.isArray(localTripsData99) || !localTripsData99.length) {
         container.innerHTML = `
-            <div class="saved-trip-card99">
-                لا توجد رحلات محفوظة حاليًا
+            <div class="trips-empty-state99">
+                <i class="bi bi-bus-front"></i>
+                <h4>لا توجد رحلات محفوظة حاليًا</h4>
+                <p>قم بإنشاء رحلة جديدة وستظهر هنا في جدول منظم.</p>
             </div>
         `;
         return;
     }
 
-    container.innerHTML = localTripsData99.map(trip => `
-        <div class="saved-trip-card99">
-            <h3 class="saved-trip-title99">${trip.trip_name}</h3>
-            <strong>نوع الرحلة:</strong> ${trip.trip_type_label}<br>
-            <strong>اليوم والتاريخ:</strong> ${(trip.trip_day_name || getArabicDayName99(trip.trip_date))} - ${trip.trip_date}<br>
-            <strong>وقت الرحلة:</strong> ${formatTime99(trip.trip_time || DEFAULT_TRIP_TIME99)}<br>
-            <strong>المسار:</strong> ${trip.route_name}<br>
-            <strong>محطة النزول النهائية:</strong> ${trip.route_final_station_name || "غير محددة"}<br>
-            
-            <strong>السائق:</strong> ${trip.driver_name}<br>
-            <strong>سعة الباص:</strong> ${trip.bus_capacity}<br>
-            <strong>عدد الطلاب:</strong> ${Array.isArray(trip.students) ? trip.students.length : 0}<br>
-            <strong>أنشأها:</strong> ${trip.created_by_name}<br>
-            <strong>تاريخ الإنشاء:</strong> ${formatDateTime99(trip.created_at)}<br>
-            <strong>آخر وقت للغياب:</strong> ${formatDateTime99(trip.deadline)}
+    const resolvedTrips = localTripsData99.map(trip => resolveTripData99(trip)).filter(Boolean);
+
+    const filteredTrips = resolvedTrips.filter(trip => {
+        const matchesType =
+            tripsTypeFilter99 === "all" ||
+            normalizeText99(trip.trip_type) === normalizeText99(tripsTypeFilter99);
+
+        const searchText = normalizeText99(`
+            ${trip.trip_name || ""}
+            ${trip.route_name || ""}
+            ${trip.driver_name || ""}
+            ${trip.bus_label || ""}
+            ${trip.trip_type_label || ""}
+            ${trip.trip_date || ""}
+        `);
+
+        const matchesSearch = !tripsSearchQuery99 || searchText.includes(tripsSearchQuery99);
+
+        return matchesType && matchesSearch;
+    });
+
+    container.innerHTML = `
+        <div class="trips-toolbar99">
+            <div class="trips-toolbar-left99">
+                <input
+                    type="text"
+                    class="trips-search-input99"
+                    placeholder="ابحث باسم الرحلة أو السائق أو الباص"
+                    value="${tripsSearchQuery99}"
+                    oninput="onTripsSearchChange99(this.value)"
+                >
+
+                <select class="trips-type-filter99" onchange="onTripsTypeFilterChange99(this.value)">
+                    <option value="all" ${tripsTypeFilter99 === "all" ? "selected" : ""}>كل الرحلات</option>
+                    <option value="pickup" ${tripsTypeFilter99 === "pickup" ? "selected" : ""}>رحلات الذهاب</option>
+                    <option value="dropoff" ${tripsTypeFilter99 === "dropoff" ? "selected" : ""}>رحلات العودة</option>
+                </select>
+            </div>
         </div>
-    `).join("");
+
+        ${filteredTrips.length
+            ? `
+                <div class="trips-table-wrap99">
+                    <table class="trips-table99">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>اسم الرحلة</th>
+                                <th>نوع الرحلة</th>
+                                <th>التاريخ</th>
+                                <th>الوقت</th>
+                                <th>السائق</th>
+                                <th>عدد الطلاب</th>
+                                <th>التفاصيل</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${filteredTrips.map((trip, index) => {
+                                const studentsCount = Array.isArray(trip.student_ids) ? trip.student_ids.length : 0;
+
+                                return `
+                                    <tr>
+                                        <td>${index + 1}</td>
+                                        <td class="trip-title-cell99">${trip.trip_name || "بدون اسم"}</td>
+                                        <td>
+                                            <span class="trip-type-chip99 ${trip.trip_type === "pickup" ? "pickup" : "dropoff"}">
+                                                ${trip.trip_type_label || "غير محدد"}
+                                            </span>
+                                        </td>
+                                        <td>${trip.trip_date || "غير محدد"}</td>
+                                        <td>${formatTime99(trip.trip_time || DEFAULT_TRIP_TIME99)}</td>
+                                        <td>${trip.driver_name || "غير محدد"}</td>
+                                        <td>${studentsCount}</td>
+                                        <td>
+                                            <button
+                                                type="button"
+                                                class="trip-table-details-btn99"
+                                                onclick="openTripDetailsModal99(${trip.id})"
+                                            >
+                                                <i class="bi bi-eye-fill"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                `;
+                            }).join("")}
+                        </tbody>
+                    </table>
+                </div>
+            `
+            : `
+                <div class="trips-empty-state99">
+                    <i class="bi bi-search"></i>
+                    <h4>لا توجد نتائج</h4>
+                    <p>جرّب تغيير البحث أو نوع الرحلة.</p>
+                </div>
+            `
+        }
+    `;
 }
+
+function openTripDetailsModal99(tripId) {
+    const trip = localTripsData99.find(t => Number(t.id) === Number(tripId));
+    const resolvedTrip = resolveTripData99(trip);
+    const modal = document.getElementById("trip-details-modal99");
+    const content = document.getElementById("trip-details-content99");
+
+    if (!resolvedTrip || !modal || !content) return;
+
+    const studentsInTrip = Array.isArray(resolvedTrip.student_ids)
+        ? resolvedTrip.student_ids
+            .map(id => studentsData.find(student => Number(student.id) === Number(id)))
+            .filter(Boolean)
+        : [];
+
+    const tripStudentsHTML = studentsInTrip.length
+        ? `
+            <div class="trip-details-students-section99">
+                <div class="trip-details-section-title99">
+                    الطلاب الموجودون في الرحلة (${studentsInTrip.length})
+                </div>
+
+                <div class="trip-details-students-table-wrap99">
+                    <table class="trip-details-students-table99">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>اسم الطالب</th>
+                                <th>الجنس</th>
+                                <th>محطة الصعود</th>
+                                <th>محطة النزول</th>
+                                <th>أيام الدوام</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${studentsInTrip.map((student, index) => `
+                                <tr>
+                                    <td>${index + 1}</td>
+                                    <td class="trip-student-name-cell99">${student.name || "بدون اسم"}</td>
+                                    <td>${getStudentGenderLabel99(student)}</td>
+                                    <td>${getStationName99(student.pickup_station_id)}</td>
+                                    <td>${getStationName99(student.dropoff_station_id)}</td>
+                                    <td>${getArabicDaysFromStudent99(student)}</td>
+                                </tr>
+                            `).join("")}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        `
+        : `
+            <div class="trip-details-empty99">
+                لا يوجد طلاب مربوطون بهذه الرحلة
+            </div>
+        `;
+
+    content.innerHTML = `
+        <div class="trip-details-main-grid99">
+            <div class="trip-detail-card99">
+                <span>اسم الرحلة</span>
+                <strong>${resolvedTrip.trip_name || "غير محدد"}</strong>
+            </div>
+
+            <div class="trip-detail-card99">
+                <span>نوع الرحلة</span>
+                <strong>${resolvedTrip.trip_type_label || "غير محدد"}</strong>
+            </div>
+
+            <div class="trip-detail-card99">
+                <span>اليوم</span>
+                <strong>${resolvedTrip.trip_day_name || getArabicDayName99(resolvedTrip.trip_date)}</strong>
+            </div>
+
+            <div class="trip-detail-card99">
+                <span>التاريخ</span>
+                <strong>${resolvedTrip.trip_date || "غير محدد"}</strong>
+            </div>
+
+            <div class="trip-detail-card99">
+                <span>وقت الرحلة</span>
+                <strong>${formatTime99(resolvedTrip.trip_time || DEFAULT_TRIP_TIME99)}</strong>
+            </div>
+
+            <div class="trip-detail-card99">
+                <span>آخر وقت للغياب</span>
+                <strong>${formatDateTime99(resolvedTrip.deadline)}</strong>
+            </div>
+
+            <div class="trip-detail-card99">
+                <span>اسم المسار</span>
+                <strong>${resolvedTrip.route_name || "غير محدد"}</strong>
+            </div>
+
+            <div class="trip-detail-card99">
+                <span>محطة النزول النهائية</span>
+                <strong>${resolvedTrip.route_final_station_name || "غير محددة"}</strong>
+            </div>
+
+            <div class="trip-detail-card99">
+                <span>سعة الباص</span>
+                <strong>${resolvedTrip.bus_capacity || 0}</strong>
+            </div>
+
+            <div class="trip-detail-card99">
+                <span>السائق</span>
+                <strong>${resolvedTrip.driver_name || "غير محدد"}</strong>
+            </div>
+
+            <div class="trip-detail-card99">
+                <span>عدد الطلاب</span>
+                <strong>${studentsInTrip.length}</strong>
+            </div>
+
+            <div class="trip-detail-card99">
+                <span>أنشأها</span>
+                <strong>${resolvedTrip.created_by_name || "غير محدد"}</strong>
+            </div>
+
+            <div class="trip-detail-card99">
+                <span>تاريخ الإنشاء</span>
+                <strong>${formatDateTime99(resolvedTrip.created_at)}</strong>
+            </div>
+        </div>
+
+        ${tripStudentsHTML}
+    `;
+
+    modal.classList.add("show");
+    modal.style.display = "flex";
+    document.body.style.overflow = "hidden";
+}
+
+function closeTripDetailsModal99() {
+    const modal = document.getElementById("trip-details-modal99");
+    if (!modal) return;
+
+    modal.classList.remove("show");
+    modal.style.display = "none";
+    document.body.style.overflow = "";
+}
+
+window.addEventListener("click", function (e) {
+    const modal = document.getElementById("trip-details-modal99");
+    if (e.target === modal) {
+        closeTripDetailsModal99();
+    }
+});
     </script>
 
     <script src="main.js"></script>

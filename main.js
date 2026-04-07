@@ -69,6 +69,12 @@ async function login() {
                 document.getElementById('main-wrapper').style.display = "block";
                 showPage('sec-home');
 
+            }
+            if (data.user.role_id === 3) {
+                document.getElementById('login-page').style.display = "none";
+                document.getElementById('main-wrapper').style.display = "block";
+                showPage('sec-home');
+
             } else {
                 error.textContent = "ليس لديك الصلاحيات الزامة للذخول";
                 error.style.display = "block";
@@ -4550,5 +4556,46 @@ function renderSystemNotifications() {
     });
 }
 renderSystemNotifications();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 fetchAll();
