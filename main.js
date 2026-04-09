@@ -1060,7 +1060,8 @@ function renderRoutes() {
 }
 
 function renderAssign() {
-
+console.log(assignData);
+console.table(assignData);
     if (!assignData || !routesData || !stationsData) {
         console.warn("البيانات لم تكتمل بعد");
         return;
