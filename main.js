@@ -56,7 +56,7 @@ async function login() {
         if (response.ok) {
             const data = await response.json();
             console.clear();
-            console.log(data);
+            
 
             currentUserId = data.user.id;
 
@@ -236,7 +236,7 @@ async function fetchNotifications() {
     try {
         const res = await fetch(`${API}/notifications`);
         notificationsData = await res.json();
-        console.table(notificationsData);
+        
         renderNotificationsCarts();
         renderSystemNotifications();
 
@@ -245,6 +245,7 @@ async function fetchNotifications() {
         console.error("فشل في جلب الإشعارات:", error);
     }
 }
+
 async function fetchAll() {
 
     await Promise.all([
@@ -260,6 +261,7 @@ async function fetchAll() {
         fetchNotifications(),
         fetchDriversAndBuses(),
         fetchAbsenceRequests(),
+
 
     ]);
 
@@ -283,18 +285,55 @@ function renderAll() {
 
     renderAcademicStructure();
 
-
-
-
     renderReports();
 
     renderNotifications();
     renderSystemNotifications();
 
-
+    renderAbsenceRequestsNotifications();
     renderTripsPage();
 
 }
+
+let autoRefreshTimer = null;
+let isAutoRefreshing = false;
+
+const AUTO_REFRESH_INTERVAL = 20000; 
+
+async function refreshAllDataAuto() {
+    if (isAutoRefreshing) return;
+
+    isAutoRefreshing = true;
+
+    try {
+        console.log("Auto refresh running:", new Date().toLocaleTimeString("ar-EG"));
+        await fetchAll();
+    } catch (error) {
+        console.error("Auto Refresh Error:", error);
+    } finally {
+        isAutoRefreshing = false;
+    }
+}
+
+function startAutoRefresh(interval = AUTO_REFRESH_INTERVAL) {
+    stopAutoRefresh();
+
+    console.log("Auto refresh started. Interval:", interval, "ms");
+
+    autoRefreshTimer = setInterval(() => {
+        refreshAllDataAuto();
+    }, interval);
+}
+
+function stopAutoRefresh() {
+    if (autoRefreshTimer) {
+        clearInterval(autoRefreshTimer);
+        autoRefreshTimer = null;
+        console.log("Auto refresh stopped");
+    }
+}
+
+startAutoRefresh(20000);
 
 function openUserTab(tabId, btnElement) {
 
@@ -1060,8 +1099,7 @@ function renderRoutes() {
 }
 
 function renderAssign() {
-console.log(assignData);
-console.table(assignData);
+    
     if (!assignData || !routesData || !stationsData) {
         console.warn("البيانات لم تكتمل بعد");
         return;
@@ -1954,7 +1992,7 @@ async function saveStudent() {
     let newUserId = null;
 
     try {
-        
+
         const checkUsersResponse = await fetch(`${API}/users`, {
             method: "GET",
             headers: {
@@ -1984,7 +2022,7 @@ async function saveStudent() {
             throw new Error("اسم المستخدم موجود بالفعل، اختر اسمًا آخر");
         }
 
-        
+
         const userPayload = {
             username: username,
             password: password,
@@ -2003,8 +2041,7 @@ async function saveStudent() {
         });
 
         const userRawText = await userResponse.text();
-        console.log("users response status:", userResponse.status);
-        console.log("users response body:", userRawText);
+        
 
         let createdUser = null;
         try {
@@ -2027,7 +2064,7 @@ async function saveStudent() {
             throw new Error("لم يتم إرجاع user_id من السيرفر");
         }
 
-        
+
         const studentPayload = {
             user_id: newUserId,
             username: username,
@@ -2059,8 +2096,7 @@ async function saveStudent() {
         });
 
         const studentRawText = await studentResponse.text();
-        console.log("students response status:", studentResponse.status);
-        console.log("students response body:", studentRawText);
+        
 
         let createdStudent = null;
         try {
@@ -3195,7 +3231,7 @@ function renderStudentsCards() {
 
     const activeStudents = studentsData.filter(s => s.state === 'active');
 
-    console.table(activeStudents);
+    
 
     activeStudents.forEach(s => {
 
