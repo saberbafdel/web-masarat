@@ -843,48 +843,57 @@
 
 
             <section id="sec-trips" class="page-section">
-    <div class="content-card">
+                <div class="content-card">
 
-        <div class="user-mgmt-header">
-            <h1 class="page-title mb-0">إدارة الرحلات</h1>
-        </div>
+                    <div class="user-mgmt-header">
+                        <h1 class="page-title mb-0">إدارة الرحلات</h1>
 
-        <div class="custom-tabs">
-            <button class="tab-btn active-tab" onclick="openTripsMainTab('tab-trips-list', this)">
-                الرحلات
-            </button>
+                        <div class="custom-tabs">
+                            <button class="tab-btn active-tab" onclick="openTripsMainTab('tab-trips-list', this)">
+                                الرحلات
+                            </button>
 
-            <button class="tab-btn" onclick="openTripsMainTab('tab-trips-soon', this)">
-                قريبًا
-            </button>
-        </div>
+                            <button class="tab-btn" onclick="openTripsMainTab('tab-trips-soon', this)">
+                                قريبًا
+                            </button>
+                        </div>
+                    </div>
 
-        <div id="tab-trips-list" class="trips-main-tab-content active-tab-content">
-            <div class="table-responsive">
-                <button id="addTripBtn" class="btn btn-success btn-success-color" onclick="openCreateTripModal()">
-                    إنشاء رحلة جديدة
-                </button>
+                    <div id="tab-trips-list" class="trips-main-tab-content active-tab-content">
 
-                <div id="trips-list-container" class="saved-trips-list99"></div>
-            </div>
-        </div>
 
-        <div id="tab-trips-soon" class="trips-main-tab-content" style="display: none;">
-            <div class="table-responsive">
-                <button type="button" class="btn btn-success btn-success-color" disabled>
-                    قريبًا
-                </button>
+                        <div class="col-md-1">
+                            <button id="addTripBtn" class="btn btn-success btn-success-color"
+                                onclick="openCreateTripModal()">
+                                إنشاء رحلة
+                            </button>
+                        </div>
 
-                <div class="trips-empty-state99" style="margin-top: 15px;">
-                    <i class="bi bi-clock-history"></i>
-                    <h4>هذا القسم قريبًا</h4>
-                    <p>سيتم إضافة محتوى جديد هنا لاحقًا.</p>
+
+                        <div class="table-responsive">
+                            <div id="trips-list-container" class="saved-trips-list99"></div>
+                        </div>
+
+                    </div>
+
+                    <div id="tab-trips-soon" class="trips-main-tab-content" style="display: none;">
+
+                        <div class="table-responsive">
+                            <button type="button" class="btn btn-success btn-success-color" disabled>
+                                قريبًا
+                            </button>
+
+                            <div class="trips-empty-state99" style="margin-top: 15px;">
+                                <i class="bi bi-clock-history"></i>
+                                <h4>هذا القسم قريبًا</h4>
+                                <p>سيتم إضافة محتوى جديد هنا لاحقًا.</p>
+                            </div>
+                        </div>
+
+                    </div>
+
                 </div>
-            </div>
-        </div>
-
-    </div>
-</section>
+            </section>
 
 
             <section id="sec-payments" class="page-section">
@@ -1876,14 +1885,14 @@
 
 
 
-    
+
 
         const TRIPS_API = "https://msaraty.ddns.net/api/trips";
         // const TRIPS_API = "http://localhost:3000/trips";
 
-        
-       
-        
+
+
+
 
 
 
@@ -3467,7 +3476,7 @@
             ${trip.bus_label || ""}
             ${trip.trip_type_label || ""}
             ${trip.trip_date || ""}
-            ${trip.assign_id || ""}
+            ${trip.created_by_name || ""}
         `);
 
                 const matchesSearch = !tripsSearchQuery || searchText.includes(tripsSearchQuery);
@@ -3481,7 +3490,7 @@
                 <input
                     type="text"
                     class="trips-search-input99"
-                    placeholder="ابحث باسم الرحلة أو السائق أو الباص أو رقم التعيين"
+                    placeholder="ابحث باسم الرحلة أو السائق أو الباص أو المنشئ"
                     value="${tripsSearchQuery}"
                     oninput="onTripsSearchChange(this.value)"
                 >
@@ -3502,11 +3511,11 @@
                             <tr>
                                 <th>#</th>
                                 <th>اسم الرحلة</th>
-                                <th>التعيين</th>
                                 <th>نوع الرحلة</th>
                                 <th>التاريخ</th>
                                 <th>الوقت</th>
                                 <th>السائق</th>
+                                <th>المنشئ</th>
                                 <th>عدد الطلاب</th>
                                 <th>التفاصيل</th>
                             </tr>
@@ -3519,7 +3528,6 @@
                                     <tr>
                                         <td>${index + 1}</td>
                                         <td class="trip-title-cell99">${trip.trip_name || "بدون اسم"}</td>
-                                        <td>#${trip.assign_id ?? "-"}</td>
                                         <td>
                                             <span class="trip-type-chip99 ${trip.trip_type === "pickup" ? "pickup" : "dropoff"}">
                                                 ${trip.trip_type_label || "غير محدد"}
@@ -3528,6 +3536,7 @@
                                         <td>${trip.trip_date || "غير محدد"}</td>
                                         <td>${formatTime(trip.trip_time || DEFAULT_TRIP_TIME)}</td>
                                         <td>${trip.driver_name || "غير محدد"}</td>
+                                        <td>${trip.created_by_name || "غير محدد"}</td>
                                         <td>${studentsCount}</td>
                                         <td>
                                             <button
@@ -3591,24 +3600,19 @@
                                 <th>محطة الصعود</th>
                                 <th>محطة النزول</th>
                                 <th>أيام الدوام</th>
-                                <th>حالة الغياب في تاريخ الرحلة</th>
                             </tr>
                         </thead>
                         <tbody>
-                            ${studentsInTrip.map((student, index) => {
-                    const absenceInfo = getStudentAbsenceInfo(student.id, resolvedTrip.trip_date);
-                    return `
-                                    <tr>
-                                        <td>${index + 1}</td>
-                                        <td class="trip-student-name-cell99">${student.name || "بدون اسم"}</td>
-                                        <td>${getStudentGenderLabel(student)}</td>
-                                        <td>${getStationName(student.pickup_station_id)}</td>
-                                        <td>${getStationName(student.dropoff_station_id)}</td>
-                                        <td>${getArabicDaysFromStudent(student)}</td>
-                                        <td>${absenceInfo.label}</td>
-                                    </tr>
-                                `;
-                }).join("")}
+                            ${studentsInTrip.map((student, index) => `
+                                <tr>
+                                    <td>${index + 1}</td>
+                                    <td class="trip-student-name-cell99">${student.name || "بدون اسم"}</td>
+                                    <td>${getStudentGenderLabel(student)}</td>
+                                    <td>${getStationName(student.pickup_station_id)}</td>
+                                    <td>${getStationName(student.dropoff_station_id)}</td>
+                                    <td>${getArabicDaysFromStudent(student)}</td>
+                                </tr>
+                            `).join("")}
                         </tbody>
                     </table>
                 </div>
@@ -3719,28 +3723,28 @@
 
 
         function openTripsMainTab(tabId, btn) {
-    const section = document.getElementById("sec-trips");
-    if (!section) return;
+            const section = document.getElementById("sec-trips");
+            if (!section) return;
 
-    section.querySelectorAll(".trips-main-tab-content").forEach(tab => {
-        tab.style.display = "none";
-        tab.classList.remove("active-tab-content");
-    });
+            section.querySelectorAll(".trips-main-tab-content").forEach(tab => {
+                tab.style.display = "none";
+                tab.classList.remove("active-tab-content");
+            });
 
-    section.querySelectorAll(".custom-tabs .tab-btn").forEach(button => {
-        button.classList.remove("active-tab");
-    });
+            section.querySelectorAll(".custom-tabs .tab-btn").forEach(button => {
+                button.classList.remove("active-tab");
+            });
 
-    const targetTab = section.querySelector(`#${tabId}`);
-    if (targetTab) {
-        targetTab.style.display = "block";
-        targetTab.classList.add("active-tab-content");
-    }
+            const targetTab = section.querySelector(`#${tabId}`);
+            if (targetTab) {
+                targetTab.style.display = "block";
+                targetTab.classList.add("active-tab-content");
+            }
 
-    if (btn) {
-        btn.classList.add("active-tab");
-    }
-}
+            if (btn) {
+                btn.classList.add("active-tab");
+            }
+        }
     </script>
 
     <script src="main.js"></script>
