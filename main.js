@@ -298,7 +298,7 @@ function renderAll() {
 let autoRefreshTimer = null;
 let isAutoRefreshing = false;
 
-const AUTO_REFRESH_INTERVAL = 20000; 
+const AUTO_REFRESH_INTERVAL = 15000; 
 
 async function refreshAllDataAuto() {
     if (isAutoRefreshing) return;
@@ -333,7 +333,7 @@ function stopAutoRefresh() {
     }
 }
 
-startAutoRefresh(20000);
+startAutoRefresh(15000);
 
 function openUserTab(tabId, btnElement) {
 
