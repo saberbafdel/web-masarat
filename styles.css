@@ -6526,5 +6526,41 @@ td {
     gap: 10px;
 }
 
+.trip-status-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.2px;
+    border: 1px solid transparent;
+}
 
+/* pending - رمادي هادئ */
+.status-pending {
+    background: #ffe75c87;
+    color: #6b7280;
+    border-color: #e5e7eb;
+}
+
+/* approved - أزرق هادئ */
+.status-approved {
+    background: #eef6ff;
+    color: #2563eb;
+    border-color: #dbeafe;
+}
+
+/* completed - أخضر هادئ */
+.status-completed {
+    background: #eefbf3;
+    color: #16a34a;
+    border-color: #d1fae5;
+}
+
+/* unknown - رمادي فاتح */
+.status-unknown {
+    background: #f3f4f6;
+    color: #9ca3af;
+    border-color: #e5e7eb;
+}
 
