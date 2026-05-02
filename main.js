@@ -21,11 +21,18 @@ let levelsData = [];
 let driversData = [];
 let busesData = [];
 
-let currentUserId = null;
 
 
 let notificationsData = [];
 
+let activityLogsData = [];
+
+
+
+
+
+
+let currentUserId = null;
 
 
 async function login() {
@@ -55,34 +62,37 @@ async function login() {
 
         if (response.ok) {
             const data = await response.json();
-            console.clear();
-            
 
-            currentUserId = data.user.id;
+            currentUserId = data.id;
 
             const accountSpan = document.getElementById('currentAcount');
-            if (accountSpan && data.username) {
-                accountSpan.textContent = data.username || usernameInput;
+            if (accountSpan) {
+                accountSpan.textContent = data.username;
             }
-            if (data.user.role_id === 3) {
-                document.getElementById('login-page').style.display = "none";
-                document.getElementById('main-wrapper').style.display = "block";
-                showPage('sec-home');
 
-            }
-            if (data.user.role_id === 3) {
+            // 🔹 معالجة آمنة
+            const role = Number(data.role_id ?? 1);
+
+            console.log("ROLE:", role);
+
+            if (role === 1 || role === 3) {
+
+                localStorage.setItem("user", JSON.stringify(data));
+                localStorage.setItem("currentPage", "sec-home");
+
                 document.getElementById('login-page').style.display = "none";
                 document.getElementById('main-wrapper').style.display = "block";
+
                 showPage('sec-home');
+                fetchAll();
 
             } else {
-                error.textContent = "ليس لديك الصلاحيات الزامة للذخول";
+                error.textContent = "ليس لديك الصلاحيات اللازمة للدخول";
                 error.style.display = "block";
             }
 
 
-        }
-        else {
+        } else {
             const errorData = await response.json();
             error.textContent = errorData.message || "بيانات الدخول غير صحيحة";
             error.style.display = "block";
@@ -95,23 +105,49 @@ async function login() {
     }
 }
 
-function logout() {
-    location.reload();
-}
+
+
+window.addEventListener("load", () => {
+    const userData = localStorage.getItem("user");
+
+    if (userData) {
+        const user = JSON.parse(userData);
+
+        currentUserId = user.id;
+
+        const savedPage = localStorage.getItem("currentPage") || "sec-home";
+
+        const accountSpan = document.getElementById('currentAcount');
+        if (accountSpan) {
+            accountSpan.textContent = user.username;
+        }
+
+        document.getElementById('login-page').style.display = "none";
+        document.getElementById('main-wrapper').style.display = "block";
+
+        showPage(savedPage);
+        fetchAll();
+    }
+});
+
 
 
 function showPage(pageId) {
-
-    document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active'));
-
+    document.querySelectorAll('.page-section').forEach(sec => {
+        sec.classList.remove('active');
+        sec.style.display = "none";
+    });
 
     const target = document.getElementById(pageId);
-    if (target) target.classList.add('active');
+    if (target) {
+        target.classList.add('active');
+        target.style.display = "block";
 
+        localStorage.setItem("currentPage", pageId);
+    }
 
     document.querySelectorAll('.sidebar-item').forEach(btn => {
         btn.classList.remove('active-nav');
-
 
         const onClickAttr = btn.getAttribute('onclick');
         if (onClickAttr && onClickAttr.includes(pageId)) {
@@ -121,14 +157,23 @@ function showPage(pageId) {
 }
 
 
+
+function logout() {
+    localStorage.removeItem("user");
+    localStorage.removeItem("currentPage");
+    location.reload();
+}
+
+
+
 function openTripTab(tabId, btnElement) {
-
     const parent = document.getElementById('sec-stations');
-    parent.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
 
+    parent.querySelectorAll('.tab-content')
+        .forEach(content => content.classList.remove('active'));
 
-    parent.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active-tab'));
-
+    parent.querySelectorAll('.tab-btn')
+        .forEach(btn => btn.classList.remove('active-tab'));
 
     document.getElementById(tabId).classList.add('active');
     btnElement.classList.add('active-tab');
@@ -183,10 +228,27 @@ async function fetchUsers() {
     renderAll();
 }
 
+
+async function fetchDriversAndBuses() {
+    try {
+        const driversResponse = await fetch(`${API}/drivers`);
+        driversData = await driversResponse.json();
+        const busesResponse = await fetch(`${API}/buses`);
+        busesData = await busesResponse.json();
+        renderAll();
+        renderDriversCards();
+        renderDriversAndBuses();
+    } catch (error) {
+        console.error("حدث خطأ أثناء جلب بيانات السائقين والباصات:", error);
+    }
+}
+
+
+
 async function fetchStations() {
     const res = await fetch(`${API}/stations`);
     stationsData = await res.json();
-    renderStations();
+
     renderAll();
 }
 
@@ -236,14 +298,42 @@ async function fetchNotifications() {
     try {
         const res = await fetch(`${API}/notifications`);
         notificationsData = await res.json();
-        
+
         renderNotificationsCarts();
         renderSystemNotifications();
-
         renderNotifications();
     } catch (error) {
         console.error("فشل في جلب الإشعارات:", error);
     }
+}
+
+async function fetchActivityLogs() {
+    try {
+        const res = await fetch(`${API}/activity-logs`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        });
+
+        const text = await res.text();
+
+        try {
+            activityLogsData = text ? JSON.parse(text) : [];
+        } catch {
+            activityLogsData = [];
+        }
+
+        if (!res.ok) {
+            throw new Error("فشل في جلب سجلات النظام");
+        }
+
+    } catch (error) {
+        console.error("Error fetching activity logs:", error);
+        activityLogsData = [];
+    }
+
 }
 
 async function fetchAll() {
@@ -261,6 +351,10 @@ async function fetchAll() {
         fetchNotifications(),
         fetchDriversAndBuses(),
         fetchAbsenceRequests(),
+        fetchActivityLogs(),
+        fetchLogs(),
+        fetchStudentPayments(),
+        fetchDriverPayments(),
 
 
     ]);
@@ -276,12 +370,14 @@ function renderAll() {
 
     renderRoutes();
     renderStations();
+    renderAssign();
     renderStationsCards();
 
     renderStudents();
     renderStudentsCards();
 
-    renderAssign();
+    renderDriversCards();
+    renderDriversAndBuses();
 
     renderAcademicStructure();
 
@@ -292,13 +388,16 @@ function renderAll() {
 
     renderAbsenceRequestsNotifications();
     renderTripsPage();
+    renderLogs();
 
+    renderStudentPayments();
+    renderDriverPayments();
 }
 
 let autoRefreshTimer = null;
 let isAutoRefreshing = false;
 
-const AUTO_REFRESH_INTERVAL = 15000; 
+const AUTO_REFRESH_INTERVAL = 30000; // 30 ثانية
 
 async function refreshAllDataAuto() {
     if (isAutoRefreshing) return;
@@ -333,7 +432,7 @@ function stopAutoRefresh() {
     }
 }
 
-startAutoRefresh(15000);
+startAutoRefresh(30000);
 
 function openUserTab(tabId, btnElement) {
 
@@ -373,7 +472,6 @@ function openStudentTab(tabId, btnElement) {
 
 }
 
-
 function renderStudents() {
     const body = document.getElementById("students-table-body");
     if (!body) return;
@@ -388,20 +486,20 @@ function renderStudents() {
 
         const associatedUser = usersData.find(u => u.id === student.user_id);
 
-
         if (associatedUser && (associatedUser.status === "pending" || associatedUser.status === "rejected" || associatedUser.status === "blocked")) {
             return false;
         }
-
 
         const university = universitiesData.find(u => u.id === student.university_id)?.university_name || "";
         const college = collegesData.find(c => c.id === student.college_id)?.college_name || "";
         const department = departmentsData.find(d => d.id === student.department_id)?.department_name || "";
         const level = levelsData.find(l => l.id === student.level_id)?.level_name || "";
 
-        const name = (student.name || "").toLowerCase();
+        // 🔥 التعديل هنا: الاسم والجوال من user
+        const name = (associatedUser?.full_name || "").toLowerCase();
+        const phone = (associatedUser?.phone || "").toLowerCase();
+
         const universityNumber = (student.university_number || "").toLowerCase();
-        const phone = (student.phone || "").toLowerCase();
         const city = (student.city || "").toLowerCase();
 
         const searchUniversity = university.toLowerCase();
@@ -434,28 +532,35 @@ function renderStudents() {
     });
 
     filtered.forEach(student => {
+
+        const associatedUser = usersData.find(u => u.id === student.user_id);
+
         const university = universitiesData.find(u => u.id === student.university_id)?.university_name || "غير معروف";
         const pickupStation = stationsData.find(s => s.id === student.pickup_station_id)?.station_name || "غير معروف";
         const dropoffStation = stationsData.find(s => s.id === student.dropoff_station_id)?.station_name || "غير معروف";
 
+        // 🔥 القيم من user مع fallback
+        const fullName = associatedUser?.full_name || "غير معروف";
+        const phone = associatedUser?.phone || "غير معروف";
+
         body.innerHTML += `
         <tr>
             <td>${student.id}</td>
-            <td><strong>${student.name || ''}</strong></td>
-            <td>${student.phone || ''}</td>
+            <td><strong>${fullName}</strong></td>
+            <td>${phone}</td>
             <td>${student.city || ''}</td>
             <td>
-  ${student.gender === 'ذكر'
+                ${student.gender === 'ذكر'
                 ? '<span class="student-gender-male">ذكر</span>'
                 : '<span class="student-gender-female">أنثى</span>'
             }
-</td>
+            </td>
                 
-           <td>
-${student.state && student.state.toLowerCase() === 'active'
+            <td>
+                ${student.state && student.state.toLowerCase() === 'active'
                 ? '<span class="student-state-active">نشط</span>'
                 : '<span class="student-state-inactive">متوقف</span>'}
-</td>
+            </td>
                 
             <td>${university}</td>
             <td>${pickupStation}</td>
@@ -582,27 +687,57 @@ function closeStudentDetails() {
 }
 
 
-
-
 function renderUsers() {
     const body = document.getElementById("users-table-body");
     const searchQuery = document.getElementById("search-input").value.toLowerCase();
     const roleFilter = document.getElementById("filter-role").value;
+    const sortType = document.getElementById("sort-date").value;
 
     if (!body) return;
     body.innerHTML = "";
 
-    const filteredUsers = usersData.filter(u => {
-        const matchesSearch = u.username.toLowerCase().includes(searchQuery);
-        const matchesRole = (roleFilter === 'all') || (u.role_id.toString() === roleFilter);
+
+    let filteredUsers = usersData.filter(u => {
+
+        const username = (u.username || "").toLowerCase();
+        const fullName = (u.full_name || "").toLowerCase();
+        const phone = (u.phone || "").toLowerCase();
+        const id = String(u.id);
+
+        const matchesSearch =
+            username.includes(searchQuery) ||
+            fullName.includes(searchQuery) ||
+            phone.includes(searchQuery) ||
+            id.includes(searchQuery);
+
+        const matchesRole =
+            (roleFilter === 'all') ||
+            (u.role_id.toString() === roleFilter);
+
         const isActiveOnly = u.status === 'approved';
+
         return matchesSearch && matchesRole && isActiveOnly;
     });
+
+
+    filteredUsers.sort((a, b) => {
+        const dateA = new Date(a.created_at);
+        const dateB = new Date(b.created_at);
+
+        if (sortType === "newest") {
+            return dateB - dateA;
+        } else {
+            return dateA - dateB;
+        }
+    });
+
 
     filteredUsers.forEach(u => {
         body.innerHTML += `
         <tr>
             <td>${u.id}</td>
+            <td>${u.full_name ? u.full_name : 'غير معروف'}</td>
+            <td>${u.phone ? u.phone : 'غير معروف'}</td>
             <td><strong>${u.username}</strong></td>
             <td>${getRoleName(u.role_id)}</td>
             <td>${getStatusBadge(u.status)}</td>
@@ -617,7 +752,6 @@ function renderUsers() {
     updateRequestCount();
 }
 
-
 function renderRequests() {
     const body = document.getElementById("requests-table-body");
     if (!body) return;
@@ -629,6 +763,8 @@ function renderRequests() {
         body.innerHTML += `
     <tr>
         <td>${u.id}</td>
+        <td>${u.full_name ? u.full_name : 'غير معروف'}</td>
+        <td>${u.phone ? u.phone : 'غير معروف'}</td>
         <td>${u.username}</td>
         <td>${getRoleName(u.role_id)}</td>
         <td>${u.created_at ? formatDate(u.created_at) : 'غير محدد'}</td>
@@ -652,7 +788,6 @@ function renderRequests() {
     });
 }
 
-
 function renderBlacklist() {
     const body = document.getElementById("blacklist-table-body");
     if (!body) return;
@@ -662,12 +797,15 @@ function renderBlacklist() {
 
     blocked.forEach(u => {
         body.innerHTML += `
-        <tr ">
+        <tr>
             <td>${u.id}</td>
+            <td>${u.full_name ? u.full_name : 'غير معروف'}</td>
+            <td>${u.phone ? u.phone : 'غير معروف'}</td>
             <td>${u.username}</td>
             <td>${getRoleName(u.role_id)}</td>
             <td>
-<span class="student-state-inactive">محظور</span></td>
+                <span class="student-state-inactive">محظور</span>
+            </td>
             <td>
                 <button class="btn-action view" onclick="viewUserDetails(${u.id})" title="عرض"><i class="bi bi-eye"></i></button>
                 <button class="btn-action approve" onclick="updateUserStatus(${u.id}, 'approved')" title="فك الحظر"><i class="bi bi-arrow-counterclockwise"></i></button>
@@ -676,40 +814,26 @@ function renderBlacklist() {
         </tr>`;
     });
 }
-
 async function addAdmin() {
     const username = document.getElementById('new-admin').value.trim();
     const password = document.getElementById('new-password').value.trim();
+    const full_name = document.getElementById('new-fullname').value.trim();
+    const phone = document.getElementById('new-phone').value.trim();
 
-    if (!username || !password) return alert("الرجاء إكمال البيانات");
+    // ✅ تحقق من جميع الحقول
+    if (!username || !password || !full_name || !phone) {
+        return alert("الرجاء إكمال جميع البيانات");
+    }
 
     try {
 
-        // const usersResponse = await fetch(`${API}/users`, {
-        //     headers: {
-        //         "Accept": "application/json"
-        //     }
-        // });
 
-        // if (!usersResponse.ok) throw new Error("فشل في جلب المستخدمين");
-
-        // const users = await usersResponse.json();
-
-
-        const isExists = usersData.some(user =>
-            user.username &&
-            user.username.trim().toLowerCase() === username.toLowerCase()
-        );
-
-        if (isExists) {
-            alert("اسم المستخدم موجود مسبقًا، اختر اسمًا آخر");
-            return;
-        }
-
-
+        // ✅ إنشاء المستخدم
         const newAdmin = {
             username,
             password,
+            full_name,
+            phone,
             role_id: 3,
             status: "pending",
             created_at: new Date().toISOString()
@@ -728,11 +852,14 @@ async function addAdmin() {
 
         alert("تم إضافة المشرف بنجاح");
 
+        // تنظيف الحقول
         document.getElementById('new-admin').value = "";
         document.getElementById('new-password').value = "";
+        document.getElementById('new-fullname').value = "";
+        document.getElementById('new-phone').value = "";
 
         await fetchUsers();
-        renderAll();
+
         openUserTab('tab-users-list', document.querySelector('[onclick*="tab-users-list"]'));
 
     } catch (e) {
@@ -740,7 +867,6 @@ async function addAdmin() {
         console.error(e);
     }
 }
-
 
 
 function getRoleName(id) {
@@ -1099,7 +1225,7 @@ function renderRoutes() {
 }
 
 function renderAssign() {
-    
+
     if (!assignData || !routesData || !stationsData) {
         console.warn("البيانات لم تكتمل بعد");
         return;
@@ -1882,6 +2008,13 @@ function closeStudentModal() {
     document.getElementById('studentAddModal').style.display = 'none';
     clearForm();
 }
+const ghailBawazirAreas = [
+    "الغيل",
+    "الصداع",
+    "القارة",
+    "الكوم",
+    "بر الوادي",
+];
 
 
 function initForm() {
@@ -1889,6 +2022,7 @@ function initForm() {
     const boardSelect = document.getElementById('add-student-boarding-station');
     const alightSelect = document.getElementById('add-student-alighting-station');
 
+    const citySelect = document.getElementById('add-student-city');
 
     uniSelect.innerHTML = '<option value="">اختر الجامعة</option>';
     if (typeof universitiesData !== 'undefined' && Array.isArray(universitiesData)) {
@@ -1897,17 +2031,30 @@ function initForm() {
         });
     }
 
+    let boardingOptions = '<option value="">اختر محطة الصعود</option>';
+    let alightingOptions = '<option value="">اختر محطة النزول</option>';
 
-    let stationsOptions = '<option value="">اختر المحطة</option>';
     if (typeof stationsData !== 'undefined' && Array.isArray(stationsData)) {
         stationsData.forEach(s => {
-            stationsOptions += `<option value="${s.id}">${s.station_name}</option>`;
+            boardingOptions += `<option value="${s.id}">${s.station_name}</option>`;
+            alightingOptions += `<option value="${s.id}">${s.station_name}</option>`;
         });
     }
-    boardSelect.innerHTML = stationsOptions;
-    alightSelect.innerHTML = stationsOptions;
-}
 
+    boardSelect.innerHTML = boardingOptions;
+    alightSelect.innerHTML = alightingOptions;
+
+    /* =========================
+       إضافة المناطق (الجزء الجديد)
+    ========================= */
+    if (citySelect) {
+        citySelect.innerHTML = '<option value="">اختر المنطقة</option>';
+
+        ghailBawazirAreas.forEach(area => {
+            citySelect.innerHTML += `<option value="${area}">${area}</option>`;
+        });
+    }
+}
 
 
 function onUniversityChange(val) {
@@ -1955,6 +2102,8 @@ function onDepartmentChange(val) {
         levelSelect.innerHTML += `<option value="${l.id}">${l.level_name}</option>`;
     });
 }
+
+
 
 async function saveStudent() {
     const username = document.getElementById('add-student-username').value.trim();
@@ -2026,6 +2175,8 @@ async function saveStudent() {
         const userPayload = {
             username: username,
             password: password,
+            full_name: name,
+            phone: phone,
             role_id: 1,
             status: "pending",
             created_at: new Date().toISOString()
@@ -2041,7 +2192,6 @@ async function saveStudent() {
         });
 
         const userRawText = await userResponse.text();
-        
 
         let createdUser = null;
         try {
@@ -2063,7 +2213,6 @@ async function saveStudent() {
         if (!newUserId) {
             throw new Error("لم يتم إرجاع user_id من السيرفر");
         }
-
 
         const studentPayload = {
             user_id: newUserId,
@@ -2096,7 +2245,6 @@ async function saveStudent() {
         });
 
         const studentRawText = await studentResponse.text();
-        
 
         let createdStudent = null;
         try {
@@ -2106,7 +2254,6 @@ async function saveStudent() {
         }
 
         if (!studentResponse.ok) {
-            // rollback حذف المستخدم إذا فشل إنشاء الطالب
             try {
                 await fetch(`${API}/users/${newUserId}`, {
                     method: "DELETE",
@@ -2127,7 +2274,6 @@ async function saveStudent() {
             );
         }
 
-        // 4) إنشاء الإشعار
         const newNotification = {
             sender_id: currentUserId,
             title: "تم إضافة طالب جديد",
@@ -2248,7 +2394,7 @@ async function editStudent(id) {
     }, 100);
 
 
-    // document.getElementById('add-student-state').value = student.state;
+
     document.getElementById('add-student-boarding-station').value = student.pickup_station_id;
     document.getElementById('add-student-alighting-station').value = student.dropoff_station_id;
 
@@ -2261,22 +2407,55 @@ async function editStudent(id) {
     }
 }
 
-
 async function updateStudent(id) {
     try {
+
+        const student = studentsData.find(s => s.id === id);
+        if (!student) throw new Error("الطالب غير موجود");
 
         const selectedDays = Array.from(document.querySelectorAll('.days-grid input:checked'))
             .map(cb => Number(cb.value));
 
+        const studentStateValue = document.getElementById('add-student-state')?.value || "Active";
 
-        const studentStateElement = document.getElementById('add-student-state');
-        const studentStateValue = studentStateElement ? studentStateElement.value : "Active";
+        const name = document.getElementById('add-student-name').value;
+        const phone = document.getElementById('add-student-phone').value;
+
+
+
+        if (student.name !== null) {
+
+            const studentNamePayload = {
+                name: name,
+                phone: phone
+            };
+
+            await fetch(`${API}/students/${id}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(studentNamePayload)
+            });
+
+        } else {
+
+            const userPayload = {
+                full_name: name,
+                phone: phone
+            };
+
+            await fetch(`${API}/users/${student.user_id}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    _method: "PUT",
+                    ...userPayload
+                })
+            });
+        }
+
 
 
         const updatedPayload = {
-
-            name: document.getElementById('add-student-name').value,
-            phone: document.getElementById('add-student-phone').value,
             university_number: document.getElementById('add-student-university-number').value,
             city: document.getElementById('add-student-city').value,
             gender: document.getElementById('add-student-gender').value,
@@ -2290,32 +2469,28 @@ async function updateStudent(id) {
             days: selectedDays
         };
 
-
-        const response = await fetch(`${API}/students/${id}`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
+        const res = await fetch(`${API}/students/${id}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(updatedPayload)
         });
 
-        if (response.ok) {
-            alert("تم تحديث بيانات الطالب بنجاح");
-            closeStudentModal();
-            await fetchStudents();
+        if (!res.ok) throw new Error("فشل تحديث بيانات الطالب");
 
+        alert("تم التحديث بنجاح");
 
-            if (typeof fetchStudents === 'function') fetchStudents();
-        } else {
-            const error = await response.json();
-            console.error("Server Error:", error);
-            alert("فشل تحديث بيانات الطالب");
-        }
+        closeStudentModal();
+
+        await fetchStudents();
+        await fetchUsers();
+
+        renderStudents();
 
     } catch (err) {
-        console.error("Update Error:", err);
-        alert("حدث خطأ في الاتصال بالسيرفر");
+        console.error(err);
+        alert(err.message);
     }
 }
-
 async function deleteStudent(id) {
 
     if (!confirm("هل أنت متأكد من استبعاد هذا الطالب؟ لن يتم حذف البيانات ولكن سيتم رفض حسابه ومنعه من الظهور.")) return;
@@ -2357,7 +2532,6 @@ async function deleteStudent(id) {
 function showAddStudentModal() {
     openStudentModal();
     initForm();
-
 
     document.querySelector('#studentAddModal h3').innerText = "إضافة طالب جديد";
 
@@ -2629,19 +2803,6 @@ async function refreshAcademicData() {
 
 
 
-async function fetchDriversAndBuses() {
-    try {
-        const driversResponse = await fetch(`${API}/drivers`);
-        driversData = await driversResponse.json();
-        const busesResponse = await fetch(`${API}/buses`);
-        busesData = await busesResponse.json();
-        renderDriversCards();
-        renderDriversAndBuses();
-    } catch (error) {
-        console.error("حدث خطأ أثناء جلب بيانات السائقين والباصات:", error);
-    }
-}
-
 
 function renderDriversAndBuses() {
 
@@ -2667,8 +2828,17 @@ function renderDriversAndBuses() {
 
             return {
                 driver_id: driver.id || '',
-                driver_name: driver.name_driver || '',
-                driver_phone: driver.phone || '',
+
+
+                driver_name: driver.name_driver && driver.name_driver.trim() !== ''
+                    ? driver.name_driver
+                    : (user?.full_name || 'غير معروف'),
+
+
+                driver_phone: driver.phone && driver.phone.trim() !== ''
+                    ? driver.phone
+                    : (user?.phone || 'غير معروف'),
+
                 driver_state: driver.state || '',
                 bus_number: bus.id || '',
                 bus_passengers: bus.number_passengers || '',
@@ -2734,7 +2904,7 @@ function renderDriversAndBuses() {
     });
 }
 
-fetchDriversAndBuses();
+
 
 function openDriverBusModal() {
 
@@ -2788,19 +2958,21 @@ async function saveDriverBus() {
     const driverPhone = document.getElementById('add-driver-phone').value.trim();
     const driverState = document.getElementById('add-driver-state').value;
 
-    // const busNumber = document.getElementById('add-bus-number').value.trim();
     const busPassengers = document.getElementById('add-bus-passengers').value.trim();
     const busFuel = document.getElementById('add-bus-fuel-type').value;
 
     if (!username || !password || !driverName || !driverPhone || !busPassengers || !busFuel) {
-        return alert("يرجى ملء جميع الحقول الأساسaaية للسائق والباص");
+        return alert("يرجى ملء جميع الحقول الأساسية للسائق والباص");
     }
 
     try {
 
+
         const userPayload = {
             username: username,
             password: password,
+            full_name: driverName,
+            phone: driverPhone,
             role_id: 2,
             status: "pending",
             created_at: new Date().toISOString()
@@ -2808,14 +2980,35 @@ async function saveDriverBus() {
 
         const userRes = await fetch(`${API}/users`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
             body: JSON.stringify(userPayload)
         });
 
-        if (!userRes.ok) throw new Error("فشل إنشاء حساب المستخدم");
+        const userText = await userRes.text();
 
-        const createdUser = await userRes.json();
-        const newUserId = createdUser.id;
+        let createdUser = null;
+        try {
+            createdUser = userText ? JSON.parse(userText) : null;
+        } catch {
+            createdUser = null;
+        }
+
+        if (!userRes.ok) {
+            throw new Error(
+                createdUser?.message ||
+                userText ||
+                "فشل إنشاء حساب المستخدم"
+            );
+        }
+
+        const newUserId = createdUser?.id;
+
+        if (!newUserId) {
+            throw new Error("لم يتم إرجاع user_id من السيرفر");
+        }
 
 
         const driverPayload = {
@@ -2827,14 +3020,48 @@ async function saveDriverBus() {
 
         const driverRes = await fetch(`${API}/drivers`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
             body: JSON.stringify(driverPayload)
         });
 
-        if (!driverRes.ok) throw new Error("فشل إنشاء بيانات السائق");
+        const driverText = await driverRes.text();
 
-        const createdDriver = await driverRes.json();
-        const newDriverId = createdDriver.id;
+        let createdDriver = null;
+        try {
+            createdDriver = driverText ? JSON.parse(driverText) : null;
+        } catch {
+            createdDriver = null;
+        }
+
+        if (!driverRes.ok) {
+
+            try {
+                await fetch(`${API}/users/${newUserId}`, {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    }
+                });
+            } catch (e) {
+                console.warn("فشل حذف المستخدم بعد فشل إنشاء السائق");
+            }
+
+            throw new Error(
+                createdDriver?.message ||
+                driverText ||
+                "فشل إنشاء بيانات السائق"
+            );
+        }
+
+        const newDriverId = createdDriver?.id;
+
+        if (!newDriverId) {
+            throw new Error("لم يتم إرجاع driver_id من السيرفر");
+        }
 
 
         const busPayload = {
@@ -2845,18 +3072,37 @@ async function saveDriverBus() {
 
         const busRes = await fetch(`${API}/buses`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
             body: JSON.stringify(busPayload)
         });
 
-        if (!busRes.ok) throw new Error("فشل إنشاء بيانات الباص");
+        const busText = await busRes.text();
 
-        alert(`تم الحفظ بنجاح! تم ربط السائق باليوزر رقم: ${newUserId} وبالباص`);
+        let createdBus = null;
+        try {
+            createdBus = busText ? JSON.parse(busText) : null;
+        } catch {
+            createdBus = null;
+        }
+
+        if (!busRes.ok) {
+            throw new Error(
+                createdBus?.message ||
+                busText ||
+                "فشل إنشاء بيانات الباص"
+            );
+        }
+
+        alert(`تم الحفظ بنجاح! تم ربط السائق بالمستخدم رقم: ${newUserId} وبالباص`);
 
         closeDriverBusModal();
 
-        fetchDriversAndBuses();
         await fetchUsers();
+        await fetchDriversAndBuses();
+
         renderAll();
 
     } catch (error) {
@@ -2864,7 +3110,6 @@ async function saveDriverBus() {
         alert("فشل في إكمال العملية: " + error.message);
     }
 }
-
 
 function showDriverBusDetails(busId) {
 
@@ -3231,7 +3476,7 @@ function renderStudentsCards() {
 
     const activeStudents = studentsData.filter(s => s.state === 'active');
 
-    
+
 
     activeStudents.forEach(s => {
 
@@ -4006,6 +4251,7 @@ function loadMap(newLat = lat, newLng = lng) {
 document.addEventListener("DOMContentLoaded", function () {
     loadMap(lat, lng);
 });
+
 function openNotificationTab(tabId, btn) {
 
     const parent = document.getElementById("sec-notifications");
@@ -4514,6 +4760,7 @@ function deleteNotification(id) {
         });
 
 }
+
 function renderSystemNotifications() {
 
     const container = document.getElementById("system-container");
@@ -4521,78 +4768,367 @@ function renderSystemNotifications() {
 
     container.innerHTML = "";
 
-    // 🔴 فلترة مباشرة: فقط إشعارات النظام
-    let filteredNotifications = notificationsData.filter(n => n.type === "system_notification");
+    // 🔥 استخدام Activity Logs بدل notifications
+    let logs = [...activityLogsData];
 
-    // 🔴 ترتيب من الأحدث للأقدم
-    filteredNotifications.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    // ترتيب من الأحدث للأقدم
+    logs.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
-    if (filteredNotifications.length === 0) {
+    if (logs.length === 0) {
         container.innerHTML = `
         <div class="station-card44">
             <div class="station-body44">
                 <p class="station-desc44" style="font-size: 14px; color: #777; font-weight: 500; text-align:center;">
-                    لا توجد إشعارات نظام حالياً
+                    لا توجد سجلات نظام حالياً
                 </p>
             </div>
         </div>`;
         return;
     }
 
-    const targetLabels = {
-        1: "الطلاب",
-        2: "السائقين",
-        3: "المشرفين"
-    };
+    logs.forEach(log => {
 
-    filteredNotifications.forEach(n => {
+        // 🎨 تحديد الشكل حسب نوع العملية
+        let color = "#6c757d";
+        let icon = "bi-activity";
+        let label = log.action;
 
-        // نفس ستايل النظام الموجود عندك
-        let typeColor = "#6f42c1";
-        let typeLabel = "نظام";
-        let icon = "bi-gear-fill";
-
-        let targetText = targetLabels[n.target_group] || "الكل";
+        if (log.action.includes("تسجيل دخول")) {
+            color = "#198754";
+            icon = "bi-box-arrow-in-right";
+        } else if (log.action.includes("انشاء")) {
+            color = "#0d6efd";
+            icon = "bi-person-plus-fill";
+        }
 
         container.innerHTML += `
         <div class="station-card44"
-            onclick="openNotificationDetails(${n.id})"
-            style="border-top: 5px solid ${typeColor}; border-radius: 6px; cursor:pointer;">
+            style="border-top: 5px solid ${color}; border-radius: 6px;">
 
             <div class="station-header44">
-                <h4 class="station-title44" style="color: ${typeColor};">
-                    <i class="bi ${icon}"></i> ${truncateTitle(n.title)}
+                <h4 class="station-title44" style="color: ${color};">
+                    <i class="bi ${icon}"></i> ${label}
                 </h4>
-                <span class="station-id44">Sender: #${n.sender_id}</span>
+                <span class="station-id44">
+                    User: ${log.username || 'غير معروف'} (#${log.user_id})
+                </span>
             </div>
 
             <div class="station-body44">
+
                 <p class="station-desc44" style="font-size: 14px; color: #333; font-weight: 500;">
-                    ${truncateMessage(n.message)}
+                    ${log.description || 'لا يوجد وصف'}
                 </p>
 
-                <div class="station-location44" style="margin-top: 8px; justify-content: space-between; align-items: center;">
+                <div style="margin-top:8px; font-size:12px; color:#666;">
+                    <span>📂 الجدول: ${log.table_name}</span><br>
+                    <span>🆔 السجل: ${log.record_id}</span>
+                </div>
+
+                <div class="station-location44" style="margin-top: 10px;">
                     <span style="font-size: 11px; color: #777;">
                         <i class="bi bi-clock"></i>
-                        ${formatDate(n.created_at)}
+                        ${formatDate(log.created_at)}
                     </span>
                 </div>
             </div>
 
-            <div style="display: flex; justify-content:space-between; margin-top: 5px;">
-                <span style="background: ${typeColor}15; color: ${typeColor}; padding: 2px 10px; border-radius: 20px; font-size: 10px; font-weight: bold; border: 1px solid ${typeColor}44;">
-                    ${typeLabel}
+            <div style="display: flex; justify-content: space-between; margin-top: 5px;">
+                <span style="background: ${color}15; color: ${color}; padding: 2px 10px; border-radius: 20px; font-size: 10px; font-weight: bold; border: 1px solid ${color}44;">
+                    Activity Log
                 </span>
 
-                <span class="target-badge44 target-${n.target_group}">
-                    ${targetText}
+                <span class="target-badge44">
+                    ${log.table_name}
                 </span>
             </div>
+
         </div>
         `;
     });
 }
-renderSystemNotifications();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// =====================
+// GLOBALS
+// =====================
+let logsData = [];
+let usersMap = {};
+
+let logsFilter = {
+    search: "",
+    type: "all",
+    user: "all",
+    from: "",
+    to: "",
+    period: "latest" // latest | week | month | all
+};
+
+// =====================
+// BUILD USERS MAP
+// =====================
+function buildUsersMap() {
+    usersMap = {};
+
+    if (!Array.isArray(usersData)) return;
+
+    usersData.forEach(user => {
+        usersMap[user.id] = {
+            full_name: user.full_name,
+            username: user.username
+        };
+    });
+}
+
+// =====================
+// FETCH LOGS
+// =====================
+async function fetchLogs() {
+    try {
+
+        buildUsersMap();
+
+        const res = await fetch("https://msaraty.ddns.net/api/activity-logs");
+        const data = await res.json();
+
+        logsData = Array.isArray(data) ? data : [];
+        
+        await fetchLogs();
+        renderLogs();
+
+    } catch (err) {
+        console.error("Logs Error:", err);
+    }
+}
+
+// =====================
+// NORMALIZE
+// =====================
+function norm(v) {
+    return String(v || "").trim().toLowerCase();
+}
+
+// =====================
+// TRANSLATE ACTION
+// =====================
+function translateAction(action) {
+    if (!action) return "-";
+
+    const map = {
+        add_user: "إضافة مستخدم",
+        create_user: "إنشاء مستخدم",
+        add_student: "إضافة طالب",
+        create_student: "إنشاء طالب",
+        update_student: "تعديل بيانات طالب",
+        delete_student: "حذف طالب",
+        add_driver: "إضافة سائق",
+        create_driver: "إنشاء سائق",
+        update_driver: "تعديل بيانات سائق",
+        delete_driver: "حذف سائق",
+        login: "تسجيل الدخول",
+        logout: "تسجيل الخروج"
+    };
+
+    return map[action.trim()] || action;
+}
+
+// =====================
+// FILTER HANDLERS
+// =====================
+function onLogsPeriod(value) {
+    logsFilter.period = value;
+    renderLogs();
+}
+
+function onLogsSearch(value) {
+    logsFilter.search = norm(value);
+    renderLogs();
+}
+
+// =====================
+// TIME FILTERS
+// =====================
+
+// اليوم + أمس
+function isTodayOrYesterday(dateStr) {
+    const d = new Date(dateStr);
+    const now = new Date();
+
+    const today = new Date(now);
+    const yesterday = new Date(now);
+    yesterday.setDate(now.getDate() - 1);
+
+    return (
+        d.toDateString() === today.toDateString() ||
+        d.toDateString() === yesterday.toDateString()
+    );
+}
+
+// آخر 7 أيام
+function isLast7Days(dateStr) {
+    const d = new Date(dateStr);
+    const now = new Date();
+
+    const last7 = new Date();
+    last7.setDate(now.getDate() - 7);
+
+    return d >= last7 && d <= now;
+}
+
+// الشهر الحالي
+function isThisMonth(dateStr) {
+    const d = new Date(dateStr);
+    const now = new Date();
+
+    return (
+        d.getMonth() === now.getMonth() &&
+        d.getFullYear() === now.getFullYear()
+    );
+}
+
+// =====================
+// MAIN RENDER
+// =====================
+function renderLogs() {
+    const tbody = document.getElementById("logs-table-body");
+    if (!tbody) return;
+
+    let data = [...logsData];
+
+    // ترتيب دائم (الأحدث أولاً)
+    data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+    // فلترة زمنية
+    data = data.filter(log => {
+
+        if (logsFilter.period === "latest") {
+            if (!isTodayOrYesterday(log.created_at)) return false;
+        }
+
+        if (logsFilter.period === "week") {
+            if (!isLast7Days(log.created_at)) return false;
+        }
+
+        if (logsFilter.period === "month") {
+            if (!isThisMonth(log.created_at)) return false;
+        }
+
+        return true;
+    });
+
+    // عرض
+    tbody.innerHTML = data.map(log => {
+
+        const user = usersMap[log.user_id] || {};
+        const username = user.username || log.username || "غير معروف";
+        const fullName = user.full_name || "غير معروف";
+
+        return `
+        <tr>
+            <td>${log.id}</td>
+            <td>${translateAction(log.action)}</td>
+            <td>${log.description}</td>
+            <td>${username}</td>
+            <td>${fullName}</td>
+            <td>${new Date(log.created_at).toLocaleString("ar")}</td>
+            <td>
+                <button class="btn-action view" onclick="openLogDetails(${log.id})">
+                    <i class="bi bi-eye"></i>
+                </button>
+            </td>
+        </tr>
+        `;
+    }).join("");
+}
+
+// =====================
+// DETAILS
+// =====================
+function openLogDetails(id) {
+    const log = logsData.find(l => l.id === id);
+    if (!log) return;
+
+    const user = usersMap[log.user_id] || {};
+    const username = user.username || log.username || "غير معروف";
+    const fullName = user.full_name || "غير معروف";
+
+    alert(`
+تفاصيل السجل:
+
+ID: ${log.id}
+Action: ${translateAction(log.action)}
+Description: ${log.description}
+Username: ${username}
+Full Name: ${fullName}
+Date: ${log.created_at}
+`);
+}
+
+// =====================
+// INIT
+// =====================
+fetchLogs();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

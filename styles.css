@@ -365,7 +365,7 @@ h1.page-title::after {
     background: #f8f9fa;
     padding: 15px;
     border-radius: 15px;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     border: 1px solid #eee;
 }
 
@@ -6328,3 +6328,203 @@ td {
         padding: 11px 10px;
     }
 }
+
+
+
+/* خاص فقط بسجلات النظام */
+
+
+/* خاص فقط بسجلات النظام */
+/* حاوية التاريخ */
+/* الحاوية */
+.date-input-wrapper {
+    position: relative;
+}
+
+/* إخفاء النص الافتراضي */
+.date-input-wrapper input[type="date"]::-webkit-datetime-edit {
+    color: transparent;
+}
+
+/* عند وجود قيمة يرجع النص */
+.date-input-wrapper input[type="date"]:valid::-webkit-datetime-edit {
+    color: #000;
+}
+
+/* placeholder الوهمي */
+.date-placeholder {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    font-size: 12px;
+    color: #999;
+    pointer-events: none;
+}
+
+/* إخفاء النص عند اختيار تاريخ */
+.date-input-wrapper input[type="date"]:valid + .date-placeholder {
+    display: none;
+}
+
+
+
+
+
+
+
+
+
+
+.payment-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+
+    display: flex;
+    justify-content: center;
+    align-items: center; /* مهم جداً */
+    
+    z-index: 9999;
+    padding: 15px;
+    overflow: hidden; /* يمنع تمدد الصفحة */
+}
+
+/* ===== FIX ROOT CAUSE ===== */
+.payment-modal-box {
+    width: 100%;
+    max-width: 520px;
+
+    background: #fff;
+    border-radius: 14px;
+    padding: 14px;
+
+    position: relative;
+
+    box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+
+    font-family: system-ui, sans-serif;
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    /* 🔥 أهم إصلاح */
+    max-height: 90vh;
+    overflow: hidden; /* يمنع تمدد داخلي */
+}
+
+/* الصورة */
+.payment-image-wrap {
+    flex-shrink: 0; /* لا تتمدد */
+}
+
+.payment-image,
+.payment-image.placeholder {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+/* التفاصيل */
+.payment-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+
+    font-size: 13px;
+
+    /* 🔥 منع التمدد العمودي */
+    flex-shrink: 0;
+}
+
+/* كل خانة */
+.payment-row {
+    padding: 6px 8px;
+    background: #f9fafb;
+    border-radius: 8px;
+}
+
+/* أزرار */
+.payment-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+
+    flex-shrink: 0;
+}
+
+/* زر الإغلاق */
+.close-modal {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+
+    width: 28px;
+    height: 28px;
+
+    border-radius: 6px;
+    border: none;
+
+    background: #fff;
+    color: red;
+
+    font-size: 16px;
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.reject-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    z-index: 99999;
+}
+
+.reject-box {
+    width: 360px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 16px;
+
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.reject-box h3 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.reject-box textarea {
+    width: 100%;
+    height: 100px;
+
+    border: 1px solid #ddd;
+    border-radius: 8px;
+
+    padding: 10px;
+    resize: none;
+}
+
+.reject-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+
+
